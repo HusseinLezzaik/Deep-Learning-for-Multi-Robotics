@@ -11,26 +11,10 @@ from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
 
 
-k = 1
-L = 0.1
-d = 3
+k = 1 # Control Gain
+L = 0.1 
+d = 0.5
 
-" Mobile Robot 1 Parameters "
-x1 = 1
-y1 = 1
-Theta1 = 0
-v1 = 1
-w1 = 1
-vL1 = 2
-vR1 = 2
-" Mobile Robot 1 Parameters "
-x2 = 2
-y2 = 2
-Theta2 = 0
-v2 = 2
-w2 = 2
-vL2 = 2 
-vR2 = 2
  
 def euler_from_quaternion(x, y, z, w):
         
@@ -55,84 +39,113 @@ class MinimalPublisher(Node):
             '/tf',
             self.listener_callback,
             10)
-
+        " Mobile Robot 1 Parameters "
+        self.x1 = 20
+        self.y1 = 20
+        self.Theta1 = 0
+        self.v1 = 1
+        self.w1 = 1
+        self.vL1 = 2
+        self.vR1 = 2
+        " Mobile Robot 1 Parameters "
+        self.x2 = 20
+        self.y2 = 20
+        self.Theta2 = 0
+        self.v2 = 2
+        self.w2 = 2
+        self.vL2 = 2 
+        self.vR2 = 2
+        
     def listener_callback(self, msg):
 
         
-        if msg.transforms[0].child_frame_id == 'robot1' or msg.transforms[0].child_frame_id == 'robot2' :  
-            x1 = msg.transforms[0].transform.translation.x
-            y1 = msg.transforms[0].transform.translation.y
-            xr1 = msg.transforms[0].transform.rotation.x
-            yr1 = msg.transforms[0].transform.rotation.y
-            zr1 = msg.transforms[0].transform.rotation.z
-            wr1 = msg.transforms[0].transform.rotation.w
-            x2 = msg.transforms[0].transform.translation.x
-            y2 = msg.transforms[0].transform.translation.y
-            xr2 = msg.transforms[0].transform.rotation.x
-            yr2 = msg.transforms[0].transform.rotation.y
-            zr2 = msg.transforms[0].transform.rotation.z
-            wr2 = msg.transforms[0].transform.rotation.w
+        if msg.transforms[0].child_frame_id == 'robot1' :  
+            self.x1 = msg.transforms[0].transform.translation.x
+            self.y1 = msg.transforms[0].transform.translation.y
+            self.xr1 = msg.transforms[0].transform.rotation.x
+            self.yr1 = msg.transforms[0].transform.rotation.y
+            self.zr1 = msg.transforms[0].transform.rotation.z
+            self.wr1 = msg.transforms[0].transform.rotation.w
+            self.Theta1 = euler_from_quaternion(self.xr1,self.yr1,self.zr1,self.wr1)
             
-            Theta1 = euler_from_quaternion(xr1,yr1,zr1,wr1)
-            Theta2 = euler_from_quaternion(xr2,yr2,zr2,wr2)
-            
-            " Calculate Control inputs u1 and u2 "
-            
-            u1 = np.array([[ k*(x2-x1)],[k*(y2-y1)]]) # 2x1
-            u2 = np.array([[ k*(x1-x2) ],[k*(y1-y2)]]) # 2x1
            
-            " Calculate V1/W1 and V2/W2 "
             
-            S1 = np.array([[v1], [w1]]) # 2x1
-            G1 = np.array([[1,0], [0,1/L]])
-            F1 = np.array([[math.cos(Theta1),math.sin(Theta1)],[-math.sin(Theta1),math.cos(Theta1)]])
-            S1 = np.dot(np.dot(G1, F1), u1) # 2x1
+        if  msg.transforms[0].child_frame_id == 'robot2' :
+            
+            self.x2 = msg.transforms[0].transform.translation.x
+            self.y2 = msg.transforms[0].transform.translation.y
+            self.xr2 = msg.transforms[0].transform.rotation.x
+            self.yr2 = msg.transforms[0].transform.rotation.y
+            self.zr2 = msg.transforms[0].transform.rotation.z
+            self.wr2 = msg.transforms[0].transform.rotation.w
+            self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
+            
+        
+            
+        " Calculate Control inputs u1 and u2 "
+            
+        u1 = np.array([[ k*(self.x2-self.x1)],[k*(self.y2-self.y1)]]) # 2x1 
+        u2 = np.array([[ k*(self.x1-self.x2)],[k*(self.y1-self.y2)]]) # 2x1
+        
+        " Calculate V1/W1 and V2/W2 "
+            
+        S1 = np.array([[self.v1], [self.w1]]) #2x1
+        G1 = np.array([[1,0], [0,1/L]]) #2x2
+        F1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
+        S1 = np.dot(np.dot(G1, F1), u1) #2x1
+        
            
-            S2 = np.array([[v2], [w2]]) # 2x1
-            G2 = np.array([[1,0], [0,1/L]])
-            F2 = np.array([[math.cos(Theta2),math.sin(Theta2)],[-math.sin(Theta2),math.cos(Theta2)]])
-            S2 = np.dot(np.dot(G2, F2), u2) # 2x1
+        S2 = np.array([[self.v2], [self.w2]]) #2x1
+        G2 = np.array([[1,0], [0,1/L]]) #2x2
+        F2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
+        S2 = np.dot(np.dot(G2, F2), u2) # 2x1
             
-            " Calculate VL1/VR1 and VL2/VR2 "
+        " Calculate VL1/VR1 and VL2/VR2 "
             
-            D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]])
-            Di = np.linalg.inv(D)
+        D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
+        Di = np.linalg.inv(D) #2x2
+        
     
-            Speed_L1 = np.array([[vL1], [vR1]]) # Vector 2x1 for Speed of Robot 1
-            Speed_L2 = np.array([[vL2], [vR2]]) # Vector 2x1 for Speed of Robot 2
-            M1 = np.array([[v1], [w1]])
-            M2 = np.array([[v2], [w2]])
-            Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
-            Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
+    
+        Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
+        Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2 
+        M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
+        M2 = np.array([[S2[0]], [S2[1]]]).reshape(2,1) #2x1
+        Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
+        Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
             
-            VL1 = Speed_L1[0]
-            VR1 = Speed_L1[1]
-            VL2 = Speed_L2[0]
-            VR2 = Speed_L2[1]
-            
-            " Speed Commands to Robot 1"
-            
-            msgr1 = Float32()
-            msgl1 = Float32()
-            msgr1.data = 9.0
-            msgl1.data = 9.0
-            self.publisher_l1.publish(msgl1)
-            self.publisher_r1.publish(msgr1)
-            self.get_logger().info('Publishing R1: "%s"' % msgr1.data)
-            
-            " Speed Commands to Robot 2"
-            msgr2 = Float32()
-            msgl2 = Float32()
-            msgr2.data = 9.0
-            msgl2.data = 9.0
-            self.publisher_l2.publish(msgl2)
-            self.publisher_r2.publish(msgr2)
+        VL1 = float(Speed_L1[0])
+        VR1 = float(Speed_L1[1])
+        VL2 = float(Speed_L2[0])
+        VR2 = float(Speed_L2[1])
+        
+        
+        
+        
+        " Speed Commands to Robot 1"
+        
+        msgl1 = Float32()    
+        msgr1 = Float32()
+        msgl1.data = VL1
+        msgr1.data = VR1
+        self.publisher_l1.publish(msgl1)
+        self.publisher_r1.publish(msgr1)
+        #self.get_logger().info('Publishing R1: "%s"' % msgr1.data)
+         
+        
+        " Speed Commands to Robot 2"
+        
+        msgl2 = Float32()
+        msgr2 = Float32()
+        msgl2.data = VL2
+        msgr2.data = VR2
+        self.publisher_l2.publish(msgl2)
+        self.publisher_r2.publish(msgr2)
             
             
        
         
-        
-
+       
 def main(args=None):
     rclpy.init(args=args)
 
