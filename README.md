@@ -9,8 +9,8 @@ We use CoppeliaSim as our simulator to see the performance of our algorithms on 
 All code is written in Python3, and we use Ros2-Interface to communicate with CoppeliaSim.
 
  
- 
-Make sure to have these installed before using the code:
+## Pre-requisites 
+Make sure to have these installed before using the main code:
 * NumPy 
 * Pandas
 * ROS2 
