@@ -14,4 +14,5 @@ Make sure to have these installed before using the main code:
 * NumPy 
 * Pandas
 * ROS2 
+* CoppeliaSim 
 * ROS2-Interface
