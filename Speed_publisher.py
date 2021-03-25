@@ -9,12 +9,12 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
-
+import csv
+import pandas as pd
 
 k = 1 # Control Gain
 L = 0.1 
 d = 0.5
-
  
 def euler_from_quaternion(x, y, z, w):
         
@@ -55,6 +55,8 @@ class MinimalPublisher(Node):
         self.w2 = 2
         self.vL2 = 2 
         self.vR2 = 2
+        self.i1 = 0
+        self.i2 = 0
         
     def listener_callback(self, msg):
 
@@ -120,7 +122,38 @@ class MinimalPublisher(Node):
         VR2 = float(Speed_L2[1])
         
         
+        " Calculate the Pose of Robot 2 w.r.t Robot 1 and Control input U1 "
         
+        self.X1 = self.x2 - self.x1 # 1x1
+        self.Y1 = self.y2 -self.y1 # 1x1
+        self.U1 = u1 # 2x1
+        
+        with open('robot1.csv', 'a', newline='') as f:
+            fieldnames = ['Delta_X', 'Delta_Y', 'U1']
+            thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+            
+            if self.i1 == 0:
+                thewriter.writeheader()
+                self.i1 = 1
+            
+            thewriter.writerow({'Delta_X' : self.X1, 'Delta_Y' : self.Y1, 'U1' : self.U1})
+                
+        
+        " Calculate the Pose of Robot 1 w.r.t Robot 2 and Control input U2 "
+        
+        self.X2 = self.x1 - self.x2 # 1x1
+        self.Y2 = self.y1 -self.y2 # 1x1
+        self.U2 = u2 # 2x1
+        
+        with open('robot2.csv', 'a', newline='') as f:
+            fieldnames = ['Delta_X', 'Delta_Y', 'U2']
+            thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+            
+            if self.i2 == 0:
+                thewriter.writeheader()
+                self.i2 = 1
+            
+            thewriter.writerow({'Delta_X' : self.X2, 'Delta_Y' : self.Y2, 'U2' : self.U2})
         
         " Speed Commands to Robot 1"
         
