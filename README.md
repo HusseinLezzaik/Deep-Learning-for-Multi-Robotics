@@ -21,3 +21,7 @@ Please make sure to have the following installed before using the main.py code:
 ## Simulation in CoppeliaSim 
 We test our algorithms on two bubblerob's from CoppeliaSim, however our work applies to all kinds of mobile robots that just need some initial parameter tuning.
 We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input.'
+
+## Training data
+For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks on, which takes as 
+inputs: Relative position of each robot and it's corresponding control input as an output.
