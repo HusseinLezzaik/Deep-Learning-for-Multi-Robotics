@@ -16,3 +16,7 @@ Make sure to have these installed before using the main code:
 * ROS2 
 * CoppeliaSim 
 * ROS2-Interface
+
+
+## Simulation 
+We test our algorithms on two bubblerob's from CoppeliaSim, however our work applies to all kinds of robots that just need some parameter tuning.
