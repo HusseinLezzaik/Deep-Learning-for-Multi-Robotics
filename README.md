@@ -10,7 +10,7 @@ All code is written in Python3, and we use Ros2-Interface to communicate with Co
 
  
 ## Pre-requisites 
-Make sure to have these installed before using the main code:
+Please make sure to have the following installed before using the main.py code:
 * NumPy 
 * Pandas
 * ROS2 
@@ -18,5 +18,6 @@ Make sure to have these installed before using the main code:
 * ROS2-Interface
 
 
-## Simulation 
-We test our algorithms on two bubblerob's from CoppeliaSim, however our work applies to all kinds of robots that just need some parameter tuning.
+## Simulation in CoppeliaSim 
+We test our algorithms on two bubblerob's from CoppeliaSim, however our work applies to all kinds of mobile robots that just need some initial parameter tuning.
+We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input.'
