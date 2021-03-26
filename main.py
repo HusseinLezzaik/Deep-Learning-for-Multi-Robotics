@@ -13,7 +13,7 @@ import csv
 import pandas as pd
 
 k = 1 # Control Gain
-L = 0.1 
+L = 1
 d = 0.5
  
 def euler_from_quaternion(x, y, z, w):
