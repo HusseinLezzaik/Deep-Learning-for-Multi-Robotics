@@ -15,7 +15,7 @@ import pandas as pd
 k = 1 # Control Gain
 L = 1
 d = 0.5
-
+distance = 6
 def euler_from_quaternion(x, y, z, w):
         
      t3 = +2.0 * (w * z + x * y)
@@ -23,7 +23,6 @@ def euler_from_quaternion(x, y, z, w):
      yaw_z = math.atan2(t3, t4)
      
      return yaw_z # in radians
-
 
 
 class MinimalPublisher(Node):
@@ -57,7 +56,7 @@ class MinimalPublisher(Node):
         self.vR2 = 2
         self.i1 = 0
         self.i2 = 0
-        self.distance = 6
+        
         
        
     def listener_callback(self, msg):
@@ -84,7 +83,7 @@ class MinimalPublisher(Node):
             self.wr2 = msg.transforms[0].transform.rotation.w
             self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
             
-        print(self.distance)
+        
             
         " Calculate Control inputs u1 and u2 "
             
@@ -123,15 +122,17 @@ class MinimalPublisher(Node):
         VL2 = float(Speed_L2[0])
         VR2 = float(Speed_L2[1])
         
+        distance = self.x2 - self.x1
+        print(distance) 
+        
         
         " Calculate the Pose of Robot 2 w.r.t Robot 1 and Control input U1 "
         
         self.X1 = self.x2 - self.x1 # 1x1
         self.Y1 = self.y2 -self.y1 # 1x1
         self.U1 = u1 # 2x1
-        self.distance = self.x2 - self.x1
         
-        
+        " Write Values of Relative Pose and Control input to CSV file robot 1"
         
         with open('robot1.csv', 'a', newline='') as f:
             fieldnames = ['Data_X', 'Data_Y', 'Label_X', 'Label_Y']
@@ -150,6 +151,8 @@ class MinimalPublisher(Node):
         self.X2 = self.x1 - self.x2 # 1x1
         self.Y2 = self.y1 -self.y2 # 1x1
         self.U2 = u2 # 2x1
+        
+        " Write Values of Relative Pose and Control input to CSV file robot 1"
         
         with open('robot2.csv', 'a', newline='') as f:
             fieldnames = ['Data_X', 'Data_Y', 'Label_X', 'Label_Y']
@@ -187,9 +190,8 @@ class MinimalPublisher(Node):
        
 def main(args=None):
     rclpy.init(args=args)
-
     minimal_publisher = MinimalPublisher()
-
+    
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
