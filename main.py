@@ -40,16 +40,16 @@ class MinimalPublisher(Node):
             self.listener_callback,
             10)
         " Mobile Robot 1 Parameters "
-        self.x1 = 20
-        self.y1 = 20
+        self.x1 = 10
+        self.y1 = 12
         self.Theta1 = 0
         self.v1 = 1
         self.w1 = 1
         self.vL1 = 2
         self.vR1 = 2
         " Mobile Robot 1 Parameters "
-        self.x2 = 20
-        self.y2 = 20
+        self.x2 = 5
+        self.y2 = 7
         self.Theta2 = 0
         self.v2 = 2
         self.w2 = 2
@@ -57,7 +57,9 @@ class MinimalPublisher(Node):
         self.vR2 = 2
         self.i1 = 0
         self.i2 = 0
-        self.distance = 0.0 
+        self.distance = 6
+        
+       
     def listener_callback(self, msg):
 
         
@@ -82,7 +84,7 @@ class MinimalPublisher(Node):
             self.wr2 = msg.transforms[0].transform.rotation.w
             self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
             
-        
+        print(self.distance)
             
         " Calculate Control inputs u1 and u2 "
             
