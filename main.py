@@ -16,7 +16,7 @@ k = 1 # Control Gain
 L = 1
 d = 0.5
 distance = 6
-count = 2
+count = 3
 def euler_from_quaternion(x, y, z, w):
         
      t3 = +2.0 * (w * z + x * y)
@@ -167,7 +167,7 @@ class MinimalPublisher(Node):
             
                 thewriter.writerow({'Data_X' : self.X2, 'Data_Y' : self.Y2, 'Label_X' : self.U2[0], 'Label_Y' : self.U2[1]})
                
-            #count += 0.1 
+            
             
         " Speed Commands to Robot 1"
         
