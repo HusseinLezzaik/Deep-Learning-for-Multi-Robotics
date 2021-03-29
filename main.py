@@ -15,7 +15,7 @@ import pandas as pd
 k = 1 # Control Gain
 L = 1
 d = 0.5
- 
+
 def euler_from_quaternion(x, y, z, w):
         
      t3 = +2.0 * (w * z + x * y)
@@ -57,7 +57,7 @@ class MinimalPublisher(Node):
         self.vR2 = 2
         self.i1 = 0
         self.i2 = 0
-        
+        self.distance = 0.0 
     def listener_callback(self, msg):
 
         
@@ -127,10 +127,10 @@ class MinimalPublisher(Node):
         self.X1 = self.x2 - self.x1 # 1x1
         self.Y1 = self.y2 -self.y1 # 1x1
         self.U1 = u1 # 2x1
-        distance = self.X1
-        print(distance)
+        self.distance = self.x2 - self.x1
+        print(self.distance)
         
-        while distance > 0.2:
+        while self.distance > 0:
             with open('robot1.csv', 'a', newline='') as f:
                 fieldnames = ['Data_X', 'Data_Y', 'Label_X', 'Label_Y']
                 thewriter = csv.DictWriter(f, fieldnames=fieldnames)
@@ -140,6 +140,7 @@ class MinimalPublisher(Node):
                     self.i1 = 1
             
                 thewriter.writerow({'Data_X' : self.X1, 'Data_Y' : self.Y1, 'Label_X' : self.U1[0], 'Label_Y' : self.U1[1]})
+        
                 
         
         " Calculate the Pose of Robot 1 w.r.t Robot 2 and Control input U2 "
