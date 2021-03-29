@@ -127,16 +127,19 @@ class MinimalPublisher(Node):
         self.X1 = self.x2 - self.x1 # 1x1
         self.Y1 = self.y2 -self.y1 # 1x1
         self.U1 = u1 # 2x1
+        distance = self.X1
+        print(distance)
         
-        with open('robot1.csv', 'a', newline='') as f:
-            fieldnames = ['Data_X', 'Data_Y', 'Label_X', 'Label_Y']
-            thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+        while distance > 0.2:
+            with open('robot1.csv', 'a', newline='') as f:
+                fieldnames = ['Data_X', 'Data_Y', 'Label_X', 'Label_Y']
+                thewriter = csv.DictWriter(f, fieldnames=fieldnames)
             
-            if self.i1 == 0:
-                thewriter.writeheader()
-                self.i1 = 1
+                if self.i1 == 0:
+                    thewriter.writeheader()
+                    self.i1 = 1
             
-            thewriter.writerow({'Data_X' : self.X1, 'Data_Y' : self.Y1, 'Label_X' : self.U1[0], 'Label_Y' : self.U1[1]})
+                thewriter.writerow({'Data_X' : self.X1, 'Data_Y' : self.Y1, 'Label_X' : self.U1[0], 'Label_Y' : self.U1[1]})
                 
         
         " Calculate the Pose of Robot 1 w.r.t Robot 2 and Control input U2 "
