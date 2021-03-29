@@ -16,7 +16,7 @@ k = 1 # Control Gain
 L = 1
 d = 0.5
 distance = 6
-count = 3
+
 def euler_from_quaternion(x, y, z, w):
         
      t3 = +2.0 * (w * z + x * y)
@@ -57,7 +57,7 @@ class MinimalPublisher(Node):
         self.vR2 = 2
         self.i1 = 0
         self.i2 = 0
-        
+        self.count = 2
         
        
     def listener_callback(self, msg):
@@ -125,7 +125,8 @@ class MinimalPublisher(Node):
         
         
         distance = self.x2 - self.x1
-        print(distance) 
+        
+
         
         
         " Calculate the Pose of Robot 2 w.r.t Robot 1 and Control input U1 "
@@ -133,6 +134,7 @@ class MinimalPublisher(Node):
         self.X1 = self.x2 - self.x1 # 1x1
         self.Y1 = self.y2 -self.y1 # 1x1
         self.U1 = u1 # 2x1
+        print(self.count)
         
         
         " Calculate the Pose of Robot 1 w.r.t Robot 2 and Control input U2 "
@@ -145,7 +147,7 @@ class MinimalPublisher(Node):
         " Write Values to CSV1 and CSV2 "
         
         if distance > 0.2:
-            if count % 2 == 0:
+            if self.count % 2 == 0:
                 
                 with open('robot1.csv', 'a', newline='') as f:
                     fieldnames = ['Data_X', 'Data_Y', 'Label_X', 'Label_Y']
@@ -167,8 +169,10 @@ class MinimalPublisher(Node):
             
                 thewriter.writerow({'Data_X' : self.X2, 'Data_Y' : self.Y2, 'Label_X' : self.U2[0], 'Label_Y' : self.U2[1]})
                
-            
-            
+        self.count += 0.5
+        #print(self.count % 2 == 0)            
+       
+        #print(self.count % 2 == 0)   
         " Speed Commands to Robot 1"
         
         msgl1 = Float32()    
