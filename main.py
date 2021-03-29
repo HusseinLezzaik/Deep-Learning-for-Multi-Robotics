@@ -147,7 +147,7 @@ class MinimalPublisher(Node):
         " Write Values to CSV1 and CSV2 "
         
         if distance > 0.2:
-            if self.count % 1 == 0:
+            if self.count % 2 == 0:
                 
                 with open('robot1.csv', 'a', newline='') as f:
                     fieldnames = ['Data_X', 'Data_Y', 'Label_X', 'Label_Y']
