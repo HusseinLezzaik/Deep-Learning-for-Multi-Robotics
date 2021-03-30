@@ -136,7 +136,7 @@ class MinimalPublisher(Node):
         self.X1 = self.x2 - self.x1 # 1x1
         self.Y1 = self.y2 -self.y1 # 1x1
         self.U1 = u1 # 2x1
-        print(self.count)
+        
         
         
         " Calculate the Pose of Robot 1 w.r.t Robot 2 and Control input U2 "
