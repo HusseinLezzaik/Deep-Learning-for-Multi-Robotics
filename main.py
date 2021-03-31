@@ -147,7 +147,18 @@ class MinimalPublisher(Node):
         self.Y2 = self.y1 -self.y2 # 1x1
         self.U2 = u2 # 2x1
         
+        " Transform Control Input U1 from Global to Local Reference Frame "
         
+        U1L = np.dot(R1, self.U1) #2x1
+        U2L = np.dot(R2, self.U2) #2x1
+        
+        " Transform Relative Pose from Global to Local Reference Frame "
+        
+        PoseG1 = np.array([[self.X1],[self.Y1]])
+        PoseL1 = np.dot(R1, PoseG1)
+        PoseG2 = np.array([[self.X2],[self.Y2]])
+        PoseL2 = np.dot(R2, PoseG2)
+        print(PoseL2)
         " Write Values to CSV1 and CSV2 "
         
         if distance > 0.2:
