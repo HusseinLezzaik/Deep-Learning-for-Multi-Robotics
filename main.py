@@ -135,9 +135,9 @@ class MinimalPublisher(Node):
         
         " Calculate the Pose of Robot 2 w.r.t Robot 1 and Control input U1 "
         
-        self.X1 = self.x2 - self.x1 # 1x1
-        self.Y1 = self.y2 -self.y1 # 1x1
-        self.U1 = u1 # 2x1
+        self.X1 = self.x2 - self.x1 # Relative Pose of Robot 2 wrt Robot 1 in Global frame for X coordinate of dimension 1x1
+        self.Y1 = self.y2 -self.y1 # Relative Pose of Robot 2 wrt Robot 1 in Global frame for Y coordinate of dimension 1x1
+        self.U1 = u1 # Control input U1 in Global frame for robot 1 of dimension 2x1
         
         
         
@@ -149,16 +149,16 @@ class MinimalPublisher(Node):
         
         " Transform Control Input U1 from Global to Local Reference Frame "
         
-        U1L = np.dot(R1, self.U1) #2x1
-        U2L = np.dot(R2, self.U2) #2x1
+        U1L = np.dot(R1, self.U1) # Control input of Robot 1 in Local Frame of dimension 2x1
+        U2L = np.dot(R2, self.U2) # Control input of Robot 2 in Local Frame of dimension 2x1
         
         " Transform Relative Pose from Global to Local Reference Frame "
         
-        PoseG1 = np.array([[self.X1],[self.Y1]])
-        PoseL1 = np.dot(R1, PoseG1)
-        PoseG2 = np.array([[self.X2],[self.Y2]])
-        PoseL2 = np.dot(R2, PoseG2)
-        print(PoseL2)
+        PoseG1 = np.array([[self.X1],[self.Y1]]) # Relative Pose of Robot 2 wrt Robot 1 in Global Frame of dimension 2x1
+        PoseL1 = np.dot(R1, PoseG1) # Relative Pose of Robot 2 wrt Robot 2 in Local Frame of dimension 2x1 
+        PoseG2 = np.array([[self.X2],[self.Y2]]) # Relative Pose of Robot 1 wrt Robot 1 in Global Frame of dimension 2x1
+        PoseL2 = np.dot(R2, PoseG2) # Relative Pose of Robot 1 wrt Robot 2 in Local Frame of dimension 2x1 
+        
         " Write Values to CSV1 and CSV2 "
         
         if distance > 0.2:
