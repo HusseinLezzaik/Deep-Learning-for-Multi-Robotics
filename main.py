@@ -57,11 +57,13 @@ class MinimalPublisher(Node):
         self.w2 = 2
         self.vL2 = 2 
         self.vR2 = 2
+        
+        " Counter Variables "
         self.i1 = 0
         self.i2 = 0
         self.count = 2
-        
-       
+        self.j1 = 0
+        self.j2 = 0
     def listener_callback(self, msg):
 
         
@@ -97,14 +99,14 @@ class MinimalPublisher(Node):
             
         S1 = np.array([[self.v1], [self.w1]]) #2x1
         G1 = np.array([[1,0], [0,1/L]]) #2x2
-        F1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
-        S1 = np.dot(np.dot(G1, F1), u1) #2x1
+        R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
+        S1 = np.dot(np.dot(G1, R1), u1) #2x1
         
            
         S2 = np.array([[self.v2], [self.w2]]) #2x1
         G2 = np.array([[1,0], [0,1/L]]) #2x2
-        F2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
-        S2 = np.dot(np.dot(G2, F2), u2) # 2x1
+        R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
+        S2 = np.dot(np.dot(G2, R2), u2) # 2x1
             
         " Calculate VL1/VR1 and VL2/VR2 "
             
@@ -158,9 +160,13 @@ class MinimalPublisher(Node):
                     if self.i1 == 0:
                         thewriter.writeheader()
                         self.i1 = 1
-                
-                    thewriter.writerow({'Data_X' : self.X1, 'Data_Y' : self.Y1, 'Angle' : self.Theta1, 'Label_X' : self.U1[0][0], 'Label_Y' : self.U1[1][0]})
-                
+                        
+                    if self.j1 != 0:    
+                        thewriter.writerow({'Data_X' : self.X1, 'Data_Y' : self.Y1, 'Angle' : self.Theta1, 'Label_X' : self.U1[0][0], 'Label_Y' : self.U1[1][0]})
+                        
+                    if self.j1 == 0:
+                        self.j1 = 1
+                    
                 with open('robot2.csv', 'a', newline='') as f:
                     fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
                     thewriter = csv.DictWriter(f, fieldnames=fieldnames)
@@ -168,9 +174,12 @@ class MinimalPublisher(Node):
                     if self.i2 == 0:
                         thewriter.writeheader()
                         self.i2 = 1
-            
-                    thewriter.writerow({'Data_X' : self.X2, 'Data_Y' : self.Y2, 'Angle' : self.Theta2, 'Label_X' : self.U2[0][0], 'Label_Y' : self.U2[1][0]})
-               
+                    
+                    if self.j2 != 0:
+                        thewriter.writerow({'Data_X' : self.X2, 'Data_Y' : self.Y2, 'Angle' : self.Theta2, 'Label_X' : self.U2[0][0], 'Label_Y' : self.U2[1][0]})
+                    
+                    if self.j2 == 0:
+                        self.j2 = 1
         self.count += 1
         
         " Speed Commands to Robot 1"
