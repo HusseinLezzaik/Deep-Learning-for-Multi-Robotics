@@ -13,9 +13,10 @@ All code is written in Python3, and we use Ros2-Interface to communicate with Co
 Please make sure to have the following installed before using the main.py code:
 * NumPy 
 * Pandas
+* PyTorch
 * ROS2 
-* CoppeliaSim 
 * ROS2-Interface
+* CoppeliaSim 
 * Remote Python API
 
 
