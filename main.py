@@ -1,4 +1,4 @@
- """
+"""
 
 Publisher node speed of a single Mobile Robot Wheel
 
@@ -159,7 +159,6 @@ class MinimalPublisher(Node):
         PoseG2 = np.array([[self.X2],[self.Y2]]) # Relative Pose of Robot 1 wrt Robot 1 in Global Frame of dimension 2x1
         PoseL2 = np.dot(R2, PoseG2) # Relative Pose of Robot 1 wrt Robot 2 in Local Frame of dimension 2x1 
         
-        
         " Speed Commands to Robot 1"
         
         msgl1 = Float32()    
@@ -179,8 +178,8 @@ class MinimalPublisher(Node):
         msgr2.data = VR2
         self.publisher_l2.publish(msgl2)
         self.publisher_r2.publish(msgr2)
-            
-    
+        
+        
         " Write Values to CSV1 and CSV2 "
         
         if distance > 0.2:
@@ -215,9 +214,6 @@ class MinimalPublisher(Node):
                         self.j2 = 1
         self.count += 1
         
-
-            
-       
         
        
 def main(args=None):
