@@ -16,6 +16,7 @@ Please make sure to have the following installed before using the main.py code:
 * ROS2 
 * CoppeliaSim 
 * ROS2-Interface
+* Remote Python API
 
 
 ## Simulation in CoppeliaSim 
@@ -23,5 +24,5 @@ We test our algorithms on two bubblerob's from CoppeliaSim, however our work app
 We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input.'
 
 ## Training data
-For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks on, which takes as 
-inputs: Relative position of each robot and it's corresponding control input as an output.
+For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
+which takes the relative position of each robot_i w.r.t robot_ j in the local transformation frame and it's corresponding control input U_j as an output.
