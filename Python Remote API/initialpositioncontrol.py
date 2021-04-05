@@ -9,6 +9,19 @@ Control Initial Position of two robots using Python Remote API
 import sim
 import time 
 import math
+import numpy as np
 print("Program Started")
 
+" Control to V-Rep "
+
+sim.simxFinish(-1) # just in case, close all opened connections
+clientID=sim.simxStart('127.0.0.1',19997,True,True,5000,5) # Connect to CoppeliaSim
+
+iter = 1
+x_disp = np.array([0], [1])
+y_disp =  np.array([0], [1])
+z_rot =  np.array([0], [90])
+
+if clientID!=-1:
+    print ('Connected to remote API server')
 
