@@ -27,4 +27,7 @@ if clientID!=-1:
     for z in z_rot:
         for x in x_disp:
             for y in y_disp:
+                print(" Simulation iter")
+                #Set Camera_robo Positon
+                
                 
