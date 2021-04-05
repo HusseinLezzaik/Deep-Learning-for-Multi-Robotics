@@ -24,4 +24,7 @@ z_rot =  np.array([0], [90])
 
 if clientID!=-1:
     print ('Connected to remote API server')
-
+    for z in z_rot:
+        for x in x_disp:
+            for y in y_disp:
+                
