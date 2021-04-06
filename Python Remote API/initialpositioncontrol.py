@@ -48,4 +48,7 @@ if clientID!=-1:
 
 else:
     print("Failed connecting to remote API server") 
+print("Program Ended")
 
+# End Connection to V-Rep
+sim.simxFinish(clientID)
