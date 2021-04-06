@@ -32,7 +32,7 @@ if clientID!=-1:
                 [ErrLocM, LocM] = sim.simxGetObjectHandle(clientID, 'bubbleRob', sim.simx_opmode_oneshot_wait)
                 [ErrLoc, Loc] = sim.simxGetObjectPosition(clientID, LocM, -1, sim.simx_opmode_oneshot_wait)
                 [ErrLocO, OriRobo] = sim.simxGetObjectOrientation(clientID,LocM, -1, sim/simx_opmode_oneshot_wait)
-                OriRobo
+                OriRobo[0] = (z*math.pi/100)
                 
                 
                 
