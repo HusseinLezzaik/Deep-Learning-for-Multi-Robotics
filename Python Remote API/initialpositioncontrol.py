@@ -27,7 +27,7 @@ if clientID!=-1:
     for z in z_rot:
         for x in x_disp:
             for y in y_disp:
-                print(" Simulation iter")
+                print(" Simulation ", iter)
                 # Set Camera_robo Positon
                 [ErrLocM, LocM] = sim.simxGetObjectHandle(clientID, 'CoppeliaSim_Two_Robots_Scenes', sim.simx_opmode_oneshot_wait)
                 [ErrLoc, Loc] = sim.simxGetObjectPosition(clientID, LocM, -1, sim.simx_opmode_oneshot_wait)
