@@ -30,8 +30,9 @@ if clientID!=-1:
                 print(" Simulation iter")
                 # Set Camera_robo Positon
                 [ErrLocM, LocM] = sim.simxGetObjectHandle(clientID, 'bubbleRob', sim.simx_opmode_oneshot_wait)
-                [ErrLoc, Loc] = sim.simxGetObjectPosition(clientID,LocM,-1,sim.simx_opmode_oneshot_wait)
-                
+                [ErrLoc, Loc] = sim.simxGetObjectPosition(clientID, LocM, -1, sim.simx_opmode_oneshot_wait)
+                [ErrLocO, OriRobo] = sim.simxGetObjectOrientation(clientID,LocM, -1, sim/simx_opmode_oneshot_wait)
+                OriRobo
                 
                 
                 
