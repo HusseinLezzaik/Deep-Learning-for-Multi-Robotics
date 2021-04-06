@@ -29,6 +29,9 @@ if clientID!=-1:
             for y in y_disp:
                 print(" Simulation iter")
                 # Set Camera_robo Positon
+                [ErrLocM, LocM] = sim.simxGetObjectHandle(clientID, 'bubbleRob', sim.simx_opmode_oneshot_wait)
+                [ErrLoc, Loc] = sim.simxGetObjectPosition(clientID,LocM,-1,sim.simx_opmode_oneshot_wait)
+                
                 
                 
                 
