@@ -29,17 +29,17 @@ if clientID!=-1:
             for y in y_disp:
                 print(" Simulation iter")
                 # Set Camera_robo Positon
-                [ErrLocM, LocM] = sim.simxGetObjectHandle(clientID, 'bubbleRob', sim.simx_opmode_oneshot_wait)
+                [ErrLocM, LocM] = sim.simxGetObjectHandle(clientID, 'CoppeliaSim_Two_Robots_Scenes', sim.simx_opmode_oneshot_wait)
                 [ErrLoc, Loc] = sim.simxGetObjectPosition(clientID, LocM, -1, sim.simx_opmode_oneshot_wait)
-                [ErrLocO, OriRobo] = sim.simxGetObjectOrientation(clientID,LocM, -1, sim/simx_opmode_oneshot_wait)
+                [ErrLocO, OriRobo] = sim.simxGetObjectOrientation(clientID,LocM, -1, sim.simx_opmode_oneshot_wait)
                 OriRobo[0] = (z*math.pi/100)
                 sim.simxSetObjectOrientation(clientID, LocM, -1, OriRobo, sim.simx_opmode_oneshot_wait) # Set Robot Orientation
                 Loc[0] = x
                 Loc[1] = y
                 sim.simxSetObjectPosition(clientID, LocM, -1, Loc, sim.simx_opmode_oneshot) # Set Robot Position
                 # Start the Simulation:
-                print("bubbleRob Position: Loc")
-                print("bubbleRob Orientation: OriRobo")
+                print("bubbleRob Position:", Loc)
+                print("bubbleRob Orientation:", OriRobo)
                 print("Simulation Running ...")
                 sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
                 time.sleep(5)
