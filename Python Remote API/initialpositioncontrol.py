@@ -33,6 +33,10 @@ if clientID!=-1:
                 [ErrLoc, Loc] = sim.simxGetObjectPosition(clientID, LocM, -1, sim.simx_opmode_oneshot_wait)
                 [ErrLocO, OriRobo] = sim.simxGetObjectOrientation(clientID,LocM, -1, sim/simx_opmode_oneshot_wait)
                 OriRobo[0] = (z*math.pi/100)
+                sim.simxSetObjectOrientation(clientID, LocM, -1, OriRobo, sim.simx_opmode_oneshot_wait) # Set Robot Orientation
+                Loc[0] = x
+                Loc[1] = y
+                sim.simxSetObjectPosition(clientID, LocM, -1, Loc, sim.simx_opmode_oneshot) # Set Robot Position
                 
                 
                 
