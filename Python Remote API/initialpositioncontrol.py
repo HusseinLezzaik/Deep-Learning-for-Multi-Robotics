@@ -37,7 +37,11 @@ if clientID!=-1:
                 Loc[0] = x
                 Loc[1] = y
                 sim.simxSetObjectPosition(clientID, LocM, -1, Loc, sim.simx_opmode_oneshot) # Set Robot Position
-                
+                # Start the Simulation:
+                print("bubbleRob Position: Loc")
+                print("bubbleRob Orientation: OriRobo")
+                print("Simulation Running ...")
+                sim.simxStartSimulation(client ID)
                 
                 
                 
