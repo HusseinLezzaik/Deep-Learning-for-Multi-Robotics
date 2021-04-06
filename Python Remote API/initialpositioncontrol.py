@@ -47,4 +47,5 @@ if clientID!=-1:
                 iter += 1
 
 else:
-    
+    print("Failed connecting to remote API server") 
+
