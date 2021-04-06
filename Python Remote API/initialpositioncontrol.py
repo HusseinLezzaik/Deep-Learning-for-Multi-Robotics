@@ -41,15 +41,10 @@ if clientID!=-1:
                 print("bubbleRob Position: Loc")
                 print("bubbleRob Orientation: OriRobo")
                 print("Simulation Running ...")
-                sim.simxStartSimulation(client ID)
-                
-                
-                
-                
-                # Start the Simulation
-                
-                
-                
+                sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
+                time.sleep(5)
+                sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
+                iter += 1
 
 else:
     
