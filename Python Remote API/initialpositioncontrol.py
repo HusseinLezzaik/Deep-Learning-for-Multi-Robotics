@@ -17,7 +17,7 @@ clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to Coppe
 
 iter = 1
 x_disp = np.array([[0], [1]])
-y_disp =  np.array([[0], [1]])
+y_disp = np.array([[0], [1]])
 z_rot =  np.array([[0], [90]])
 
 if clientID!=-1:
@@ -33,8 +33,8 @@ if clientID!=-1:
                 
                 # Retrieve some handles:
                 
-                ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'robot1', sim.simx_opmode_oneshot_wait)
-                ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'robot2#0', sim.simx_opmode_oneshot_wait)
+                ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'CoppeliaSim_Two_Robots_Scenes', sim.simx_opmode_oneshot_wait)
+                ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'CoppeliaSim_Two_Robots_Scenes', sim.simx_opmode_oneshot_wait)
                 
                 
                 ErrLoc1,Loc1 =sim.simxGetObjectPosition(clientID, LocM1, -1, sim.simx_opmode_oneshot_wait)
