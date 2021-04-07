@@ -235,81 +235,80 @@ class MinimalPublisher(Node):
                     if self.j2 == 0:
                         self.j2 = 1
           
-        else:             
-            if clientID!=-1:
-                print ('Connected to remote API server')
-                for i in range(len(z_rot1)):
-                    for j in range(len(x_disp1)):
-                        for k in range(len(y_disp1)):
-                            print(" Simulation ", self.iter)
+        elif clientID!=-1:             
+            print ('Connected to remote API server')
+            for i in range(len(z_rot1)):
+                for j in range(len(x_disp1)):
+                    for k in range(len(y_disp1)):
+                        print(" Simulation ", self.iter)
                 
-                            # End Connection to V-Rep
-                            sim.simxFinish(clientID)                
+                        # End Connection to V-Rep
+                        sim.simxFinish(clientID)                
                 
-                            # Retrieve some handles:
+                        # Retrieve some handles:
                 
-                            ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'robot1', sim.simx_opmode_oneshot_wait)
-                            ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'robot2#0', sim.simx_opmode_oneshot_wait)
-                
-                
-                            ErrLoc1,Loc1 =sim.simxGetObjectPosition(clientID, LocM1, -1, sim.simx_opmode_oneshot_wait)
-                            ErrLoc2,Loc2 =sim.simxGetObjectPosition(clientID, LocM2, -1, sim.simx_opmode_oneshot_wait)
+                        ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'robot1', sim.simx_opmode_oneshot_wait)
+                        ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'robot2#0', sim.simx_opmode_oneshot_wait)
                 
                 
-                            ErrLocO1,OriRobo1 =sim.simxGetObjectOrientation(clientID,LocM1, -1, sim.simx_opmode_oneshot_wait)
-                            ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
+                        ErrLoc1,Loc1 =sim.simxGetObjectPosition(clientID, LocM1, -1, sim.simx_opmode_oneshot_wait)
+                        ErrLoc2,Loc2 =sim.simxGetObjectPosition(clientID, LocM2, -1, sim.simx_opmode_oneshot_wait)
                 
                 
-                            OriRobo1[2] = ((z_rot1[i][0]*math.pi)/180)
-                            OriRobo2[2] = ((z_rot2[i][0]*math.pi)/180)
+                        ErrLocO1,OriRobo1 =sim.simxGetObjectOrientation(clientID,LocM1, -1, sim.simx_opmode_oneshot_wait)
+                        ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
                 
                 
-                            # Set Robot Orientation
-                
-                            sim.simxSetObjectOrientation(clientID, LocM1, -1, OriRobo1, sim.simx_opmode_oneshot_wait) 
-                            sim.simxSetObjectOrientation(clientID, LocM2, -1, OriRobo2, sim.simx_opmode_oneshot_wait)
+                        OriRobo1[2] = ((z_rot1[i][0]*math.pi)/180)
+                        OriRobo2[2] = ((z_rot2[i][0]*math.pi)/180)
                 
                 
-                            Loc1[0] = x_disp1[j][0]
-                            Loc2[0] = x_disp2[j][0]
+                        # Set Robot Orientation
+                
+                        sim.simxSetObjectOrientation(clientID, LocM1, -1, OriRobo1, sim.simx_opmode_oneshot_wait) 
+                        sim.simxSetObjectOrientation(clientID, LocM2, -1, OriRobo2, sim.simx_opmode_oneshot_wait)
                 
                 
-                            Loc1[1] = y_disp1[k][0]
-                            Loc2[1] = y_disp2[k][0]
-                
-                            # Set Robot Position
-                
-                            sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
-                            sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
-                
-                            # Print Positions and Orientation
-                
-                            print("Robot1 Position:", Loc1)
-                            print("Robot2 Position:", Loc2)
-                
-                            print("Robot1 Orientation:", OriRobo1)
-                            print("Robot2 Orientation:", OriRobo2)
+                        Loc1[0] = x_disp1[j][0]
+                        Loc2[0] = x_disp2[j][0]
                 
                 
+                        Loc1[1] = y_disp1[k][0]
+                        Loc2[1] = y_disp2[k][0]
                 
-                            print("Simulation Running ...")
-                            sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
-                            time.sleep(1)
-                            sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
-                            self.iter += 1
+                        # Set Robot Position
                 
-                            # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
-                            sim.simxGetPingTime(clientID)
+                        sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
+                        sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
+                
+                        # Print Positions and Orientation
+                
+                        print("Robot1 Position:", Loc1)
+                        print("Robot2 Position:", Loc2)
+                
+                        print("Robot1 Orientation:", OriRobo1)
+                        print("Robot2 Orientation:", OriRobo2)
+                
+                
+                
+                        print("Simulation Running ...")
+                        sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
+                        time.sleep(1)
+                        sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
+                        self.iter += 1
+                
+                        # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
+                        sim.simxGetPingTime(clientID)
  
-                            # Start the simulation:
-                            sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
+                        # Start the simulation:
+                        sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
 
 
 
 
 
-            else:
-                print("Failed connecting to remote API server") 
+        else:
+            print("Failed connecting to remote API server") 
         
         
         self.count += 1   
