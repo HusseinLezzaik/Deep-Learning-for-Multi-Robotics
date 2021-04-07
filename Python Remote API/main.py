@@ -241,7 +241,7 @@ class MinimalPublisher(Node):
                 for i in range(len(z_rot1)):
                     for j in range(len(x_disp1)):
                         for k in range(len(y_disp1)):
-                            print(" Simulation ", iter)
+                            print(" Simulation ", self.iter)
                 
                             # End Connection to V-Rep
                             sim.simxFinish(clientID)                
@@ -302,7 +302,7 @@ class MinimalPublisher(Node):
                             sim.simxGetPingTime(clientID)
  
                             # Start the simulation:
-                            #sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
+                            sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
 
 
 
