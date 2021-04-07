@@ -111,7 +111,7 @@ class MinimalPublisher(Node):
             self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
             
         
-            
+        
         " Calculate Control inputs u1 and u2 "
             
         u1 = np.array([[ self.k*(self.x2-self.x1)],[self.k*(self.y2-self.y1)]]) # 2x1 
@@ -315,6 +315,8 @@ class MinimalPublisher(Node):
     
 def main(args=None):
     print("Program Started")
+    # Start the simulation:
+    sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
     
