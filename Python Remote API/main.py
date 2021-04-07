@@ -19,7 +19,7 @@ L = 1
 d = 0.5
 distance = 6
 
-" Control to V-Rep "
+" Connecting to V-Rep "
 
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
@@ -234,16 +234,16 @@ class MinimalPublisher(Node):
                     
                     if self.j2 == 0:
                         self.j2 = 1
-          
+            
         elif clientID!=-1:             
             print ('Connected to remote API server')
             for i in range(len(z_rot1)):
                 for j in range(len(x_disp1)):
                     for k in range(len(y_disp1)):
                         print(" Simulation ", self.iter)
-                
-                        # End Connection to V-Rep
-                        sim.simxFinish(clientID)                
+                        
+                        # Stop Simulation
+                        sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
                 
                         # Retrieve some handles:
                 
@@ -288,21 +288,21 @@ class MinimalPublisher(Node):
                 
                         print("Robot1 Orientation:", OriRobo1)
                         print("Robot2 Orientation:", OriRobo2)
-                
-                
+                        
+                        # Start Simulation
+                        sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)                        
+                             
                 
                         print("Simulation Running ...")
-                        sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
                         time.sleep(1)
-                        sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
+                        
                         self.iter += 1
                 
                         # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
                         sim.simxGetPingTime(clientID)
  
-                        # Start the simulation:
-                        sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
-
+            # End Connection to V-Rep
+            sim.simxFinish(clientID)
 
 
 
@@ -319,7 +319,6 @@ def main(args=None):
     sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
-    
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
