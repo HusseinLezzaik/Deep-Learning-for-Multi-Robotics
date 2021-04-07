@@ -14,7 +14,7 @@ import pandas as pd
 import sim
 import time 
 
-k = 1 # Control Gain
+
 L = 1
 d = 0.5
 distance = 6
@@ -58,6 +58,9 @@ class MinimalPublisher(Node):
             self.listener_callback,
             10)
         
+        
+        "Parameters "
+        self.k = 1 # Control Gain
         " Mobile Robot 1 Parameters "
         self.x1 = 10
         self.y1 = 12
@@ -111,8 +114,8 @@ class MinimalPublisher(Node):
             
         " Calculate Control inputs u1 and u2 "
             
-        u1 = np.array([[ k*(self.x2-self.x1)],[k*(self.y2-self.y1)]]) # 2x1 
-        u2 = np.array([[ k*(self.x1-self.x2)],[k*(self.y1-self.y2)]]) # 2x1
+        u1 = np.array([[ self.k*(self.x2-self.x1)],[self.k*(self.y2-self.y1)]]) # 2x1 
+        u2 = np.array([[ self.k*(self.x1-self.x2)],[self.k*(self.y1-self.y2)]]) # 2x1
         
         " Calculate V1/W1 and V2/W2 "
             
