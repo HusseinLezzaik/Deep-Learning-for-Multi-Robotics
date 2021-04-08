@@ -183,7 +183,7 @@ class MinimalPublisher(Node):
         PoseG2 = np.array([[self.X2],[self.Y2]]) # Relative Pose of Robot 1 wrt Robot 1 in Global Frame of dimension 2x1
         PoseL2 = np.dot(R2, PoseG2) # Relative Pose of Robot 1 wrt Robot 2 in Local Frame of dimension 2x1 
         
-        " Speed Commands to Robot 1"
+        " Publsih Speed Commands to Robot 1"
         
         msgl1 = Float32()    
         msgr1 = Float32()
@@ -194,7 +194,7 @@ class MinimalPublisher(Node):
         #self.get_logger().info('Publishing R1: "%s"' % msgr1.data)
          
         
-        " Speed Commands to Robot 2"
+        " Publish Speed Commands to Robot 2"
         
         msgl2 = Float32()
         msgr2 = Float32()
