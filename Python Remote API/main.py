@@ -32,7 +32,7 @@ z_rot1 =  np.array([[0], [0]])
 
 x_disp2 = np.array([[1], [2]])
 y_disp2 = np.array([[1], [2]])
-z_rot2 =  np.array([[90], [90]])
+z_rot2 =  np.array([[180], [180]])
 
 
 def euler_from_quaternion(x, y, z, w):
