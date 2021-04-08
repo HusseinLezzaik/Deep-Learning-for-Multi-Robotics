@@ -230,7 +230,7 @@ class MinimalPublisher(Node):
                             PoseG2 = np.array([[self.X2],[self.Y2]]) # Relative Pose of Robot 1 wrt Robot 1 in Global Frame of dimension 2x1
                             PoseL2 = np.dot(R2, PoseG2) # Relative Pose of Robot 1 wrt Robot 2 in Local Frame of dimension 2x1 
         
-                            " Publsih Speed Commands to Robot 1"
+                            " Publish Speed Commands to Robot 1"
         
                             msgl1 = Float32()    
                             msgr1 = Float32()
@@ -253,7 +253,11 @@ class MinimalPublisher(Node):
                             time.sleep(1)
                             
                             self.iter += 1 # Nb of Simulation Counter
-                
+                            
+                            if distance < 0.2:
+                                self.loop =1
+                                
+                            
                             # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
                             sim.simxGetPingTime(clientID)
  
