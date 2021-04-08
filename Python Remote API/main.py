@@ -57,10 +57,18 @@ class MinimalPublisher(Node):
             '/tf',
             self.listener_callback,
             10)
-        
+
+        " Counter Variables "
+        self.i1 = 0
+        self.i2 = 0
+        self.count = 2
+        self.j1 = 0
+        self.j2 = 0
+        self.iter = 1        
         
         "Parameters "
         self.k = 1 # Control Gain
+        
         " Mobile Robot 1 Parameters "
         self.x1 = 10
         self.y1 = 12
@@ -70,7 +78,7 @@ class MinimalPublisher(Node):
         self.vL1 = 2
         self.vR1 = 2
         
-        " Mobile Robot 1 Parameters "
+        " Mobile Robot 2 Parameters "
         self.x2 = 5
         self.y2 = 7
         self.Theta2 = 0
@@ -79,13 +87,7 @@ class MinimalPublisher(Node):
         self.vL2 = 2 
         self.vR2 = 2
         
-        " Counter Variables "
-        self.i1 = 0
-        self.i2 = 0
-        self.count = 2
-        self.j1 = 0
-        self.j2 = 0
-        self.iter = 1
+
     def listener_callback(self, msg):
 
         
@@ -296,7 +298,7 @@ class MinimalPublisher(Node):
                         print("Simulation Running ...")
                         time.sleep(1)
                         
-                        self.iter += 1
+                        self.iter += 1 # Nb of Simulation Counter
                 
                         # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
                         sim.simxGetPingTime(clientID)
@@ -310,7 +312,7 @@ class MinimalPublisher(Node):
             print("Failed connecting to remote API server") 
         
         
-        self.count += 1   
+        self.count += 1 # Counter to skip values while saving to csv file  
     
 def main(args=None):
     print("Program Started")
