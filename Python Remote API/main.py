@@ -301,11 +301,10 @@ class MinimalPublisher(Node):
                         # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
                         sim.simxGetPingTime(clientID)
  
+            # Stop Simulation 
+            sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
             # End Connection to V-Rep
             sim.simxFinish(clientID)
-
-
-
 
         else:
             print("Failed connecting to remote API server") 
