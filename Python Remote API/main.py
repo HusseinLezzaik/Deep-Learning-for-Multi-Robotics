@@ -213,7 +213,7 @@ class MinimalPublisher(Node):
                     fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
                     thewriter = csv.DictWriter(f, fieldnames=fieldnames)
                 
-                    if self.i1 == 0:
+                    if self.i1 == 0: # Write header value once each simulation
                         thewriter.writeheader()
                         self.i1 = 1
                         
