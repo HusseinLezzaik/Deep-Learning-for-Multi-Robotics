@@ -146,6 +146,9 @@ class MinimalPublisher(Node):
                         # Nb of Simulation Counter
                         self.iter += 1 
                         
+                        # Time between each scene delay
+                        time.sleep(2)
+                        
                         # Start Simulation
                         sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)                         
                         
