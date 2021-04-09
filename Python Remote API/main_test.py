@@ -146,7 +146,7 @@ class MinimalPublisher(Node):
                         # Start Simulation
                         sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)                         
                         
-                        while self.loop == 0:
+                        while self.loop == 0:                            
                             
                             if msg.transforms[0].child_frame_id == 'robot1' :  
                                 self.x1 = msg.transforms[0].transform.translation.x
@@ -254,12 +254,47 @@ class MinimalPublisher(Node):
                             
                             self.iter += 1 # Nb of Simulation Counter
                             
-                            if distance < 0.2:
+                            " Write Values to CSV1 and CSV2 "
+        
+                            if distance > 0.2:
                                 self.loop =1
+                                if self.count % 2 == 0:
+                
+                                    with open('robot1.csv', 'a', newline='') as f:
+                                        fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
+                                        thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+                
+                                    if self.i1 == 0:
+                                        thewriter.writeheader()
+                                        self.i1 = 1
+                        
+                                    if self.j1 != 0:    
+                                        thewriter.writerow({'Data_X' : PoseL1[0][0], 'Data_Y' : PoseL1[1][0], 'Angle' : self.Theta1, 'Label_X' : U1L[0][0], 'Label_Y' : U1L[1][0]})
+                        
+                                    if self.j1 == 0:
+                                        self.j1 = 1
+                    
+                                    with open('robot2.csv', 'a', newline='') as f:
+                                        fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
+                                        thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+            
+                                        if self.i2 == 0:
+                                            thewriter.writeheader()
+                                            self.i2 = 1
+                    
+                                        if self.j2 != 0:
+                                            thewriter.writerow({'Data_X' : PoseL2[0][0], 'Data_Y' : PoseL2[1][0], 'Angle' : self.Theta2, 'Label_X' : U2L[0][0], 'Label_Y' : U2L[1][0]})
+                    
+                                        if self.j2 == 0:
+                                            self.j2 = 1
+            
+                
+                            self.count += 1 # Counter to skip values while saving to csv file  
+                        
                                 
-                            
-                            # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
-                            sim.simxGetPingTime(clientID)
+                                
+            # Before closing the connection to CoppeliaSim, make sure that the last command sent out had time to arrive. You can guarantee this with (for example):
+            sim.simxGetPingTime(clientID)
  
             # Stop Simulation 
             sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
@@ -269,43 +304,6 @@ class MinimalPublisher(Node):
         else:
             print("Failed connecting to remote API server") 
                         
-        
-        " Write Values to CSV1 and CSV2 "
-        
-        if distance > 0.2:
-            if self.count % 2 == 0:
-                
-                with open('robot1.csv', 'a', newline='') as f:
-                    fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
-                    thewriter = csv.DictWriter(f, fieldnames=fieldnames)
-                
-                    if self.i1 == 0:
-                        thewriter.writeheader()
-                        self.i1 = 1
-                        
-                    if self.j1 != 0:    
-                        thewriter.writerow({'Data_X' : PoseL1[0][0], 'Data_Y' : PoseL1[1][0], 'Angle' : self.Theta1, 'Label_X' : U1L[0][0], 'Label_Y' : U1L[1][0]})
-                        
-                    if self.j1 == 0:
-                        self.j1 = 1
-                    
-                with open('robot2.csv', 'a', newline='') as f:
-                    fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
-                    thewriter = csv.DictWriter(f, fieldnames=fieldnames)
-            
-                    if self.i2 == 0:
-                        thewriter.writeheader()
-                        self.i2 = 1
-                    
-                    if self.j2 != 0:
-                        thewriter.writerow({'Data_X' : PoseL2[0][0], 'Data_Y' : PoseL2[1][0], 'Angle' : self.Theta2, 'Label_X' : U2L[0][0], 'Label_Y' : U2L[1][0]})
-                    
-                    if self.j2 == 0:
-                        self.j2 = 1
-            
-        
-        
-        self.count += 1 # Counter to skip values while saving to csv file  
     
 def main(args=None):
     print("Program Started")
