@@ -258,7 +258,7 @@ class MinimalPublisher(Node):
                                                                                                                    
                             
                             
-                            if distance <0.2: # When they meet, get out of the while loop to change initial positions
+                            if distance < 0.2: # When they meet, get out of the while loop to change initial positions
                                 self.loop =1
                             
                             " Write Values to CSV1 and CSV2 "
