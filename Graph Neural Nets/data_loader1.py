@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Fri Apr 16 08:26:41 2021
 
-@author: hussein
+Loading data for robot1 from robot1.csv using DGL + PyTorch
+
 """
 
