@@ -138,7 +138,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/housing.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Graph_Neural_Nets/robot1.csv'
 train_dl, test_dl = prepare_data(path)
 print(len(train_dl.dataset), len(test_dl.dataset))
 # define the network
