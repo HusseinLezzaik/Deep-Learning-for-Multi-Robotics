@@ -28,10 +28,10 @@ class CSVDataset(Dataset):
         # load the csv file as a dataframe
         df = read_csv(path, header=None)
         # store the inputs and outputs
-        self.X = df.values[:, :-1].astype('float32')
-        self.y = df.values[:, -1].astype('float32')
+        self.X = df.values[:, :2].astype('float32')
+        self.y = df.values[:, 3:].astype('float32')
         # ensure target has the right shape
-        self.y = self.y.reshape((len(self.y), 1))
+        self.y = self.y.reshape((len(self.y), 2))
 
     # number of rows in the dataset
     def __len__(self):
@@ -55,12 +55,12 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.hidden = Linear(2, 10) # 2 inputs, 10 hidden units
+        self.hidden = Linear(2, 3) # 2 inputs, 10 hidden units
         xavier_uniform_(self.hidden.weight)
         # Define ReLU activation
         self.act = ReLU()
         # Output layer, 2 units
-        self.output = Linear(10, 2)
+        self.output = Linear(3, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
@@ -111,11 +111,12 @@ def evaluate_model(test_dl, model):
         # retrieve numpy array
         yhat = yhat.detach().numpy()
         actual = targets.numpy()
-        actual = actual.reshape((len(actual), 1))
+        actual = actual.reshape((len(actual), 2))
         # store
         predictions.append(yhat)
         actuals.append(actual)
     predictions, actuals = vstack(predictions), vstack(actuals)
+    print(predictions)
     # calculate mse
     mse = mean_squared_error(actuals, predictions)
     return mse
@@ -135,13 +136,13 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Graph_Neural_Nets/robot1
 train_dl, test_dl = prepare_data(path)
 print(len(train_dl.dataset), len(test_dl.dataset))
 # define the network
-model = MLP(13)
+model = MLP()
 # train the model
 train_model(train_dl, model)
 # evaluate the model
 mse = evaluate_model(test_dl, model)
 print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 # make a single prediction (expect class=1)
-row = [0.00632,18.00,2.310,0,0.5380,6.5750,65.20,4.0900,1,296.0,15.30,396.90,4.98]
+row = [-2,3]
 yhat = predict(row, model)
-print('Predicted: %.3f' % yhat)
+print(yhat)
