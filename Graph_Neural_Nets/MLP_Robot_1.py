@@ -57,7 +57,7 @@ class MLP(Module):
         # Inputs to hidden layer linear transformation
         self.hidden = Linear(2, 10) # 2 inputs, 10 hidden units
         xavier_uniform_(self.hidden.weight)
-        # Define sigmoid activation
+        # Define ReLU activation
         self.act = ReLU()
         # Output layer, 2 units
         self.output = Linear(10, 2)
