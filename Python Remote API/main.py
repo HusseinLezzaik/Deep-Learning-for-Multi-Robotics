@@ -280,8 +280,8 @@ class MinimalPublisher(Node):
                 
                         # Set Robot Position
                 
-                        sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
-                        sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
+                        sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot_wait)
+                        sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot_wait)
                 
                         # Print Positions and Orientation
                 
