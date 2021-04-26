@@ -28,10 +28,10 @@ class CSVDataset(Dataset):
         # load the csv file as a dataframe
         df = read_csv(path, header=None)
         # store the inputs and outputs
-        self.X = df.values[:, :2].astype('float32')
-        self.y = df.values[:, 3:].astype('float32')
+        self.X = df.values[:, :2].astype('float32') # read first two values
+        self.y = df.values[:, 3:].astype('float32') # read last two values
         # ensure target has the right shape
-        self.y = self.y.reshape((len(self.y), 2))
+        self.y = self.y.reshape((len(self.y), 2)) # nx2
 
     # number of rows in the dataset
     def __len__(self):
