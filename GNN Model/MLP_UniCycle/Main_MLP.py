@@ -3,7 +3,8 @@ MLP model for Two Mobile Robots
 
 @author: hussein
 """
-
+import torch
+import MLP_Model
 import math
 import numpy as np
 import rclpy
@@ -15,6 +16,12 @@ import csv
 L = 1
 d = 0.5
 distance = 6
+
+# load model using dict
+FILE = "model.pth"
+loaded_model = MLP_Model.MLP()
+loaded_model.load_state_dict(torch.load(FILE))
+loaded_model.eval()
 
 def euler_from_quaternion(x, y, z, w):
         
