@@ -1,5 +1,5 @@
 """
-Consensus Algorithm for Unicycle Model
+Consensus Algorithm for Differential Drive Model
 Inputs: Local relative pose of robot i wrt robot j (2x1)
 Outputs: Local control input of robot j (2x1)
 

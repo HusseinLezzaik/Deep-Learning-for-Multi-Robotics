@@ -1,5 +1,5 @@
 """
-Consensus Algorithm
+Consensus Algorithm for Two Mobile Robots
 
 @author: hussein
 """
