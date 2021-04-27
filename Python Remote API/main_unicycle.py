@@ -1,5 +1,8 @@
 """
-Publisher node speed of a single Mobile Robot Wheel
+Consensus Algorithm for two robots: with 20 different initial positions using Python Remote API, data stored for unicycle model for both robots in csv1/2
+Inputs: Local relative pose of robot i wrt robot j
+Outputs: Local control input of robot j
+
 """
 
 import math
