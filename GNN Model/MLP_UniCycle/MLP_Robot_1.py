@@ -1,5 +1,5 @@
 """
-Building MLP for robot1: 
+Code for MLP of  Robot 1: 
     
 *Input: Local Relative pose of robot2
 *Output: Local Control Input for robot1
@@ -132,7 +132,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Graph_Neural_Nets/MLP_Two_Robots_UniCycle/robot1.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/GNN Model/MLP_UniCycle/robot1.csv'
 train_dl, test_dl = prepare_data(path)
 print(len(train_dl.dataset), len(test_dl.dataset))
 # define the network
