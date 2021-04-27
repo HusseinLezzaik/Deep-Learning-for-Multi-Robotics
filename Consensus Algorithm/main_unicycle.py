@@ -105,6 +105,7 @@ class MinimalPublisher(Node):
         
         print(distance)
         
+        # Run Consensus Algorithm as long as they don't meet
         if distance > 1:
 
             
