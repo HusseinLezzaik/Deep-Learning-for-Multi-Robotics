@@ -181,44 +181,7 @@ class MinimalPublisher(Node):
         self.publisher_r2.publish(msgr2)
 
         distance = self.x2 - self.x1
-        print(distance)        
-
-        " Write Values to CSV1 and CSV2 "
-
-        if distance > 0.2:
-            if self.count % 2 == 0:
-    
-                with open('robot1.csv', 'a', newline='') as f:
-                    fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
-                    thewriter = csv.DictWriter(f, fieldnames=fieldnames)
-    
-                    if self.i1 == 0: # write header value once
-                        thewriter.writeheader()
-                        self.i1 = 1
-    
-                    if self.j1 != 0:    
-                        thewriter.writerow({'Data_X' : PoseL1[0][0], 'Data_Y' : PoseL1[1][0], 'Angle' : self.Theta1, 'Label_X' : U1L[0][0], 'Label_Y' : U1L[1][0]})
-    
-                    if self.j1 == 0: # skip first value because it's noisy
-                        self.j1 = 1
-    
-                with open('robot2.csv', 'a', newline='') as f:
-                    fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
-                    thewriter = csv.DictWriter(f, fieldnames=fieldnames)
-    
-                    if self.i2 == 0: # write header value once
-                        thewriter.writeheader()
-                        self.i2 = 1
-    
-                    if self.j2 != 0:
-                        thewriter.writerow({'Data_X' : PoseL2[0][0], 'Data_Y' : PoseL2[1][0], 'Angle' : self.Theta2, 'Label_X' : U2L[0][0], 'Label_Y' : U2L[1][0]})
-    
-                    if self.j2 == 0: # skip first value because it's noisy
-                        self.j2 = 1
-
-
-        self.count += 1 # Counter to skip values while saving to csv file
-                               
+        print(distance)                               
     
 def main(args=None):
     print("Program Started")
