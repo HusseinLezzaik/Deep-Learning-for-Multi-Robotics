@@ -1,7 +1,7 @@
 """
-Consensus Algorithm for two robots: with 20 different initial positions using Python Remote API, data stored for unicycle model for both robots in csv1/2
-Inputs: Local relative pose of robot i wrt robot j
-Outputs: Local control input of robot j
+Consensus Algorithm for two robots: with 20 different initial positions using Python Remote API, data stored for unicycle model for both robots in CSV files
+Inputs: Local relative pose of robot i wrt robot j (2x1)
+Outputs: Local control input of robot j (2x1)
 
 """
 
@@ -12,7 +12,6 @@ from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
 import csv
-import pandas as pd
 import sim
 import time 
 
