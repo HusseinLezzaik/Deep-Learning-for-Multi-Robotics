@@ -127,16 +127,18 @@ class MinimalPublisher(Node):
         relative_pose_1 = [ PoseL1[0][0], PoseL1[1][0] ] # tensor data for MLP model
         relative_pose_2 = [ PoseL2[0][0], PoseL2[1][0] ] # tensor data for MLP model
         
-        u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model)
-        u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model)
+        u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict local control input u1, tensor
+        u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict local control input u2, tensor
         
         #u1 = np.array([[ self.k*(self.x2-self.x1)],[self.k*(self.y2-self.y1)]]) # 2x1 
         #u2 = np.array([[ self.k*(self.x1-self.x2)],[self.k*(self.y1-self.y2)]]) # 2x1
 
         " Calculate V1/W1 and V2/W2 "
 
-        u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # to numpy array for calculation
-        u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # to numpy array for calculation
+        u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        print(u1_predicted)
+        print(u2_predicted)
         
         
         S1 = np.array([[self.v1], [self.w1]]) #2x1
@@ -193,7 +195,7 @@ class MinimalPublisher(Node):
         self.publisher_l2.publish(msgl2)
         self.publisher_r2.publish(msgr2)
 
-        distance = self.x2 - self.x1
+        #distance = self.x2 - self.x1
         #print(distance)                               
     
 def main(args=None):
