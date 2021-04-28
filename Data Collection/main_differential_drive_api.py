@@ -1,4 +1,5 @@
 """
+
 Consensus Algorithm for Differential Drive Model
 Inputs: Local relative pose of robot i wrt robot j (2x1)
 Outputs: Local control input of robot j (2x1)
@@ -196,7 +197,7 @@ class MinimalPublisher(Node):
             if self.count % 2 == 0:
 
                 with open('robot1.csv', 'a', newline='') as f:
-                    fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
+                    fieldnames = ['Data_X', 'Data_Y', 'U_LX', 'U_LY', 'VL', 'VR']
                     thewriter = csv.DictWriter(f, fieldnames=fieldnames)
 
                     if self.i1 == 0: # write header value once
@@ -204,13 +205,13 @@ class MinimalPublisher(Node):
                         self.i1 = 1
     
                     if self.j1 != 0:    
-                        thewriter.writerow({'Data_X' : PoseL1[0][0], 'Data_Y' : PoseL1[1][0], 'Angle' : self.Theta1, 'Label_X' : U1L[0][0], 'Label_Y' : U1L[1][0]})
+                        thewriter.writerow({'Data_X' : PoseL1[0][0], 'Data_Y' : PoseL1[1][0],  'U_LX' : U1L[0][0], 'U_LY' : U1L[1][0], 'VL' : VL1, 'VR' : VR1 })
     
                     if self.j1 == 0: # skip first value because it's noisy
                         self.j1 = 1
 
                 with open('robot2.csv', 'a', newline='') as f:
-                    fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
+                    fieldnames = ['Data_X', 'Data_Y', 'U_LX', 'U_LY', 'VL', 'VR']
                     thewriter = csv.DictWriter(f, fieldnames=fieldnames)
 
                     if self.i2 == 0: # write header value once
@@ -218,7 +219,7 @@ class MinimalPublisher(Node):
                         self.i2 = 1
 
                     if self.j2 != 0:
-                        thewriter.writerow({'Data_X' : PoseL2[0][0], 'Data_Y' : PoseL2[1][0], 'Angle' : self.Theta2, 'Label_X' : U2L[0][0], 'Label_Y' : U2L[1][0]})
+                        thewriter.writerow({'Data_X' : PoseL2[0][0], 'Data_Y' : PoseL2[1][0],  'U_LX' : U2L[0][0], 'U_LY' : U2L[1][0], 'VL' : VL2, 'VR' : VR2 })
 
                     if self.j2 == 0: # skip first value because it's noisy
                         self.j2 = 1

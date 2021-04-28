@@ -122,57 +122,26 @@ class MinimalPublisher(Node):
         PoseL2 = np.dot(R2, PoseG2) # Relative Pose of Robot 1 wrt Robot 2 in Local Frame of dimension 2x1 
 
                     
-        " Calculate Control inputs u1 and u2 using MLP "
+        " Calculate Speed inputs V1/2 using MLP "
         
         relative_pose_1 = [ PoseL1[0][0], PoseL1[1][0] ] # tensor data for MLP model
         relative_pose_2 = [ PoseL2[0][0], PoseL2[1][0] ] # tensor data for MLP model
         
-        u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict local control input u1, tensor
-        u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict local control input u2, tensor
-        
-        #u1 = np.array([[ self.k*(self.x2-self.x1)],[self.k*(self.y2-self.y1)]]) # 2x1 
-        #u2 = np.array([[ self.k*(self.x1-self.x2)],[self.k*(self.y1-self.y2)]]) # 2x1
-
-        " Calculate V1/W1 and V2/W2 "
-
-        u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        print(u1_predicted_np)
-        print(u2_predicted_np)
+        V1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict local control input u1, tensor
+        V2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict local control input u2, tensor
         
         
-        S1 = np.array([[self.v1], [self.w1]]) #2x1
-        G1 = np.array([[1,0], [0,1/L]]) #2x2
-        R1 = np.array([[math.cos(0),math.sin(0)],[-math.sin(0),math.cos(0)]]) #2x2
-        S1 = np.dot(np.dot(G1, R1), u1_predicted_np) #2x1
-
-   
-        S2 = np.array([[self.v2], [self.w2]]) #2x1
-        G2 = np.array([[1,0], [0,1/L]]) #2x2
-        R2 = np.array([[math.cos(0),math.sin(0)],[-math.sin(0),math.cos(0)]]) #2x2
-        S2 = np.dot(np.dot(G2, R2), u2_predicted_np) # 2x1
-
-        " Calculate VL1/VR1 and VL2/VR2 "
-
-        D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
-        Di = np.linalg.inv(D) #2x2
-
-        Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
-        Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2 
-        M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
-        M2 = np.array([[S2[0]], [S2[1]]]).reshape(2,1) #2x1
-        Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
-        Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
-
-        VL1 = float(Speed_L1[0])
-        VR1 = float(Speed_L1[1])
-        VL2 = float(Speed_L2[0])
-        VR2 = float(Speed_L2[1])
-
-        " Transform Control Input U1 from Global to Local Reference Frame "
+        V1_predicted_np = np.array([[ V1_predicted[0][0] ], [ V1_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        V2_predicted_np = np.array([[ V2_predicted[0][0] ], [ V2_predicted[0][1] ]]) # from tensor to numpy array for calculation
         
-        #U1L = np.dot(R1, self.U1) # Control input of Robot 1 in Local Frame of dimension 2x1
-        #U2L = np.dot(R2, self.U2) # Control input of Robot 2 in Local Frame of dimension 2x1
+        print(V1_predicted_np)
+        print(V2_predicted_np)
+        
+
+        VL1 = float(V1_predicted[0][0])
+        VR1 = float(V1_predicted[0][1])
+        VL2 = float(V2_predicted[0][0])
+        VR2 = float(V2_predicted[0][1])
 
 
         " Publish Speed Commands to Robot 1"
