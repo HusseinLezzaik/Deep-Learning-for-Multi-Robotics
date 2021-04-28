@@ -120,8 +120,9 @@ class MinimalPublisher(Node):
             G1 = np.array([[1,0], [0,1/L]]) #2x2
             R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
             S1 = np.dot(np.dot(G1, R1), u1) #2x1
+            print(S1)
 
-   
+           
             S2 = np.array([[self.v2], [self.w2]]) #2x1
             G2 = np.array([[1,0], [0,1/L]]) #2x2
             R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2

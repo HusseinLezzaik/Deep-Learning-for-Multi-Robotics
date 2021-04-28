@@ -98,24 +98,57 @@ class MinimalPublisher(Node):
             self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2) 
         
         
-                    
-        " Calculate Control inputs u1 and u2 "
+        " Calculate the Pose of Robot 2 w.r.t Robot 1 and Control input U1 "
+
+        self.X1 = self.x2 - self.x1 # Relative Pose of Robot 2 wrt Robot 1 in Global frame for X coordinate of dimension 1x1
+        self.Y1 = self.y2 -self.y1 # Relative Pose of Robot 2 wrt Robot 1 in Global frame for Y coordinate of dimension 1x1
+        #self.U1 = u1 # Control input U1 in Global frame for robot 1 of dimension 2x1
         
-        u1 = np.array([[ self.k*(self.x2-self.x1)],[self.k*(self.y2-self.y1)]]) # 2x1 
-        u2 = np.array([[ self.k*(self.x1-self.x2)],[self.k*(self.y1-self.y2)]]) # 2x1
+
+        " Calculate the Pose of Robot 1 w.r.t Robot 2 and Control input U2 "
+
+        self.X2 = self.x1 - self.x2 # Relative Pose of Robot 1 wrt Robot 2 in Global frame for X coordinate of dimension 1x1
+        self.Y2 = self.y1 -self.y2 # Relative Pose of Robot 1 wrt Robot 2 in Global frame for Y coordinate of dimension 1x1
+        #self.U2 = u2 # Control input U2 in Global frame for robot 2 of dimension 2x1
+
+        " Transform Relative Pose from Global to Local Reference Frame "
+        
+        R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
+        R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
+        
+        PoseG1 = np.array([[self.X1],[self.Y1]]) # Relative Pose of Robot 2 wrt Robot 1 in Global Frame of dimension 2x1
+        PoseL1 = np.dot(R1, PoseG1) # Relative Pose of Robot 2 wrt Robot 2 in Local Frame of dimension 2x1 
+        PoseG2 = np.array([[self.X2],[self.Y2]]) # Relative Pose of Robot 1 wrt Robot 1 in Global Frame of dimension 2x1
+        PoseL2 = np.dot(R2, PoseG2) # Relative Pose of Robot 1 wrt Robot 2 in Local Frame of dimension 2x1 
+
+                    
+        " Calculate Control inputs u1 and u2 using MLP "
+        
+        relative_pose_1 = [ PoseL1[0][0], PoseL1[1][0] ] # tensor data for MLP model
+        relative_pose_2 = [ PoseL2[0][0], PoseL2[1][0] ] # tensor data for MLP model
+        
+        u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model)
+        u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model)
+        
+        #u1 = np.array([[ self.k*(self.x2-self.x1)],[self.k*(self.y2-self.y1)]]) # 2x1 
+        #u2 = np.array([[ self.k*(self.x1-self.x2)],[self.k*(self.y1-self.y2)]]) # 2x1
 
         " Calculate V1/W1 and V2/W2 "
 
+        u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # to numpy array for calculation
+        u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # to numpy array for calculation
+        
+        
         S1 = np.array([[self.v1], [self.w1]]) #2x1
         G1 = np.array([[1,0], [0,1/L]]) #2x2
         R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
-        S1 = np.dot(np.dot(G1, R1), u1) #2x1
+        S1 = np.dot(np.dot(G1, R1), u1_predicted_np) #2x1
 
    
         S2 = np.array([[self.v2], [self.w2]]) #2x1
         G2 = np.array([[1,0], [0,1/L]]) #2x2
         R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
-        S2 = np.dot(np.dot(G2, R2), u2) # 2x1
+        S2 = np.dot(np.dot(G2, R2), u2_predicted_np) # 2x1
 
         " Calculate VL1/VR1 and VL2/VR2 "
 
@@ -134,31 +167,11 @@ class MinimalPublisher(Node):
         VL2 = float(Speed_L2[0])
         VR2 = float(Speed_L2[1])
 
-
-        " Calculate the Pose of Robot 2 w.r.t Robot 1 and Control input U1 "
-
-        self.X1 = self.x2 - self.x1 # Relative Pose of Robot 2 wrt Robot 1 in Global frame for X coordinate of dimension 1x1
-        self.Y1 = self.y2 -self.y1 # Relative Pose of Robot 2 wrt Robot 1 in Global frame for Y coordinate of dimension 1x1
-        self.U1 = u1 # Control input U1 in Global frame for robot 1 of dimension 2x1
-
-
-        " Calculate the Pose of Robot 1 w.r.t Robot 2 and Control input U2 "
-
-        self.X2 = self.x1 - self.x2 # Relative Pose of Robot 1 wrt Robot 2 in Global frame for X coordinate of dimension 1x1
-        self.Y2 = self.y1 -self.y2 # Relative Pose of Robot 1 wrt Robot 2 in Global frame for Y coordinate of dimension 1x1
-        self.U2 = u2 # Control input U2 in Global frame for robot 2 of dimension 2x1
-
         " Transform Control Input U1 from Global to Local Reference Frame "
         
-        U1L = np.dot(R1, self.U1) # Control input of Robot 1 in Local Frame of dimension 2x1
-        U2L = np.dot(R2, self.U2) # Control input of Robot 2 in Local Frame of dimension 2x1
+        #U1L = np.dot(R1, self.U1) # Control input of Robot 1 in Local Frame of dimension 2x1
+        #U2L = np.dot(R2, self.U2) # Control input of Robot 2 in Local Frame of dimension 2x1
 
-        " Transform Relative Pose from Global to Local Reference Frame "
-        
-        PoseG1 = np.array([[self.X1],[self.Y1]]) # Relative Pose of Robot 2 wrt Robot 1 in Global Frame of dimension 2x1
-        PoseL1 = np.dot(R1, PoseG1) # Relative Pose of Robot 2 wrt Robot 2 in Local Frame of dimension 2x1 
-        PoseG2 = np.array([[self.X2],[self.Y2]]) # Relative Pose of Robot 1 wrt Robot 1 in Global Frame of dimension 2x1
-        PoseL2 = np.dot(R2, PoseG2) # Relative Pose of Robot 1 wrt Robot 2 in Local Frame of dimension 2x1 
 
         " Publish Speed Commands to Robot 1"
 
@@ -181,7 +194,7 @@ class MinimalPublisher(Node):
         self.publisher_r2.publish(msgr2)
 
         distance = self.x2 - self.x1
-        print(distance)                               
+        #print(distance)                               
     
 def main(args=None):
     print("Program Started")
