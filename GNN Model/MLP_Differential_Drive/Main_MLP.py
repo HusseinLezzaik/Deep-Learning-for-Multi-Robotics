@@ -1,7 +1,6 @@
 """
-MLP model for Two Mobile Robots
-
-@author: hussein
+Consensus for Two Mobile Robots using Differential Drive Model, using MLP model that transforms relative pose of each robot
+to control speed
 """
 import torch
 import MLP_Model

@@ -2,7 +2,7 @@
 Code for building and training MLP model of Robot 1: 
     
 *Input: Local Relative pose of robot2
-*Output: Local Control Input for robot1
+*Output: Control Speeds VL/VR for robot 1
 """
 
 # PyTorch MLP for Regression
