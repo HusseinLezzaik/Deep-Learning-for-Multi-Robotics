@@ -1,5 +1,5 @@
 """
-Code for building and training MLP model of Robot 1: 
+Code for building and training MLP model of Robot 1 (same case for robot 2 by analogy) 
     
 *Input: Local Relative pose of robot2
 *Output: Local Control Input for robot1

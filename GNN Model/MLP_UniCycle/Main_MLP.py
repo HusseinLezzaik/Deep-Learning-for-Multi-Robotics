@@ -1,7 +1,7 @@
 """
-MLP model for Two Mobile Robots
+Consensus algorithm using MLP model for Two Mobile Robots, using the Unicycle model.
+i.e transforming relative pose to local control input for each robot using MLP
 
-@author: hussein
 """
 import torch
 import MLP_Model
