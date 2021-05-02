@@ -1,15 +1,37 @@
-# Multi agent Path Planning
-This code contains my 6-month work as a Machine Learning intern at France's National Research Institute in Computer Science @Inria.
+# Multi Agent Path Planning using GNN & DRL
 
-The main idea of my work is to develope a machine learning model powered by Graph Neural Networks and merged with Deep Reinforcement Learning algorithms 
+This repository contains the code and models necessary to replicate the results of our work:
+
+The main idea of our work is to develope a machine learning model powered by Graph Neural Networks and merged with Deep Reinforcement Learning algorithms 
 to build a multi-agent path planning algorithm that generalizes to different network topologies, while mainting fast communication and efficient convergence.
 
-We use CoppeliaSim as our simulator to see the performance of our algorithms on mobile robots.
+## Getting started
+* Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. *
 
-All code is written in Python3, and we use Ros2-Interface to communicate with CoppeliaSim.
+1.  Clone our repo: `git clone https://github.com/HusseinLezzaik/Multi-agent-path-planning.git`
 
- 
-## Pre-requisites 
+2.  Install dependencies:
+    ```
+    conda create -n multi-agent python=3.7
+    conda activate multi-agent
+    pip install -r requirements.txt
+    ```
+    
+3. Install [CoppeliaSim edu](https://www.coppeliarobotics.com/downloads).
+
+4. Install [ROS2 Foxy](https://docs.ros.org/en/foxy/Installation.html) and make sure that the [ROS2 Interface](https://www.coppeliarobotics.com/helpFiles/en/ros2Interface.htm) works.
+
+
+
+
+
+
+
+
+
+
+
+
 Please make sure to have the following installed before using the main.py code:
 * NumPy 
 * Pandas
@@ -18,7 +40,9 @@ Please make sure to have the following installed before using the main.py code:
 * ROS2-Interface
 * CoppeliaSim 
 * Remote Python API
+We use CoppeliaSim as our simulator to see the performance of our algorithms on mobile robots.
 
+All code is written in Python3, and we use Ros2-Interface to communicate with CoppeliaSim.
 
 ## Simulation in CoppeliaSim 
 We test our algorithms on two bubblerob's from CoppeliaSim, however our work applies to all kinds of mobile robots that just need some initial parameter tuning.
