@@ -49,5 +49,5 @@ We would like to thank Claudio Pacchierotti for comments and discussions.
 
 ## Contact
 If you have any question, or if anything of the above is not working, don't hestitate to contact us! We are more than happy to help!
-* Hussein Lezzaik (hussein dot lezzaik at irisa dot fr)
-* Gennaro Notomista (gennaro dot notomista at irisa dot fr)
+* [Hussein Lezzaik](https://www.husseinlezzaik.com/) (hussein dot lezzaik at irisa dot fr)
+* [Gennaro Notomista](https://www.gnotomista.com/) (gennaro dot notomista at irisa dot fr)
