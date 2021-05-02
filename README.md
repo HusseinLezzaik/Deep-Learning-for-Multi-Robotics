@@ -45,7 +45,7 @@ Using Python's remote API for CoppeliaSim, we initialized the positions randomly
 and we stop collecting data for d=0.2 ie when they meet.
 
 ## Acknowledgement
-We would like to thank Claudio Pacchierotti for comments and discussions.
+We would like to thank [Claudio Pacchierotti](https://team.inria.fr/rainbow/team/claudio-pacchierotti/) for comments and discussions.
 
 ## Contact
 If you have any question, or if anything of the above is not working, don't hestitate to contact us! We are more than happy to help!
