@@ -62,7 +62,49 @@ class MinimalPublisher(Node):
         self.w2 = 2
         self.vL2 = 2 
         self.vR2 = 2
-                
+        
+        " Mobile Robot 3 Parameters "
+        self.x3 = 13
+        self.y3 = 14
+        self.Theta3 = 0
+        self.v3 = 3
+        self.w3 = 3
+        self.vL3 = 2
+        self.vR3 = 2                
+        
+        " Mobile Robot 4 Parameters "
+        self.x4 = 14
+        self.y4 = 15
+        self.Theta4 = 0
+        self.v4 = 4
+        self.w4 = 4
+        self.vL4 = 2
+        self.vR4 = 2        
+        
+        " Mobile Robot 5 Parameters "
+        self.x5 = 15
+        self.y5 = 16
+        self.Theta5 = 0
+        self.v5 = 5
+        self.w5 = 5
+        self.vL5 = 2
+        self.vR5 = 2
+
+        " Mobile Robot 6 Parameters "
+        self.x6 = 16
+        self.y6 = 17
+        self.Theta6 = 0
+        self.v6 = 6
+        self.w6 = 6
+        self.vL6 = 2
+        self.vR6 = 2            
+        
+        
+        
+        
+        
+        
+        
         
     def listener_callback(self, msg):
 
