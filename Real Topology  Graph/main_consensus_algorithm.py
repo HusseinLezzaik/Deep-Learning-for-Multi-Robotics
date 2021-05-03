@@ -62,14 +62,7 @@ class MinimalPublisher(Node):
         self.w2 = 2
         self.vL2 = 2 
         self.vR2 = 2
-        
-        " Counter Variables "
-        self.i1 = 0
-        self.i2 = 0
-        self.count = 2
-        self.j1 = 0
-        self.j2 = 0
-        
+                
         
     def listener_callback(self, msg):
 
