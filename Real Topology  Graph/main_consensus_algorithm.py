@@ -101,11 +101,6 @@ class MinimalPublisher(Node):
         
         
         
-        
-        
-        
-        
-        
     def listener_callback(self, msg):
 
         
@@ -129,6 +124,45 @@ class MinimalPublisher(Node):
             self.wr2 = msg.transforms[0].transform.rotation.w
             self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
             
+        if  msg.transforms[0].child_frame_id == 'robot3' :
+            
+            self.x3 = msg.transforms[0].transform.translation.x
+            self.y3 = msg.transforms[0].transform.translation.y
+            self.xr3 = msg.transforms[0].transform.rotation.x
+            self.yr3 = msg.transforms[0].transform.rotation.y
+            self.zr3 = msg.transforms[0].transform.rotation.z
+            self.wr3 = msg.transforms[0].transform.rotation.w
+            self.Theta3 = euler_from_quaternion(self.xr3,self.yr3,self.zr3,self.wr3)
+
+        if  msg.transforms[0].child_frame_id == 'robot4' :
+            
+            self.x4 = msg.transforms[0].transform.translation.x
+            self.y4 = msg.transforms[0].transform.translation.y
+            self.xr4 = msg.transforms[0].transform.rotation.x
+            self.yr4 = msg.transforms[0].transform.rotation.y
+            self.zr4 = msg.transforms[0].transform.rotation.z
+            self.wr4 = msg.transforms[0].transform.rotation.w
+            self.Theta4 = euler_from_quaternion(self.xr4,self.yr4,self.zr4,self.wr4)        
+            
+        if  msg.transforms[0].child_frame_id == 'robot5' :
+            
+            self.x5 = msg.transforms[0].transform.translation.x
+            self.y5 = msg.transforms[0].transform.translation.y
+            self.xr5 = msg.transforms[0].transform.rotation.x
+            self.yr5 = msg.transforms[0].transform.rotation.y
+            self.zr5 = msg.transforms[0].transform.rotation.z
+            self.wr5 = msg.transforms[0].transform.rotation.w
+            self.Theta5 = euler_from_quaternion(self.xr5,self.yr5,self.zr5,self.wr5)               
+            
+        if  msg.transforms[0].child_frame_id == 'robot6' :
+            
+            self.x6 = msg.transforms[0].transform.translation.x
+            self.y6 = msg.transforms[0].transform.translation.y
+            self.xr6 = msg.transforms[0].transform.rotation.x
+            self.yr6 = msg.transforms[0].transform.rotation.y
+            self.zr6 = msg.transforms[0].transform.rotation.z
+            self.wr6 = msg.transforms[0].transform.rotation.w
+            self.Theta6 = euler_from_quaternion(self.xr6,self.yr6,self.zr6,self.wr6)             
                     
         " Calculate Control inputs u1 and u2 "
             
