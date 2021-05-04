@@ -13,6 +13,7 @@ from std_msgs.msg import Float32
 k = 1 # Control Gain
 L = 1
 d = 0.5
+A = np.ones(6) - np.identity(6) # Adjancency Matrix
 
 def euler_from_quaternion(x, y, z, w):
         
@@ -21,6 +22,8 @@ def euler_from_quaternion(x, y, z, w):
      yaw_z = math.atan2(t3, t4)
      
      return yaw_z # in radians
+ 
+    
 
 
 class MinimalPublisher(Node):
@@ -98,8 +101,7 @@ class MinimalPublisher(Node):
         self.w6 = 6
         self.vL6 = 2
         self.vR6 = 2            
-        
-        
+                
         
     def listener_callback(self, msg):
 
@@ -218,8 +220,7 @@ class MinimalPublisher(Node):
         self.publisher_l2.publish(msgl2)
         self.publisher_r2.publish(msgr2)
             
-            
-              
+                          
        
 def main(args=None):
     rclpy.init(args=args)
