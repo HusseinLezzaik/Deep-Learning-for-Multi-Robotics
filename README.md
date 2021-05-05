@@ -19,7 +19,7 @@ The major content of our repo are:
 
 2.  Install dependencies:
     ```
-    conda create -n multi-agent python=3.7
+    conda create -n multi-agent python=3.8
     conda activate multi-agent
     pip install -r requirements.txt
     ```
