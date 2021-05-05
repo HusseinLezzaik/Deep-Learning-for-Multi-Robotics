@@ -174,19 +174,18 @@ class MinimalPublisher(Node):
         for i in range(1,7):
             uxi = 0
             uyi = 0
-        
-            
+                    
         for i in range(1,7):
             for j in range(1,7):
                 uxi += -(A[i-1][j-1])*(self.xi-self.xj) # 1x1 each
                 uyi += -(A[i-1][j-1])*(self.yi-self.yj) # 1x1 each
             
-            
-            
+                
         u1 = np.array([[ k*(self.x2-self.x1)],[k*(self.y2-self.y1)]]) # 2x1 
         u2 = np.array([[ k*(self.x1-self.x2)],[k*(self.y1-self.y2)]]) # 2x1
         
-        " Calculate V1/W1 and V2/W2 "
+        
+        " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
             
         S1 = np.array([[self.v1], [self.w1]]) #2x1
         G1 = np.array([[1,0], [0,1/L]]) #2x2
@@ -197,19 +196,26 @@ class MinimalPublisher(Node):
         G2 = np.array([[1,0], [0,1/L]]) #2x2
         R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
         S2 = np.dot(np.dot(G2, R2), u2) # 2x1
-            
-        " Calculate VL1/VR1 and VL2/VR2 "
+        
+        
+        " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
             
         D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
         Di = np.linalg.inv(D) #2x2
         
         Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
         Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2 
+        
+        
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
         M2 = np.array([[S2[0]], [S2[1]]]).reshape(2,1) #2x1
+        
+        
         Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
         Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
-            
+        
+        
+        
         VL1 = float(Speed_L1[0])
         VR1 = float(Speed_L1[1])
         VL2 = float(Speed_L2[0])
@@ -225,7 +231,8 @@ class MinimalPublisher(Node):
         self.publisher_l1.publish(msgl1)
         self.publisher_r1.publish(msgr1)
         #self.get_logger().info('Publishing R1: "%s"' % msgr1.data)
-                 
+        
+        
         " Publish Speed Commands to Robot 2 "
         
         msgl2 = Float32()
@@ -234,13 +241,50 @@ class MinimalPublisher(Node):
         msgr2.data = VR2
         self.publisher_l2.publish(msgl2)
         self.publisher_r2.publish(msgr2)
-            
-                          
-       
+
+        " Publish Speed Commands to Robot 3 "
+        
+        #msgl3 = Float32()
+        #msgr3 = Float32()
+        #msgl3.data = VL3
+        #msgr3.data = VR3
+        #self.publisher_l3.publish(msgl3)
+        #self.publisher_r3.publish(msgr3)
+        
+        " Publish Speed Commands to Robot 4 "
+        
+        #msgl4 = Float32()
+        #msgr4 = Float32()
+        #msgl4.data = VL4
+        #msgr4.data = VR4
+        #self.publisher_l4.publish(msgl4)
+        #self.publisher_r4.publish(msgr4)        
+        
+        
+        " Publish Speed Commands to Robot 5 "
+        
+        #msgl5 = Float32()
+        #msgr5 = Float32()
+        #msgl5.data = VL5
+        #msgr5.data = VR5
+        #self.publisher_l5.publish(msgl5)
+        #self.publisher_r5.publish(msgr5)        
+        
+        
+        " Publish Speed Commands to Robot 6 "
+        
+        #msgl6 = Float32()
+        #msgr6 = Float32()
+        #msgl6.data = VL6
+        #msgr6.data = VR6
+        #self.publisher_l6.publish(msgl6)
+        #self.publisher_r6.publish(msgr6)        
+        
+        
+
 def main(args=None):
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
-    
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
