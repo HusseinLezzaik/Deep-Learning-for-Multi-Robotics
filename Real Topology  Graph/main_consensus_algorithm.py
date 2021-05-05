@@ -11,9 +11,11 @@ from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
 
 k = 1 # Control Gain
-L = 1
-d = 0.5
+L = 1 # parameter of robot
+d = 0.5 # parameter of robot
 A = np.ones(6) - np.identity(6) # Adjancency Matrix
+
+
 
 def euler_from_quaternion(x, y, z, w):
         
@@ -165,8 +167,24 @@ class MinimalPublisher(Node):
             self.zr6 = msg.transforms[0].transform.rotation.z
             self.wr6 = msg.transforms[0].transform.rotation.w
             self.Theta6 = euler_from_quaternion(self.xr6,self.yr6,self.zr6,self.wr6)             
-                    
-        " Calculate Control inputs u1 and u2 "
+           
+        
+        " Calculate Control inputs u1, u2, u3, u4, u5, u6 "
+        
+        for i in range(1,7):
+            uxi = 0
+            uyi = 0
+        
+            
+        for i in range(1,7):
+            for j in range(1,7):
+                uxi += -(A[i-1][j-1])*(self.xi-self.xj)
+                uyi += -(A[i-1][j-1])*(self.yi-self.yj)
+            
+            
+            
+            
+            
             
         u1 = np.array([[ k*(self.x2-self.x1)],[k*(self.y2-self.y1)]]) # 2x1 
         u2 = np.array([[ k*(self.x1-self.x2)],[k*(self.y1-self.y2)]]) # 2x1
