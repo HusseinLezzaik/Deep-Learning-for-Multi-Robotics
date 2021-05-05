@@ -253,7 +253,14 @@ class MinimalPublisher(Node):
         VR1 = float(Speed_L1[1])
         VL2 = float(Speed_L2[0])
         VR2 = float(Speed_L2[1])
-        
+        #VL3 = float(Speed_L3[0])
+        #VR3 = float(Speed_L3[1])
+        #VL4 = float(Speed_L4[0])
+        #VR4 = float(Speed_L4[1])
+        #VL5 = float(Speed_L5[0])
+        #VR5 = float(Speed_L5[1])        
+        #VL6 = float(Speed_L6[0])
+        #VR6 = float(Speed_L6[1])
         
         " Publish Speed Commands to Robot 1 "
         
