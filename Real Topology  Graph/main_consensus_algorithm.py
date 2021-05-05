@@ -243,7 +243,10 @@ class MinimalPublisher(Node):
         
         Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
         Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
-        
+        #Speed_L3 = np.dot(Di, M3) # 2x1 (VL3, VR3)
+        #Speed_L4 = np.dot(Di, M4) # 2x1 (VL4, VR4)
+        #Speed_L5 = np.dot(Di, M5) # 2x1 (VL5, VR5)
+        #Speed_L6 = np.dot(Di, M6) # 2x1 (VL6, VR6)
         
         
         VL1 = float(Speed_L1[0])
