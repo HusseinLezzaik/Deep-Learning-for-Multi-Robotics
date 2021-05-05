@@ -228,11 +228,18 @@ class MinimalPublisher(Node):
         
         Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
         Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2 
+        #Speed_L3 = np.array([[self.vL3], [self.vR3]]) # Vector 2x1 for Speed of Robot 3
+        #Speed_L4 = np.array([[self.vL4], [self.vR4]]) # Vector 2x1 for Speed of Robot 4
+        #Speed_L5 = np.array([[self.vL5], [self.vR5]]) # Vector 2x1 for Speed of Robot 5
+        #Speed_L6 = np.array([[self.vL6], [self.vR6]]) # Vector 2x1 for Speed of Robot 6
         
         
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
-        M2 = np.array([[S2[0]], [S2[1]]]).reshape(2,1) #2x1
-        
+        M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
+        #M3 = np.array([[S3[0]],[S3[1]]]).reshape(2,1) #2x1
+        #M4 = np.array([[S4[0]],[S4[1]]]).reshape(2,1) #2x1
+        #M5 = np.array([[S5[0]],[S5[1]]]).reshape(2,1) #2x1
+        #M6 = np.array([[S6[0]],[S6[1]]]).reshape(2,1) #2x1
         
         Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
         Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
