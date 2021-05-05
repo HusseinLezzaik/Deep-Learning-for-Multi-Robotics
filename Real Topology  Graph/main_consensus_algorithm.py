@@ -11,8 +11,8 @@ from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
 
 k = 1 # Control Gain
-L = 1 # parameter of robot
-d = 0.5 # parameter of robot
+L = 1 # Parameter of robot
+d = 0.5 # Parameter of robot
 A = np.ones(6) - np.identity(6) # Adjancency Matrix
 
 
@@ -178,11 +178,8 @@ class MinimalPublisher(Node):
             
         for i in range(1,7):
             for j in range(1,7):
-                uxi += -(A[i-1][j-1])*(self.xi-self.xj)
-                uyi += -(A[i-1][j-1])*(self.yi-self.yj)
-            
-            
-            
+                uxi += -(A[i-1][j-1])*(self.xi-self.xj) # 1x1 each
+                uyi += -(A[i-1][j-1])*(self.yi-self.yj) # 1x1 each
             
             
             
@@ -219,7 +216,7 @@ class MinimalPublisher(Node):
         VR2 = float(Speed_L2[1])
         
         
-        " Speed Commands to Robot 1 "
+        " Publish Speed Commands to Robot 1 "
         
         msgl1 = Float32()    
         msgr1 = Float32()
@@ -229,7 +226,7 @@ class MinimalPublisher(Node):
         self.publisher_r1.publish(msgr1)
         #self.get_logger().info('Publishing R1: "%s"' % msgr1.data)
                  
-        " Speed Commands to Robot 2 "
+        " Publish Speed Commands to Robot 2 "
         
         msgl2 = Float32()
         msgr2 = Float32()
