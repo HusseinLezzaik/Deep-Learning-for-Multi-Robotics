@@ -183,7 +183,10 @@ class MinimalPublisher(Node):
                 
         u1 = np.array([[ k*(self.x2-self.x1)],[k*(self.y2-self.y1)]]) # 2x1 
         u2 = np.array([[ k*(self.x1-self.x2)],[k*(self.y1-self.y2)]]) # 2x1
-        
+        # u3 =
+        # u4 = 
+        # u5 = 
+        # u6 = 
         
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
             
@@ -196,6 +199,26 @@ class MinimalPublisher(Node):
         G2 = np.array([[1,0], [0,1/L]]) #2x2
         R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
         S2 = np.dot(np.dot(G2, R2), u2) # 2x1
+        
+        #S3 = np.array([[self.v3], [self.w3]]) #2x1
+        #G3 = np.array([[1,0], [0,1/L]]) #2x2
+        #R3 = np.array([[math.cos(self.Theta3),math.sin(self.Theta3)],[-math.sin(self.Theta3),math.cos(self.Theta3)]]) #2x2
+        #S3 = np.dot(np.dot(G3, R3), u3) #2x1        
+        
+        #S4 = np.array([[self.v4], [self.w4]]) #2x1
+        #G4 = np.array([[1,0], [0,1/L]]) #2x2
+        #R4 = np.array([[math.cos(self.Theta4),math.sin(self.Theta4)],[-math.sin(self.Theta4),math.cos(self.Theta4)]]) #2x2
+        #S4 = np.dot(np.dot(G4, R4), u4) #2x1        
+        
+        #S5 = np.array([[self.v5], [self.w5]]) #2x1
+        #G5 = np.array([[1,0], [0,1/L]]) #2x2
+        #R5 = np.array([[math.cos(self.Theta5),math.sin(self.Theta5)],[-math.sin(self.Theta5),math.cos(self.Theta5)]]) #2x2
+        #S5 = np.dot(np.dot(G5, R5), u5) #2x1
+        
+        #S6 = np.array([[self.v6], [self.w6]]) #2x1
+        #G6 = np.array([[1,0], [0,1/L]]) #2x2
+        #R6 = np.array([[math.cos(self.Theta6),math.sin(self.Theta6)],[-math.sin(self.Theta6),math.cos(self.Theta6)]]) #2x2
+        #S6 = np.dot(np.dot(G6, R6), u6) #2x1        
         
         
         " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
