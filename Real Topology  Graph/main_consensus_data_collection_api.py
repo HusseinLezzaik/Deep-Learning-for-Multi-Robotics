@@ -1,8 +1,8 @@
 """
 
-Consensus Algorithm for Differential Drive Model
-Inputs: Local relative pose of robot i wrt robot j (2x1)
-Outputs: Local control input of robot j (2x1)
+Data Collection for Consensus Algorithm of Six Robots
+
+Data Collected: Global Pose of each Robot
 
 """
 
