@@ -2,7 +2,7 @@
 
 Data Collection for Consensus Algorithm of Six Robots
 
-Data Collected: Global Pose of each Robot
+Data Collected: Global Pose of each Robot: X, Y, Theta
 
 """
 
