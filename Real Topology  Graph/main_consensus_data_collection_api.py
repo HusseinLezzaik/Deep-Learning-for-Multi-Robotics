@@ -18,7 +18,7 @@ import time
 
 L = 1
 d = 0.5
-distance = 6
+distance = 2
 
 A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
 
@@ -65,10 +65,8 @@ class MinimalPublisher(Node):
 
         " Counter Variables "
         self.i1 = 0
-        self.i2 = 0
         self.count = 2
         self.j1 = 0
-        self.j2 = 0
         self.loop = 0        
         
         "Parameters "
@@ -192,12 +190,13 @@ class MinimalPublisher(Node):
             self.Theta6 = euler_from_quaternion(self.xr6,self.yr6,self.zr6,self.wr6)          
         
                 
-        distance = abs(self.x2 - self.x1) + abs(self.y2 - self.y1)     
+        distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
         
         print(distance)
         
         # Run Consensus Algorithm as long as they don't meet
         if distance > 1:
+            
 
             " Calculate Control inputs u1, u2, u3, u4, u5, u6 "
         
