@@ -195,6 +195,7 @@ class MinimalPublisher(Node):
             print(distance)
         
             # Run Consensus Algorithm as long as they don't meet
+            
             if distance > 2.2:
                         
                 " Calculate Control inputs u1, u2, u3, u4, u5, u6 "
@@ -453,7 +454,7 @@ class MinimalPublisher(Node):
                 # Start Simulation
                 sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
             
-                time.sleep(3)
+                time.sleep(10)
             
         if self.scene == scenes.shape[0]-1:
             # Stop Simulation 
