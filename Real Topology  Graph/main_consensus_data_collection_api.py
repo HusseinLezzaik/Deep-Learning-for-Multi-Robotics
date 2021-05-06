@@ -374,7 +374,7 @@ class MinimalPublisher(Node):
     
                         if self.j1 == 0: # skip first value because it's noisy
                             self.j1 = 1
-                self.count += 1 # Counter to skip values while saving to csv file 
+                self.count += 2 # Counter to skip values while saving to csv file 
     
 def main(args=None):
     print("Program Started")
