@@ -354,7 +354,27 @@ class MinimalPublisher(Node):
                 self.publisher_l6.publish(msgl6)
                 self.publisher_r6.publish(msgr6)
 
-                                                
+              
+                " Write Values to CSV1 and CSV2 "
+                if self.count % 2 == 0:
+
+                    with open('dataset.csv', 'a', newline='') as f:
+                        fieldnames = ['X-1', 'Y-1', 'Theta-1', 'X-2', 'Y-2', 'Theta-2', 'X-3', 'Y-3', 'Theta-3', 'X-4', 'Y-4', 'Theta-4', 'X-5', 
+                                  'Y-5', 'Theta-5', 'X-6', 'Y-6', 'Theta-6' ]
+                        thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+
+                        if self.i1 == 0: # write header value once
+                            thewriter.writeheader()
+                            self.i1 = 1
+    
+                        if self.j1 != 0:    
+                            thewriter.writerow({'X-1' : self.x1, 'Y-1' : self.y1, 'Theta-1' : self.Theta1, 'X-2' : self.x2, 'Y-2' : self.y2, 'Theta-2' : self.Theta2, 
+                                            'X-3' : self.x3, 'Y-3' : self.y3, 'Theta-3' : self.Theta3, 'X-4' : self.x4, 'Y-4' : self.y4, 'Theta-4' : self.Theta4,
+                                            'X-5' : self.x5, 'Y-5' : self.y5, 'Theta-5' : self.Theta5, 'X-6' : self.x6, 'Y-6' : self.y6, 'Theta-6' : self.Theta6})
+    
+                        if self.j1 == 0: # skip first value because it's noisy
+                            self.j1 = 1
+                self.count += 1 # Counter to skip values while saving to csv file 
     
 def main(args=None):
     print("Program Started")
