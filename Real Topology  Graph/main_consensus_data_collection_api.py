@@ -20,6 +20,11 @@ L = 1
 d = 0.5
 distance = 6
 
+A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
+
+ux = np.zeros((6,1)) # 6x1 controller vector
+uy = np.zeros((6,1)) # 6x1 controller vector
+
 " Connecting to V-Rep "
 
 sim.simxFinish(-1) # just in case, close all opened connections
@@ -44,6 +49,7 @@ class MinimalPublisher(Node):
         self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1', 10) #Change according to topic in child script,String to Float32
         self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
         self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
+        
         self.subscription = self.create_subscription(
             TFMessage,
             '/tf',
