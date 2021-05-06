@@ -376,6 +376,93 @@ class MinimalPublisher(Node):
                             self.j1 = 1
                 self.count += 2 # Counter to skip values while saving to csv file 
     
+            else:
+
+                print(" Simulation ", self.scene)
+            
+            
+            
+                # Stop Simulation
+                sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
+    
+                # Retrieve some handles:
+                    
+                ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'robot1', sim.simx_opmode_oneshot_wait)
+            
+                if (not ErrLocM1==sim.simx_return_ok):
+                    pass
+                
+                ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'robot2#0', sim.simx_opmode_oneshot_wait)
+            
+                if (not ErrLocM2==sim.simx_return_ok):
+                    pass           
+    
+                ErrLoc1,Loc1 =sim.simxGetObjectPosition(clientID, LocM1, -1, sim.simx_opmode_oneshot_wait)
+            
+                if (not ErrLoc1==sim.simx_return_ok):
+                    pass            
+            
+                ErrLoc2,Loc2 =sim.simxGetObjectPosition(clientID, LocM2, -1, sim.simx_opmode_oneshot_wait)
+
+                if (not ErrLoc2==sim.simx_return_ok):
+                    pass     
+    
+                ErrLocO1,OriRobo1 =sim.simxGetObjectOrientation(clientID,LocM1, -1, sim.simx_opmode_oneshot_wait)
+            
+                if (not ErrLocO1==sim.simx_return_ok):
+                    pass             
+            
+                ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
+
+                if (not ErrLocO2==sim.simx_return_ok):
+                    pass     
+    
+                OriRobo1[2] = scenes[self.scene][2]
+                OriRobo2[2] = scenes[self.scene][5]
+    
+    
+                # Set Robot Orientation
+    
+                sim.simxSetObjectOrientation(clientID, LocM1, -1, OriRobo1, sim.simx_opmode_oneshot_wait) 
+                sim.simxSetObjectOrientation(clientID, LocM2, -1, OriRobo2, sim.simx_opmode_oneshot_wait)
+    
+    
+                Loc1[0] = scenes[self.scene][0]
+                Loc2[0] = scenes[self.scene][3]
+    
+    
+                Loc1[1] = scenes[self.scene][1]
+                Loc2[1] = scenes[self.scene][4]
+    
+                # Set Robot Position
+    
+                sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
+                sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
+    
+                # Print Positions and Orientation
+                
+                #print("Robot1 Position:", Loc1)
+                #print("Robot2 Position:", Loc2)
+            
+                #print("Robot1 Orientation:", OriRobo1)
+                #print("Robot2 Orientation:", OriRobo2)
+                        
+                # Nb of Scene Counter
+                self.scene += 1
+            
+                # Start Simulation
+                sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
+            
+                time.sleep(3)
+            
+        if self.scene == scenes.shape[0]-1:
+            # Stop Simulation 
+            sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
+            # End Connection to V-Rep
+            sim.simxFinish(clientID) 
+    
+    
+    
 def main(args=None):
     print("Program Started")
     # Start the simulation:
