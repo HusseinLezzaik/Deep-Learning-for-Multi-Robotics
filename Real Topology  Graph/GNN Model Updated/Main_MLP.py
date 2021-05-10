@@ -68,6 +68,21 @@ class MinimalPublisher(Node):
         "Parameters "
         self.k = 1 # Control Gain
         self.scene = 0 # Nb of scene iteration
+        self.i = 0 # Just to intialized Phix's and Phiy's
+        
+        " Initialize Phi's"
+        self.Phix1 = 0 # 1x1
+        self.Phiy1 = 0 # 1x1
+        self.Phix2 = 0 # 1x1
+        self.Phiy2 = 0 # 1x1
+        self.Phix3 = 0 # 1x1
+        self.Phiy3 = 0 # 1x1
+        self.Phix4 = 0 # 1x1
+        self.Phiy4 = 0 # 1x1
+        self.Phix5 = 0 # 1x1
+        self.Phiy5 = 0 # 1x1
+        self.Phix6 = 0 # 1x1
+        self.Phiy6 = 0 # 1x1        
         
         " Mobile Robot 1 Parameters "
         self.x1 = 10
@@ -188,8 +203,21 @@ class MinimalPublisher(Node):
                 
             " Calculate Mx1, My1, ...... Mx6, My6 "
             
-            #Phix = ( u1[0][0] + u3[0][0] )/2 # 1x1
-            #Phiy = ( u1[1][0] + u3[1][0] )/2 # 1x1
+            # Initialize Phi's
+            if self.i ==0:
+                self.Phix1 = -0.02 # 1x1
+                self.Phiy1 = -0.02 # 1x1
+                self.Phix2 = -0.02 # 1x1
+                self.Phiy2 = -0.02 # 1x1
+                self.Phix3 = -0.02 # 1x1
+                self.Phiy3 = -0.02 # 1x1
+                self.Phix4 = -0.02 # 1x1
+                self.Phiy4 = -0.02 # 1x1
+                self.Phix5 = -0.02 # 1x1
+                self.Phiy5 = -0.02 # 1x1
+                self.Phix6 = -0.02 # 1x1
+                self.Phiy6 = -0.02 # 1x1
+                self.i = 1                
             
             Mx1 = self.x2 - self.x1 # 1x1
             My1 = self.y2 - self.y1 # 1x1
@@ -211,12 +239,12 @@ class MinimalPublisher(Node):
 
             " Use MLP to Predict control inputs "
             
-            relative_pose_1 = [ Mx1, My1 ] # tensor data for MLP model
-            relative_pose_2 = [ Mx2, My2 ] # tensor data for MLP model
-            relative_pose_3 = [ Mx3, My3 ] # tensor data for MLP model
-            relative_pose_4 = [ Mx4, My4 ] # tensor data for MLP model
-            relative_pose_5 = [ Mx5, My5 ] # tensor data for MLP model
-            relative_pose_6 = [ Mx6, My6 ] # tensor data for MLP model
+            relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
+            relative_pose_2 = [ Mx2, My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
+            relative_pose_3 = [ Mx3, My3, self.Phix3, self.Phiy3 ] # tensor data for MLP model
+            relative_pose_4 = [ Mx4, My4, self.Phix4, self.Phiy4 ] # tensor data for MLP model
+            relative_pose_5 = [ Mx5, My5, self.Phix5, self.Phiy5 ] # tensor data for MLP model
+            relative_pose_6 = [ Mx6, My6, self.Phix6, self.Phiy6 ] # tensor data for MLP model
             
             u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
             u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
@@ -224,6 +252,25 @@ class MinimalPublisher(Node):
             u4_predicted = MLP_Model.predict(relative_pose_4, loaded_model) # predict control input u4, tensor
             u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
             u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
+            
+            Phix1 = u2_predicted[0][0]   # 1x1
+            Phiy1 = u2_predicted[0][1]   # 1x1
+            
+            Phix2 = ( u1_predicted[0][0] + u3_predicted[0][0] )/2 # 1x1
+            Phiy2 = ( u1_predicted[0][1] + u3_predicted[0][1] )/2 # 1x1
+            
+            Phix3 = ( u2_predicted[0][0] + u4_predicted[0][0] )/2 # 1x1
+            Phiy3 = ( u2_predicted[0][1] + u4_predicted[0][1] )/2 # 1x1
+            
+            Phix4 = ( u3_predicted[0][0] + u5_predicted[0][0] )/2 # 1x1
+            Phiy4 = ( u3_predicted[0][1] + u5_predicted[0][1] )/2 # 1x1
+            
+            Phix5 = ( u4_predicted[0][0] + u6_predicted[0][0] )/2 # 1x1
+            Phiy5 = ( u4_predicted[0][1] + u6_predicted[0][1] )/2 # 1x1
+            
+            Phix6 = u5_predicted[0][0] # 1x1
+            Phiy6 = u5_predicted[0][1] # 1x1          
+            
             
             u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
             u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
