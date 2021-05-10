@@ -195,6 +195,7 @@ class MinimalPublisher(Node):
         u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
         u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
         u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1
+        print(u1)
         
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
             

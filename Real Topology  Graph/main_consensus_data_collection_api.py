@@ -29,7 +29,7 @@ uy = np.zeros((6,1)) # 6x1 controller vector
 
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
-N_SCENES = 40
+N_SCENES = 50
 scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
 
 def euler_from_quaternion(x, y, z, w):
@@ -360,8 +360,8 @@ class MinimalPublisher(Node):
                 if self.count % 2 == 0:
 
                     with open('dataset.csv', 'a', newline='') as f:
-                        fieldnames = ['X-1', 'Y-1', 'Theta-1', 'X-2', 'Y-2', 'Theta-2', 'X-3', 'Y-3', 'Theta-3', 'X-4', 'Y-4', 'Theta-4', 'X-5', 
-                                  'Y-5', 'Theta-5', 'X-6', 'Y-6', 'Theta-6' ]
+                        fieldnames = ['X-1', 'Y-1', 'Theta-1', 'U-1x', 'U-1y', 'X-2', 'Y-2', 'Theta-2', 'U-2x', 'U-2y', 'X-3', 'Y-3', 'Theta-3', 'U-3x', 'U-3y' ,'X-4', 'Y-4', 'Theta-4', 'U-4x', 'U-4y', 'X-5', 
+                                  'Y-5', 'Theta-5', 'U-5x', 'U-5y' ,'X-6', 'Y-6', 'Theta-6', 'U-6x', 'U-6y']
                         thewriter = csv.DictWriter(f, fieldnames=fieldnames)
 
                         if self.i1 == 0: # write header value once
@@ -369,9 +369,12 @@ class MinimalPublisher(Node):
                             self.i1 = 1
     
                         if self.j1 != 0:    
-                            thewriter.writerow({'X-1' : self.x1, 'Y-1' : self.y1, 'Theta-1' : self.Theta1, 'X-2' : self.x2, 'Y-2' : self.y2, 'Theta-2' : self.Theta2, 
-                                            'X-3' : self.x3, 'Y-3' : self.y3, 'Theta-3' : self.Theta3, 'X-4' : self.x4, 'Y-4' : self.y4, 'Theta-4' : self.Theta4,
-                                            'X-5' : self.x5, 'Y-5' : self.y5, 'Theta-5' : self.Theta5, 'X-6' : self.x6, 'Y-6' : self.y6, 'Theta-6' : self.Theta6})
+                            thewriter.writerow({'X-1' : self.x1, 'Y-1' : self.y1, 'Theta-1' : self.Theta1, 'U-1x' : u1[0][0], 'U-1y' : u1[1][0],
+                                            'X-2' : self.x2, 'Y-2' : self.y2, 'Theta-2' : self.Theta2, 'U-2x' : u2[0][0], 'U-2y' : u2[1][0],
+                                            'X-3' : self.x3, 'Y-3' : self.y3, 'Theta-3' : self.Theta3, 'U-3x' : u3[0][0], 'U-3y' : u3[1][0],
+                                            'X-4' : self.x4, 'Y-4' : self.y4, 'Theta-4' : self.Theta4, 'U-4x' : u4[0][0], 'U-4y' : u4[1][0],                                            
+                                            'X-5' : self.x5, 'Y-5' : self.y5, 'Theta-5' : self.Theta5, 'U-5x' : u5[0][0], 'U-5y' : u5[1][0],
+                                            'X-6' : self.x6, 'Y-6' : self.y6, 'Theta-6' : self.Theta6, 'U-6x' : u6[0][0], 'U-6y' : u6[1][0] })
     
                         if self.j1 == 0: # skip first value because it's noisy
                             self.j1 = 1
