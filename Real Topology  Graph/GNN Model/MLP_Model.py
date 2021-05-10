@@ -1,7 +1,7 @@
 """
 Code for building and training MLP model of Robot  ( same model for other robots by symmetry ) 
     
-*Input: Mx, My, Phix, Phiy
+*Input: Mx, My
 *Output: Ux, Uy
 """
 
@@ -30,7 +30,7 @@ class CSVDataset(Dataset):
         df = read_csv(path, header=None)
         # store the inputs and outputs
         self.X = df.values[:, :2].astype('float32') # read first two values
-        self.y = df.values[:, 3:].astype('float32') # read last two values
+        self.y = df.values[:, 4:].astype('float32') # read last two values
         # ensure target has the right shape
         self.y = self.y.reshape((len(self.y), 2)) # nx2
 
@@ -135,25 +135,25 @@ def predict(row, model):
 # prepare the data
 path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model/training_data.csv'
 
-train_dl, test_dl = prepare_data(path)
+#train_dl, test_dl = prepare_data(path)
 
-print(len(train_dl.dataset), len(test_dl.dataset))
+#print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-model = MLP()
+#model = MLP()
 
 # train the model
-train_model(train_dl, model)
+#train_model(train_dl, model)
 
 # evaluate the model
-mse = evaluate_model(test_dl, model)
-print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+#mse = evaluate_model(test_dl, model)
+#print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 # make a single prediction (expect class=1)
-row = [-2,3]
-yhat = predict(row, model)
-print(yhat)
+#row = [-2,3]
+#yhat = predict(row, model)
+#print(yhat)
 
 # save model using dict
-#FILE = "model.pth"
+FILE = "model.pth"
 #torch.save(model.state_dict(), FILE)
