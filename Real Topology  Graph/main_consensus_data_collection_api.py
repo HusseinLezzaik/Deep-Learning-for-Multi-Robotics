@@ -194,7 +194,7 @@ class MinimalPublisher(Node):
                 
             distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
         
-            #print(distance)
+            print(distance)
         
             # Run Consensus Algorithm as long as they don't meet
             
@@ -392,8 +392,9 @@ class MinimalPublisher(Node):
                         if self.j1 == 0: # skip first value because it's noisy
                             self.j1 = 1
                             
+                            
                     with open('transformed_dataset.csv', 'a', newline='') as f:
-                        fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
+                        fieldnames = ['M_x', 'M_y', 'Phi_x', 'Phi_y', 'U_x', 'U_y']
                         thewriter = csv.DictWriter(f, fieldnames=fieldnames)
     
                         if self.i2 == 0: # write header value once
@@ -401,7 +402,7 @@ class MinimalPublisher(Node):
                             self.i2 = 1
     
                         if self.j2 != 0:
-                            thewriter.writerow({'Data_X' : PoseL2[0][0], 'Data_Y' : PoseL2[1][0], 'Angle' : self.Theta2, 'Label_X' : U2L[0][0], 'Label_Y' : U2L[1][0]})
+                            thewriter.writerow({'M_x' : Mx, 'M_y' : My, 'Phi_x' : Phix, 'Phi_y' : Phiy, 'U_x' : u2[0][0], 'U_y': u2[1][0] })
     
                         if self.j2 == 0: # skip first value because it's noisy
                             self.j2 = 1                            
