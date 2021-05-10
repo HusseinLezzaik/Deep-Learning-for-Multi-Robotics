@@ -65,9 +65,11 @@ class MinimalPublisher(Node):
 
         " Counter Variables "
         self.i1 = 0
+        self.i2 = 0
         self.count = 2
         self.j1 = 0
-        self.loop = 0        
+        self.j2 = 0
+        self.loop = 0                
         
         "Parameters "
         self.k = 1 # Control Gain
@@ -192,7 +194,7 @@ class MinimalPublisher(Node):
                 
             distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
         
-            print(distance)
+            #print(distance)
         
             # Run Consensus Algorithm as long as they don't meet
             
@@ -222,7 +224,15 @@ class MinimalPublisher(Node):
                 u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
                 u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
                 u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1
-        
+                
+                " Data Transformation into M_x, M_y, Phi_x, Phi_y "
+                
+                Phix = ( u1[0][0] + u3[0][0] )/2 # 1x1
+                Phiy = ( u1[1][0] + u3[1][0] )/2 # 1x1
+                
+                Mx = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x1 ) ) / 2 # 1x1
+                My = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y1 ) ) / 2 # 1x1
+                      
                 " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
                 
                 S1 = np.array([[self.v1], [self.w1]]) #2x1
@@ -296,6 +306,8 @@ class MinimalPublisher(Node):
                 VR5 = float(Speed_L5[1])        
                 VL6 = float(Speed_L6[0])
                 VR6 = float(Speed_L6[1])
+                
+
         
                 " Publish Speed Commands to Robot 1 "
             
@@ -357,9 +369,10 @@ class MinimalPublisher(Node):
 
               
                 " Write Values to CSV1 and CSV2 "
+                
                 if self.count % 2 == 0:
 
-                    with open('dataset.csv', 'a', newline='') as f:
+                    with open('main_dataset.csv', 'a', newline='') as f:
                         fieldnames = ['X-1', 'Y-1', 'Theta-1', 'U-1x', 'U-1y', 'X-2', 'Y-2', 'Theta-2', 'U-2x', 'U-2y', 'X-3', 'Y-3', 'Theta-3', 'U-3x', 'U-3y' ,'X-4', 'Y-4', 'Theta-4', 'U-4x', 'U-4y', 'X-5', 
                                   'Y-5', 'Theta-5', 'U-5x', 'U-5y' ,'X-6', 'Y-6', 'Theta-6', 'U-6x', 'U-6y']
                         thewriter = csv.DictWriter(f, fieldnames=fieldnames)
@@ -378,6 +391,21 @@ class MinimalPublisher(Node):
     
                         if self.j1 == 0: # skip first value because it's noisy
                             self.j1 = 1
+                            
+                    with open('transformed_dataset.csv', 'a', newline='') as f:
+                        fieldnames = ['Data_X', 'Data_Y', 'Angle', 'Label_X', 'Label_Y']
+                        thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+    
+                        if self.i2 == 0: # write header value once
+                            thewriter.writeheader()
+                            self.i2 = 1
+    
+                        if self.j2 != 0:
+                            thewriter.writerow({'Data_X' : PoseL2[0][0], 'Data_Y' : PoseL2[1][0], 'Angle' : self.Theta2, 'Label_X' : U2L[0][0], 'Label_Y' : U2L[1][0]})
+    
+                        if self.j2 == 0: # skip first value because it's noisy
+                            self.j2 = 1                            
+                            
                 self.count += 2 # Counter to skip values while saving to csv file 
     
             else:
