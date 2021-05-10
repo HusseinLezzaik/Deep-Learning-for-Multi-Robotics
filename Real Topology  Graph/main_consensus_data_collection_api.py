@@ -2,7 +2,9 @@
 
 Data Collection for Consensus Algorithm of Six Robots
 
-Data Collected: Global Pose of each Robot: X, Y, Theta and Control input Ux, Uy.
+Data Collected in main_dataset.csv: Global Pose of each Robot: X, Y, Theta and Control input Ux, Uy
+
+Data Collected in transformed_dataset.csv : Mx, My, Phix, Phiy, and Control input Ux, Uy
 
 """
 
@@ -230,8 +232,8 @@ class MinimalPublisher(Node):
                 Phix = ( u1[0][0] + u3[0][0] )/2 # 1x1
                 Phiy = ( u1[1][0] + u3[1][0] )/2 # 1x1
                 
-                Mx = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x1 ) ) / 2 # 1x1
-                My = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y1 ) ) / 2 # 1x1
+                Mx = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
+                My = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1
                       
                 " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
                 
