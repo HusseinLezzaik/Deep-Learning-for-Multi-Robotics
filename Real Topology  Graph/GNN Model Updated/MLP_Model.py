@@ -56,16 +56,12 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 8) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 10) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         # Define ReLU activation
         self.act1 = ReLU()
-        # New hidden layer
-        self.hidden2 = Linear(8, 4) # 10 to 8 hidden units
-        xavier_uniform_(self.hidden2.weight)        
-        self.act2 = ReLU()
         # Output layer 4 to 2 units
-        self.output = Linear(4, 2)
+        self.output = Linear(10, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
@@ -73,8 +69,6 @@ class MLP(Module):
         # Pass the input tensor through each of our operations
         X = self.input(X)
         X = self.act1(X)
-        X = self.hidden2(X)
-        X = self.act2(X)
         X = self.output(X)
         return X
 
