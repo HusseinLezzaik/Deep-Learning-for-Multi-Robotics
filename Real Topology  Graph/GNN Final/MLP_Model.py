@@ -1,7 +1,7 @@
 """
-Code for building and training MLP model of Robot  ( same model for other robots by symmetry ) 
-
-Data collected for Middle Robot
+Code for building and training MLP model of Robot using merged datasets of :
+    1) Edge Robot
+    2) Middle Robot
     
 *Input: Mx, My, Phix, Phiy
 *Output: Ux, Uy
@@ -58,12 +58,12 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 10) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 32) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         # Define ReLU activation
         self.act1 = ReLU()
         # Output layer 4 to 2 units
-        self.output = Linear(10, 2)
+        self.output = Linear(32, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
@@ -135,21 +135,21 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model/training_data.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Final/merged_data.csv'
 
-#train_dl, test_dl = prepare_data(path)
+train_dl, test_dl = prepare_data(path)
 
-#print(len(train_dl.dataset), len(test_dl.dataset))
+print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-#model = MLP()
+model = MLP()
 
 # train the model
-#train_model(train_dl, model)
+train_model(train_dl, model)
 
 # evaluate the model
-#mse = evaluate_model(test_dl, model)
-#print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+mse = evaluate_model(test_dl, model)
+print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 # make a single prediction (expect class=1)
 #row = [-2,3]
@@ -158,4 +158,4 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN
 
 # save model using dict
 FILE = "model.pth"
-#torch.save(model.state_dict(), FILE)
+torch.save(model.state_dict(), FILE)
