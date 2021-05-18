@@ -290,7 +290,7 @@ class MinimalPublisher(Node):
         u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u4_predicted_np = np.array([[ u4_predicted[0][0] ], [ u4_predicted[0][1] ]]) # from tensor to numpy array for calculation    
-        u5_predicted_np = np.array([[ u5_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u5_predicted_np = np.array([[ u5_predicted[0][0] ], [ u5_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u6_predicted_np = np.array([[ u6_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation
             
                               
