@@ -228,6 +228,15 @@ class MinimalPublisher(Node):
                 u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
                 u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
                 u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1
+
+                " Data Transformation into M_x, M_y, Phi_x, Phi_y for Edge Robot "
+                
+                Phix1 = u2[0][0] # 1x1
+                Phiy1 = u2[1][0] # 1x1
+                
+                Mx1 = ( self.x2 - self.x1 )  # 1x1
+                My1 = ( self.y2 - self.y1 )  # 1x1                
+                
                 
                 " Data Transformation into M_x, M_y, Phi_x, Phi_y for Middle Robot "
                 
@@ -375,7 +384,20 @@ class MinimalPublisher(Node):
                 " Write Values to CSV1 and CSV2 "
                 
                 if self.count % 2 == 0:
-                            
+                    
+                    with open('edge_robot.csv', 'a', newline='') as f:
+                        fieldnames = ['M_x', 'M_y', 'Phi_x', 'Phi_y', 'U_x', 'U_y']
+                        thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+
+                        if self.i1 == 0: # write header value once
+                            thewriter.writeheader()
+                            self.i1 = 1
+    
+                        if self.j1 != 0:    
+                            thewriter.writerow({'M_x' : Mx1, 'M_y' : My1, 'Phi_x' : Phix1, 'Phi_y' : Phiy1, 'U_x' : u1[0][0], 'U_y': u1[1][0] })
+    
+                        if self.j1 == 0: # skip first value because it's noisy
+                            self.j1 = 1                            
                             
                     with open('middle_robot.csv', 'a', newline='') as f:
                         fieldnames = ['M_x', 'M_y', 'Phi_x', 'Phi_y', 'U_x', 'U_y']
