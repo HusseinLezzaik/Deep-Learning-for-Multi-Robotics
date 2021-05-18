@@ -17,12 +17,9 @@ from std_msgs.msg import Float32
 import csv
 import time
 
- 
-#list = np.array(list, dtype=np.float64)
 
 L = 1
 d = 0.5
-#distance = 2
 
 A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
 
@@ -244,7 +241,7 @@ class MinimalPublisher(Node):
                 self.My6 = 0.1              
                 self.i = 1                
           
-
+    
             " Use MLP to Predict control inputs "
             
             relative_pose_1 = [ self.Mx1, self.My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
@@ -385,7 +382,7 @@ class MinimalPublisher(Node):
             VL6 = float(Speed_L6[0])
             VR6 = float(Speed_L6[1])
             
-
+    
     
             " Publish Speed Commands to Robot 1 "
         
