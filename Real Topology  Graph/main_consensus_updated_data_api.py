@@ -33,7 +33,7 @@ uy = np.zeros((6,1)) # 6x1 controller vector
 
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
-N_SCENES = 50
+N_SCENES = 20
 scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
 
 def euler_from_quaternion(x, y, z, w):
@@ -229,13 +229,13 @@ class MinimalPublisher(Node):
                 u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
                 u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1
                 
-                " Data Transformation into M_x, M_y, Phi_x, Phi_y "
+                " Data Transformation into M_x, M_y, Phi_x, Phi_y for Middle Robot "
                 
-                Phix = ( u1[0][0] + u3[0][0] )/2 # 1x1
-                Phiy = ( u1[1][0] + u3[1][0] )/2 # 1x1
+                Phix2 = ( u1[0][0] + u3[0][0] )/2 # 1x1
+                Phiy2 = ( u1[1][0] + u3[1][0] )/2 # 1x1
                 
-                Mx = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
-                My = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1
+                Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
+                My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1
                       
                 " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
                 
@@ -386,7 +386,7 @@ class MinimalPublisher(Node):
                             self.i2 = 1
     
                         if self.j2 != 0:
-                            thewriter.writerow({'M_x' : Mx, 'M_y' : My, 'Phi_x' : Phix, 'Phi_y' : Phiy, 'U_x' : u2[0][0], 'U_y': u2[1][0] })
+                            thewriter.writerow({'M_x' : Mx2, 'M_y' : My2, 'Phi_x' : Phix2, 'Phi_y' : Phiy2, 'U_x' : u2[0][0], 'U_y': u2[1][0] })
     
                         if self.j2 == 0: # skip first value because it's noisy
                             self.j2 = 1                            
@@ -470,7 +470,7 @@ class MinimalPublisher(Node):
                 # Start Simulation
                 sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
             
-                time.sleep(10)
+                time.sleep(5)
             
         if self.scene == scenes.shape[0]-1:
             # Stop Simulation 
