@@ -14,6 +14,7 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
+import time
 
 
 L = 1
@@ -44,17 +45,17 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('minimal_publisher1')
         self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',10) #Change according to topic in child script,String to Float32
         self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2',10) #Change according to topic in child script,String to Float32
         self.publisher_l3 = self.create_publisher(Float32, '/leftMotorSpeedrobot3', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r3 = self.create_publisher(Float32, '/rightMotorSpeedrobot3', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r3 = self.create_publisher(Float32, '/rightMotorSpeedrobot3',10) #Change according to topic in child script,String to Float32
         self.publisher_l4 = self.create_publisher(Float32, '/leftMotorSpeedrobot4', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r4 = self.create_publisher(Float32, '/rightMotorSpeedrobot4', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r4 = self.create_publisher(Float32, '/rightMotorSpeedrobot4',10) #Change according to topic in child script,String to Float32
         self.publisher_l5 = self.create_publisher(Float32, '/leftMotorSpeedrobot5', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r5 = self.create_publisher(Float32, '/rightMotorSpeedrobot5', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r5 = self.create_publisher(Float32, '/rightMotorSpeedrobot5',10) #Change according to topic in child script,String to Float32
         self.publisher_l6 = self.create_publisher(Float32, '/leftMotorSpeedrobot6', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r6 = self.create_publisher(Float32, '/rightMotorSpeedrobot6', 10) #Change according to topic in child script,String to Float32              
+        self.publisher_r6 = self.create_publisher(Float32, '/rightMotorSpeedrobot6',10) #Change according to topic in child script,String to Float32              
         self.subscription = self.create_subscription(
             TFMessage,
             '/tf',
@@ -448,6 +449,7 @@ def main(args=None):
     print("Program Started")
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
+    #time.sleep(5)
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()

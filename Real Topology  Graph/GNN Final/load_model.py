@@ -24,3 +24,5 @@ print(row)
 u1_predicted = MLP_Model.predict(row, loaded_model)
 
 print(u1_predicted)
+#2.49452987313271
+#4.87876439094543

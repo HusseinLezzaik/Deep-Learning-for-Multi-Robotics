@@ -58,19 +58,35 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 10) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 12) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
-        # Define ReLU activation
         self.act1 = ReLU()
+        # Define Hidden Layer
+        self.hidden1 = Linear(12, 8)
+        xavier_uniform_(self.hidden1.weight)
+        self.act2 = ReLU()
+        # Define Hidden Layer
+        #self.hidden2 = Linear(8, 4)
+        #xavier_uniform_(self.hidden2.weight)        
+        #self.act3 = ReLU()        
         # Output layer 4 to 2 units
-        self.output = Linear(10, 2)
+        self.output = Linear(8, 2)
         xavier_uniform_(self.output.weight)
+
 
     # forward propagate input
     def forward(self, X):
         # Pass the input tensor through each of our operations
+        # Input to first hidden layer
         X = self.input(X)
         X = self.act1(X)
+        # Second hidden layer
+        X = self.hidden1(X)
+        X = self.act2(X)
+        # Third Hidden layer
+        #X = self.hidden2(X)
+        #X = self.act3(X)
+        # Final hidden layer and Output
         X = self.output(X)
         return X
 
@@ -81,7 +97,7 @@ def prepare_data(path):
     # calculate split
     train, test = dataset.get_splits()
     # prepare data loaders
-    train_dl = DataLoader(train, batch_size=32, shuffle=True)
+    train_dl = DataLoader(train, batch_size=64, shuffle=True)
     test_dl = DataLoader(test, batch_size=1024, shuffle=False)
     return train_dl, test_dl
 
@@ -89,9 +105,9 @@ def prepare_data(path):
 def train_model(train_dl, model):
     # define the optimization
     criterion = MSELoss()
-    optimizer = SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimizer = SGD(model.parameters(), lr=0.001, momentum=0.9)
     # enumerate epochs
-    for epoch in range(100):
+    for epoch in range(150):
         # enumerate mini batches
         for i, (inputs, targets) in enumerate(train_dl):
             # clear the gradients
