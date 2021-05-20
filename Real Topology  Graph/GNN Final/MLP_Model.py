@@ -58,12 +58,12 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 32) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 10) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         # Define ReLU activation
         self.act1 = ReLU()
         # Output layer 4 to 2 units
-        self.output = Linear(32, 2)
+        self.output = Linear(10, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
