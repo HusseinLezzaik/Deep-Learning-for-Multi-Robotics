@@ -15,3 +15,12 @@ loaded_model.eval()
 
 for param in loaded_model.parameters():
     print(param)
+
+
+row = [ -0.373219668865204, 2.17479133605957, 4.73384788632393,  -8.16998362541199]
+
+print(row)
+
+u1_predicted = MLP_Model.predict(row, loaded_model)
+
+print(u1_predicted)

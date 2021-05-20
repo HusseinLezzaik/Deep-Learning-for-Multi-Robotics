@@ -228,7 +228,7 @@ class MinimalPublisher(Node):
                 u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
                 u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
                 u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1
-
+    
                 " Data Transformation into M_x, M_y, Phi_x, Phi_y for Edge Robot "
                 
                 Phix1 = u2[0][0] # 1x1
@@ -320,7 +320,7 @@ class MinimalPublisher(Node):
                 VL6 = float(Speed_L6[0])
                 VR6 = float(Speed_L6[1])
                 
-
+    
         
                 " Publish Speed Commands to Robot 1 "
             
@@ -341,7 +341,7 @@ class MinimalPublisher(Node):
                 msgr2.data = VR2
                 self.publisher_l2.publish(msgl2)
                 self.publisher_r2.publish(msgr2)
-
+    
                 " Publish Speed Commands to Robot 3 "
                 
                 msgl3 = Float32()
@@ -379,7 +379,7 @@ class MinimalPublisher(Node):
                 msgr6.data = VR6
                 self.publisher_l6.publish(msgl6)
                 self.publisher_r6.publish(msgr6)
-
+    
               
                 " Write Values to CSV1 and CSV2 "
                 
@@ -388,7 +388,7 @@ class MinimalPublisher(Node):
                     with open('edge_robot.csv', 'a', newline='') as f:
                         fieldnames = ['M_x', 'M_y', 'Phi_x', 'Phi_y', 'U_x', 'U_y']
                         thewriter = csv.DictWriter(f, fieldnames=fieldnames)
-
+    
                         if self.i1 == 0: # write header value once
                             thewriter.writeheader()
                             self.i1 = 1
@@ -416,7 +416,7 @@ class MinimalPublisher(Node):
                 self.count += 2 # Counter to skip values while saving to csv file 
     
             else:
-
+    
                 print(" Simulation ", self.scene)
             
             
@@ -442,7 +442,7 @@ class MinimalPublisher(Node):
                     pass            
             
                 ErrLoc2,Loc2 =sim.simxGetObjectPosition(clientID, LocM2, -1, sim.simx_opmode_oneshot_wait)
-
+    
                 if (not ErrLoc2==sim.simx_return_ok):
                     pass     
     
@@ -452,7 +452,7 @@ class MinimalPublisher(Node):
                     pass             
             
                 ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
-
+    
                 if (not ErrLocO2==sim.simx_return_ok):
                     pass     
     
@@ -494,11 +494,11 @@ class MinimalPublisher(Node):
             
                 time.sleep(5)
             
-        if self.scene == scenes.shape[0]-1:
-            # Stop Simulation 
-            sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
-            # End Connection to V-Rep
-            sim.simxFinish(clientID) 
+            if self.scene == scenes.shape[0]-1:
+                # Stop Simulation 
+                sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
+                # End Connection to V-Rep
+                sim.simxFinish(clientID) 
     
     
     

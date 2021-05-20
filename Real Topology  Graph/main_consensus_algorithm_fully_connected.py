@@ -29,7 +29,6 @@ def euler_from_quaternion(x, y, z, w):
  
     
 
-
 class MinimalPublisher(Node):
 
     def __init__(self):
