@@ -81,7 +81,7 @@ def prepare_data(path):
     # calculate split
     train, test = dataset.get_splits()
     # prepare data loaders
-    train_dl = DataLoader(train, batch_size=64, shuffle=True)
+    train_dl = DataLoader(train, batch_size=32, shuffle=True)
     test_dl = DataLoader(test, batch_size=1024, shuffle=False)
     return train_dl, test_dl
 
@@ -89,9 +89,9 @@ def prepare_data(path):
 def train_model(train_dl, model):
     # define the optimization
     criterion = MSELoss()
-    optimizer = SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = SGD(model.parameters(), lr=0.01, momentum=0.9)
     # enumerate epochs
-    for epoch in range(150):
+    for epoch in range(100):
         # enumerate mini batches
         for i, (inputs, targets) in enumerate(train_dl):
             # clear the gradients

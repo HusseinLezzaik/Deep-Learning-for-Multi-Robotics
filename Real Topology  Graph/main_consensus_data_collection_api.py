@@ -193,6 +193,8 @@ class MinimalPublisher(Node):
             self.wr6 = msg.transforms[0].transform.rotation.w
             self.Theta6 = euler_from_quaternion(self.xr6,self.yr6,self.zr6,self.wr6)          
         
+
+
                 
             distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
         
@@ -373,7 +375,7 @@ class MinimalPublisher(Node):
                 " Write Values to CSV1 and CSV2 "
                 
                 if self.count % 2 == 0:
-    
+
                     with open('main_dataset.csv', 'a', newline='') as f:
                         fieldnames = ['X-1', 'Y-1', 'Theta-1', 'U-1x', 'U-1y', 'X-2', 'Y-2', 'Theta-2', 'U-2x', 'U-2y', 'X-3', 'Y-3', 'Theta-3', 'U-3x', 'U-3y' ,'X-4', 'Y-4', 'Theta-4', 'U-4x', 'U-4y', 'X-5', 
                                   'Y-5', 'Theta-5', 'U-5x', 'U-5y' ,'X-6', 'Y-6', 'Theta-6', 'U-6x', 'U-6y']
@@ -393,8 +395,9 @@ class MinimalPublisher(Node):
     
                         if self.j1 == 0: # skip first value because it's noisy
                             self.j1 = 1
-                            
-                            
+
+
+                                                            
                     with open('transformed_dataset.csv', 'a', newline='') as f:
                         fieldnames = ['M_x', 'M_y', 'Phi_x', 'Phi_y', 'U_x', 'U_y']
                         thewriter = csv.DictWriter(f, fieldnames=fieldnames)
@@ -488,7 +491,7 @@ class MinimalPublisher(Node):
                 # Start Simulation
                 sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
             
-                time.sleep(10)
+                time.sleep(5)
             
             if self.scene == scenes.shape[0]-1:
                 # Stop Simulation 

@@ -14,8 +14,6 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
-import csv
-import time
 
 
 L = 1
@@ -45,18 +43,18 @@ class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('minimal_publisher1')
-        self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
-        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
-        self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 0) #Change according to topic in child script,String to Float32
-        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2', 0) #Change according to topic in child script,String to Float32
-        self.publisher_l3 = self.create_publisher(Float32, '/leftMotorSpeedrobot3', 0) #Change according to topic in child script,String to Float32
-        self.publisher_r3 = self.create_publisher(Float32, '/rightMotorSpeedrobot3', 0) #Change according to topic in child script,String to Float32
-        self.publisher_l4 = self.create_publisher(Float32, '/leftMotorSpeedrobot4', 0) #Change according to topic in child script,String to Float32
-        self.publisher_r4 = self.create_publisher(Float32, '/rightMotorSpeedrobot4', 0) #Change according to topic in child script,String to Float32
-        self.publisher_l5 = self.create_publisher(Float32, '/leftMotorSpeedrobot5', 0) #Change according to topic in child script,String to Float32
-        self.publisher_r5 = self.create_publisher(Float32, '/rightMotorSpeedrobot5', 0) #Change according to topic in child script,String to Float32
-        self.publisher_l6 = self.create_publisher(Float32, '/leftMotorSpeedrobot6', 0) #Change according to topic in child script,String to Float32
-        self.publisher_r6 = self.create_publisher(Float32, '/rightMotorSpeedrobot6', 0) #Change according to topic in child script,String to Float32              
+        self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1', 10) #Change according to topic in child script,String to Float32
+        self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
+        self.publisher_l3 = self.create_publisher(Float32, '/leftMotorSpeedrobot3', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r3 = self.create_publisher(Float32, '/rightMotorSpeedrobot3', 10) #Change according to topic in child script,String to Float32
+        self.publisher_l4 = self.create_publisher(Float32, '/leftMotorSpeedrobot4', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r4 = self.create_publisher(Float32, '/rightMotorSpeedrobot4', 10) #Change according to topic in child script,String to Float32
+        self.publisher_l5 = self.create_publisher(Float32, '/leftMotorSpeedrobot5', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r5 = self.create_publisher(Float32, '/rightMotorSpeedrobot5', 10) #Change according to topic in child script,String to Float32
+        self.publisher_l6 = self.create_publisher(Float32, '/leftMotorSpeedrobot6', 10) #Change according to topic in child script,String to Float32
+        self.publisher_r6 = self.create_publisher(Float32, '/rightMotorSpeedrobot6', 10) #Change according to topic in child script,String to Float32              
         self.subscription = self.create_subscription(
             TFMessage,
             '/tf',
@@ -255,7 +253,7 @@ class MinimalPublisher(Node):
             self.My3 = ( ( self.y2 - self.y3 ) + ( self.y4 - self.y3 ) ) / 2 # 1x1               
             
             self.Mx4 = ( ( self.x3 - self.x4 ) + ( self.x5 - self.x4 ) ) / 2 # 1x1
-            self.My4 = ( ( self.y4 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
+            self.My4 = ( ( self.y3 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
     
             self.Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
             self.My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
@@ -280,7 +278,7 @@ class MinimalPublisher(Node):
             u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
             u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
             
-            print(u1_predicted)
+            #print(u1_predicted)
                 
             u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
             u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
@@ -450,7 +448,6 @@ def main(args=None):
     print("Program Started")
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
-    time.sleep(10)
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
