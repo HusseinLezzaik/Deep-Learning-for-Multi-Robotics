@@ -105,7 +105,7 @@ def prepare_data(path):
 def train_model(train_dl, model):
     # define the optimization
     criterion = MSELoss()
-    optimizer = SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = SGD(model.parameters(), lr=0.0001, momentum=0.9)
     # enumerate epochs
     for epoch in range(150):
         # enumerate mini batches
