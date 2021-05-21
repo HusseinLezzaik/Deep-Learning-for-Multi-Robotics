@@ -370,12 +370,12 @@ class MinimalPublisher(Node):
                 msgr6.data = VR6
                 self.publisher_l6.publish(msgl6)
                 self.publisher_r6.publish(msgr6)
-    
-              
+        
+                  
                 " Write Values to CSV1 and CSV2 "
                 
                 if self.count % 2 == 0:
-
+    
                     with open('main_dataset.csv', 'a', newline='') as f:
                         fieldnames = ['X-1', 'Y-1', 'Theta-1', 'U-1x', 'U-1y', 'X-2', 'Y-2', 'Theta-2', 'U-2x', 'U-2y', 'X-3', 'Y-3', 'Theta-3', 'U-3x', 'U-3y' ,'X-4', 'Y-4', 'Theta-4', 'U-4x', 'U-4y', 'X-5', 
                                   'Y-5', 'Theta-5', 'U-5x', 'U-5y' ,'X-6', 'Y-6', 'Theta-6', 'U-6x', 'U-6y']
@@ -395,8 +395,8 @@ class MinimalPublisher(Node):
     
                         if self.j1 == 0: # skip first value because it's noisy
                             self.j1 = 1
-
-
+    
+    
                                                             
                     with open('transformed_dataset.csv', 'a', newline='') as f:
                         fieldnames = ['M_x', 'M_y', 'Phi_x', 'Phi_y', 'U_x', 'U_y']
@@ -413,7 +413,7 @@ class MinimalPublisher(Node):
                             self.j2 = 1                            
                             
                 self.count += 2 # Counter to skip values while saving to csv file 
-    
+        
             else:
     
                 print(" Simulation ", self.scene)
