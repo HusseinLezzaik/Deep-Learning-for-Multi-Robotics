@@ -411,7 +411,7 @@ class MinimalPublisher(Node):
                     if self.j2 == 0: # skip first value because it's noisy
                         self.j2 = 1                            
                         
-            self.count += 2 # Counter to skip values while saving to csv file 
+            self.count += 0.5 # Counter to skip values while saving to csv file 
         
         else:
 
