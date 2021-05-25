@@ -43,7 +43,7 @@ class CSVDataset(Dataset):
         return [self.X[idx], self.y[idx]]
 
     # get indexes for train and test rows
-    def get_splits(self, n_test=0.33):
+    def get_splits(self, n_test=0.25):
         # determine sizes
         test_size = round(n_test * len(self.X))
         train_size = len(self.X) - test_size
@@ -56,12 +56,12 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.hidden = Linear(2, 10) # 2 inputs, 10 hidden units
+        self.hidden = Linear(2, 4) # 2 inputs, 10 hidden units
         xavier_uniform_(self.hidden.weight)
         # Define ReLU activation
         self.act = ReLU()
         # Output layer, 2 units
-        self.output = Linear(10, 2)
+        self.output = Linear(4, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input

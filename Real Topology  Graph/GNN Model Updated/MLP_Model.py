@@ -45,7 +45,7 @@ class CSVDataset(Dataset):
         return [self.X[idx], self.y[idx]]
 
     # get indexes for train and test rows
-    def get_splits(self, n_test=0.33):
+    def get_splits(self, n_test=0.2):
         # determine sizes
         test_size = round(n_test * len(self.X))
         train_size = len(self.X) - test_size
@@ -58,15 +58,15 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 10) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 12) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
-        #self.hidden = Linear(10, 10)
-        #xavier_uniform_(self.hidden.weight)
-        #self.act2 = ReLU()        
+        self.hidden = Linear(12, 8)
+        xavier_uniform_(self.hidden.weight)
+        self.act2 = ReLU()        
         # Output layer 4 to 2 units
-        self.output = Linear(10, 2)
+        self.output = Linear(8, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
@@ -76,8 +76,8 @@ class MLP(Module):
         X = self.input(X)
         X = self.act1(X)
         # Second hidden layer
-        #X = self.hidden(X)
-        #X = self.act2(X)
+        X = self.hidden(X)
+        X = self.act2(X)
         # Third hidden layer and Output
         X = self.output(X)
         return X
@@ -143,7 +143,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model Updated/training_data.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model Updated/transformed_dataset.csv'
 
 #train_dl, test_dl = prepare_data(path)
 

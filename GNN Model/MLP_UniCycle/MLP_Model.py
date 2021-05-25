@@ -149,5 +149,5 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/GNN Model/MLP_UniCycle/d
 #print(yhat)
 
 # save model using dict
-#FILE = "model.pth"
+FILE = "model.pth"
 #torch.save(model.state_dict(), FILE)
