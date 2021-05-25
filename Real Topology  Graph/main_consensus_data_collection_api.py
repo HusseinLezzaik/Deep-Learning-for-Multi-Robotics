@@ -503,7 +503,7 @@ class MinimalPublisher(Node):
 def main(args=None):
     print("Program Started")
     # Start the simulation:
-    sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
+    #sim.simxStartSimulation(clientID,sim.simx_opmode_oneshot_wait)
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
     rclpy.spin(minimal_publisher)
