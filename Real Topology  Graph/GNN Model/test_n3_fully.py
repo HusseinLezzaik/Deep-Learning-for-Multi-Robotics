@@ -105,98 +105,98 @@ class MinimalPublisher(Node):
             self.wr3 = msg.transforms[0].transform.rotation.w
             self.Theta3 = euler_from_quaternion(self.xr3,self.yr3,self.zr3,self.wr3)            
            
-        " Calculate Mx1, My1, ...... Mx6, My6 "
+            " Calculate Mx1, My1, ...... Mx6, My6 "
+            
+            Mx1 = ( (self.x2 - self.x1) + (self.x3 - self.x1) )/2
+            My1 = ( (self.y2 - self.y1) + (self.y3 - self.y1) )/2
         
-        Mx1 = ( (self.x2 - self.x1) + (self.x3 - self.x1) )/2
-        My1 = ( (self.y2 - self.y1) + (self.y3 - self.y1) )/2
+            Mx2 = ( (self.x1 - self.x2) + (self.x3 - self.x2) )/2
+            My2 = ( (self.y1 - self.y2) + (self.y3 - self.y2) )/2  
     
-        Mx2 = ( (self.x1 - self.x2) + (self.x3 - self.x2) )/2
-        My2 = ( (self.y1 - self.y2) + (self.y3 - self.y2) )/2  
-
-        Mx3 = ( (self.x2 - self.x3) + (self.x1 - self.x3) )/2
-        My3 = ( (self.y2 - self.y3) + (self.y1 - self.y3) )/2             
-       
-        " Use MLP to Predict control inputs "
-        
-        relative_pose_1 = [ Mx1, My1 ] # tensor data for MLP model
-        relative_pose_2 = [ Mx2, My2 ] # tensor data for MLP model
-        relative_pose_3 = [ Mx3, My3 ] # tensor data for MLP model
-
-        u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
-        u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
-        u3_predicted = MLP_Model.predict(relative_pose_3, loaded_model) # predict control input u1, tensor        
-        
-        u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
-
-        " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
-        
-        S1 = np.array([[self.v1], [self.w1]]) #2x1
-        G1 = np.array([[1,0], [0,1/L]]) #2x2
-        R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
-        S1 = np.dot(np.dot(G1, R1), u1_predicted_np) #2x1
+            Mx3 = ( (self.x2 - self.x3) + (self.x1 - self.x3) )/2
+            My3 = ( (self.y2 - self.y3) + (self.y1 - self.y3) )/2             
+           
+            " Use MLP to Predict control inputs "
+            
+            relative_pose_1 = [ Mx1, My1 ] # tensor data for MLP model
+            relative_pose_2 = [ Mx2, My2 ] # tensor data for MLP model
+            relative_pose_3 = [ Mx3, My3 ] # tensor data for MLP model
     
-        S2 = np.array([[self.v2], [self.w2]]) #2x1
-        G2 = np.array([[1,0], [0,1/L]]) #2x2
-        R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
-        S2 = np.dot(np.dot(G2, R2), u2_predicted_np) # 2x1
-        
-        S3 = np.array([[self.v3], [self.w3]]) #2x1
-        G3 = np.array([[1,0], [0,1/L]]) #2x2
-        R3 = np.array([[math.cos(self.Theta3),math.sin(self.Theta3)],[-math.sin(self.Theta3),math.cos(self.Theta3)]]) #2x2
-        S3 = np.dot(np.dot(G3, R3), u3_predicted_np) # 2x1        
-                        
-        " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
+            u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
+            u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
+            u3_predicted = MLP_Model.predict(relative_pose_3, loaded_model) # predict control input u1, tensor        
+            
+            u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
+            u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
+            u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
     
-        D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
-        Di = np.linalg.inv(D) #2x2
-
-        Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
-        Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2
-        Speed_L3 = np.array([[self.vL3], [self.vR3]]) # Vector 2x1 for Speed of Robot 3
-
-        M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
-        M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
-        M3 = np.array([[S3[0]],[S3[1]]]).reshape(2,1) #2x1
-
-        Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
-        Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
-        Speed_L3 = np.dot(Di, M3) # 2x1 (VL1, VR1)
-
-        VL1 = float(Speed_L1[0])
-        VR1 = float(Speed_L1[1])
-        VL2 = float(Speed_L2[0])
-        VR2 = float(Speed_L2[1])
-        VL3 = float(Speed_L3[0])
-        VR3 = float(Speed_L3[1]) 
+            " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
+            
+            S1 = np.array([[self.v1], [self.w1]]) #2x1
+            G1 = np.array([[1,0], [0,1/L]]) #2x2
+            R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
+            S1 = np.dot(np.dot(G1, R1), u1_predicted_np) #2x1
         
-        " Publish Speed Commands to Robot 1 "
+            S2 = np.array([[self.v2], [self.w2]]) #2x1
+            G2 = np.array([[1,0], [0,1/L]]) #2x2
+            R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
+            S2 = np.dot(np.dot(G2, R2), u2_predicted_np) # 2x1
+            
+            S3 = np.array([[self.v3], [self.w3]]) #2x1
+            G3 = np.array([[1,0], [0,1/L]]) #2x2
+            R3 = np.array([[math.cos(self.Theta3),math.sin(self.Theta3)],[-math.sin(self.Theta3),math.cos(self.Theta3)]]) #2x2
+            S3 = np.dot(np.dot(G3, R3), u3_predicted_np) # 2x1        
+                            
+            " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
+        
+            D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
+            Di = np.linalg.inv(D) #2x2
     
-        msgl1 = Float32()    
-        msgr1 = Float32()
-        msgl1.data = VL1
-        msgr1.data = VR1
-        self.publisher_l1.publish(msgl1)
-        self.publisher_r1.publish(msgr1)
-
-        " Publish Speed Commands to Robot 2 "
+            Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
+            Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2
+            Speed_L3 = np.array([[self.vL3], [self.vR3]]) # Vector 2x1 for Speed of Robot 3
+    
+            M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
+            M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
+            M3 = np.array([[S3[0]],[S3[1]]]).reshape(2,1) #2x1
+    
+            Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
+            Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
+            Speed_L3 = np.dot(Di, M3) # 2x1 (VL1, VR1)
+    
+            VL1 = float(Speed_L1[0])
+            VR1 = float(Speed_L1[1])
+            VL2 = float(Speed_L2[0])
+            VR2 = float(Speed_L2[1])
+            VL3 = float(Speed_L3[0])
+            VR3 = float(Speed_L3[1]) 
+            
+            " Publish Speed Commands to Robot 1 "
         
-        msgl2 = Float32()
-        msgr2 = Float32()
-        msgl2.data = VL2
-        msgr2.data = VR2
-        self.publisher_l2.publish(msgl2)
-        self.publisher_r2.publish(msgr2)   
-        
-        " Publish Speed Commands to Robot 3 "
-        
-        msgl3 = Float32()
-        msgr3 = Float32()
-        msgl3.data = VL3
-        msgr3.data = VR3
-        self.publisher_l3.publish(msgl3)
-        self.publisher_r3.publish(msgr3)        
+            msgl1 = Float32()    
+            msgr1 = Float32()
+            msgl1.data = VL1
+            msgr1.data = VR1
+            self.publisher_l1.publish(msgl1)
+            self.publisher_r1.publish(msgr1)
+    
+            " Publish Speed Commands to Robot 2 "
+            
+            msgl2 = Float32()
+            msgr2 = Float32()
+            msgl2.data = VL2
+            msgr2.data = VR2
+            self.publisher_l2.publish(msgl2)
+            self.publisher_r2.publish(msgr2)   
+            
+            " Publish Speed Commands to Robot 3 "
+            
+            msgl3 = Float32()
+            msgr3 = Float32()
+            msgl3.data = VL3
+            msgr3.data = VR3
+            self.publisher_l3.publish(msgl3)
+            self.publisher_r3.publish(msgr3)        
                     
         
 def main(args=None):
