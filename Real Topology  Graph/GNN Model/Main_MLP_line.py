@@ -133,8 +133,7 @@ class MinimalPublisher(Node):
         self.My5 = 0.1
         self.Mx6 = 0.1
         self.My6 = 0.1        
-        
-        
+                
 
     def listener_callback(self, msg):
         
