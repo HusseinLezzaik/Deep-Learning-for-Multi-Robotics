@@ -1,5 +1,5 @@
 """
-Code for building and training MLP model of Robot  ( same model for other robots by symmetry ) 
+Code for building and training MLP decentralized model for Robots  
     
 *Input: Mx, My
 *Output: Ux, Uy
