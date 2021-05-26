@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm for 6 Mobile robots using MLP Model
+Consensus Algorithm for 6 Mobile robots using MLP Model for Line Graph Implementation
 
 Inputs: Mx, My
 Outputs: Ux, Uy

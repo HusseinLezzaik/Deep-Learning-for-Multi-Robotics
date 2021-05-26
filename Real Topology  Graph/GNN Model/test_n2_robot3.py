@@ -1,6 +1,8 @@
 """
 
-Consensus Algorithm for 6 Mobile robots using MLP Model
+Consensus Algorithm for 2 Robots using MLP Model
+
+Scene: Robot 1, Robot 3
 
 Inputs: Mx, My
 Outputs: Ux, Uy
@@ -124,7 +126,6 @@ class MinimalPublisher(Node):
 
         Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
         Speed_L3 = np.array([[self.vL3], [self.vR3]]) # Vector 2x1 for Speed of Robot 3
-  
 
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
         M3 = np.array([[S3[0]],[S3[1]]]).reshape(2,1) #2x1
@@ -146,7 +147,6 @@ class MinimalPublisher(Node):
         self.publisher_l1.publish(msgl1)
         self.publisher_r1.publish(msgr1)
        
-
         " Publish Speed Commands to Robot 3 "
         
         msgl3 = Float32()
@@ -156,7 +156,6 @@ class MinimalPublisher(Node):
         self.publisher_l3.publish(msgl3)
         self.publisher_r3.publish(msgr3)  
      
-                    
         
 def main(args=None):
     rclpy.init(args=args)
