@@ -51,6 +51,13 @@ class MinimalPublisher(Node):
             '/tf',
             self.listener_callback,
             0)
+
+        " Timer Callback "
+        
+        #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
+        timer_period = 0.5  # seconds
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.i = 0   
         
         " Mobile Robot 1 Parameters "
         self.x1 = 10
@@ -78,22 +85,9 @@ class MinimalPublisher(Node):
         self.w3 = 3
         self.vL3 = 3 
         self.vR3 = 3
-        
-        " Timer Callback "
-        
-        #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
-        timer_period = 0.5  # seconds
-        self.timer = self.create_timer(timer_period, self.timer_callback)
-        self.i = 0        
-        
+                     
     def timer_callback(self):
         
-        #msg = Float32()
-        #msg.data = 'Hello World: %d' % self.i
-        #self.publisher_.publish(msg)
-        #self.get_logger().info('Publishing: "%s"' % msg.data)
-        self.i += 1
-
         " Calculate Mx1, My1, ...... Mx6, My6 "
         
         Mx1 = ( (self.x2 - self.x1) + (self.x3 - self.x1) )/2
@@ -186,6 +180,12 @@ class MinimalPublisher(Node):
         msgr3.data = VR3
         self.publisher_l3.publish(msgl3)
         self.publisher_r3.publish(msgr3)             
+
+        #msg = Float32()
+        #msg.data = 'Hello World: %d' % self.i
+        #self.publisher_.publish(msg)
+        #self.get_logger().info('Publishing: "%s"' % msg.data)
+        self.i += 1
         
     def listener_callback(self, msg):
         
