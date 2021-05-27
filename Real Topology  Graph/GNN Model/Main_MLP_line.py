@@ -64,7 +64,6 @@ class MinimalPublisher(Node):
             0)
 
         " Timer Callback "
-        
         #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
         timer_period = 0.1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
@@ -145,10 +144,7 @@ class MinimalPublisher(Node):
     def timer_callback(self):
         
         " Calculate Mx1, My1, ...... Mx6, My6 "
-        
-        #Phix = ( u1[0][0] + u3[0][0] )/2 # 1x1
-        #Phiy = ( u1[1][0] + u3[1][0] )/2 # 1x1
-        
+                
         self.Mx1 = self.x2 - self.x1 # 1x1
         self.My1 = self.y2 - self.y1 # 1x1
         
