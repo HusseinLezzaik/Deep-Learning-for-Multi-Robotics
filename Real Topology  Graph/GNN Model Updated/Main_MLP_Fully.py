@@ -63,7 +63,7 @@ class MinimalPublisher(Node):
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0  
 
-        "Parameters "
+        " Parameters "
         self.t = 0 # Just to intialized Phix's and Phiy's
         
         " Initialize Phi's"
@@ -167,8 +167,8 @@ class MinimalPublisher(Node):
             self.Phiy6 = -0.02 # 1x1
             self.t += 1                
         
-        self.Mx1 = self.x2 - self.x1 # 1x1
-        self.My1 = self.y2 - self.y1 # 1x1
+        self.Mx1 = ( ( self.x2 - self.x1 ) + ( self.x6 - self.x1 ) ) / 2 # 1x1
+        self.My1 = ( ( self.y2 - self.y1 ) + ( self.y6 - self.y1 ) ) / 2 # 1x1
         
         self.Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
         self.My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1            
@@ -182,8 +182,8 @@ class MinimalPublisher(Node):
         self.Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
         self.My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
         
-        self.Mx6 = self.x5 - self.x6 # 1x1
-        self.My6 = self.y5 - self.y6 # 1x1   
+        self.Mx6 = ( ( self.x5 - self.x6 ) + ( self.x1 - self.x6 ) ) / 2 # 1x1
+        self.My6 = ( ( self.y5 - self.y6 ) + ( self.y1 - self.y6 ) ) / 2 # 1x1   
 
         " Use MLP to Predict control inputs "
         
