@@ -158,8 +158,7 @@ class MinimalPublisher(Node):
 
     def timer_callback(self):        
 
-        " Calculate Mx1, My1, ...... Mx6, My6 "
-            
+        " Calculate Mx1, My1, ...... Mx6, My6 "            
         # Initialize Phi's
         if self.t ==0:
             self.Phix1 = -0.02 # 1x1
@@ -370,8 +369,6 @@ class MinimalPublisher(Node):
         msgr6.data = VR6
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
-        
-
         #msg = Float32()
         #msg.data = 'Hello World: %d' % self.i
         #self.publisher_.publish(msg)
