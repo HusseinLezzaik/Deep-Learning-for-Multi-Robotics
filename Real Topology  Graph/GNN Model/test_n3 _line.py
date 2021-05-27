@@ -16,6 +16,7 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
+import time
 
 L = 1
 d = 0.5
@@ -39,12 +40,12 @@ class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('minimal_publisher1')
-        self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',10) #Change according to topic in child script,String to Float32
-        self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2',10) #Change according to topic in child script,String to Float32
-        self.publisher_l3 = self.create_publisher(Float32, '/leftMotorSpeedrobot3', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r3 = self.create_publisher(Float32, '/rightMotorSpeedrobot3',10) #Change according to topic in child script,String to Float32           
+        self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',0) #Change according to topic in child script,String to Float32
+        self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2',0) #Change according to topic in child script,String to Float32
+        self.publisher_l3 = self.create_publisher(Float32, '/leftMotorSpeedrobot3', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r3 = self.create_publisher(Float32, '/rightMotorSpeedrobot3',0) #Change according to topic in child script,String to Float32           
         self.subscription = self.create_subscription(
             TFMessage,
             '/tf',
@@ -204,6 +205,7 @@ class MinimalPublisher(Node):
 def main(args=None):
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
+    time.sleep(5)
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
