@@ -161,7 +161,7 @@ class MinimalPublisher(Node):
 def main(args=None):
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
-    time.sleep(7)
+    time.sleep(5)
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
