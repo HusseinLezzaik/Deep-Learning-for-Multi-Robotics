@@ -64,8 +64,7 @@ class MinimalPublisher(Node):
             0)
 
         " Timer Callback "
-        #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
-        timer_period = 0.01  # seconds
+        timer_period = 0.015  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0   
 
@@ -129,7 +128,6 @@ class MinimalPublisher(Node):
         
     def timer_callback(self):
         
-        
         " Calculate Mx1, My1, ...... Mx6, My6 "
                 
         Mx1 = ( ( self.x2 - self.x1 ) + ( self.x6 - self.x1 ) ) / 2 # 1x1
@@ -171,8 +169,7 @@ class MinimalPublisher(Node):
         u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u4_predicted_np = np.array([[ u4_predicted[0][0] ], [ u4_predicted[0][1] ]]) # from tensor to numpy array for calculation    
         u5_predicted_np = np.array([[ u5_predicted[0][0] ], [ u5_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u6_predicted_np = np.array([[ u6_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation
-            
+        u6_predicted_np = np.array([[ u6_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation            
                               
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
@@ -205,7 +202,6 @@ class MinimalPublisher(Node):
         G6 = np.array([[1,0], [0,1/L]]) #2x2
         R6 = np.array([[math.cos(self.Theta6),math.sin(self.Theta6)],[-math.sin(self.Theta6),math.cos(self.Theta6)]]) #2x2
         S6 = np.dot(np.dot(G6, R6), u6_predicted_np) #2x1        
-                
         
         " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
     
@@ -218,7 +214,6 @@ class MinimalPublisher(Node):
         Speed_L4 = np.array([[self.vL4], [self.vR4]]) # Vector 2x1 for Speed of Robot 4
         Speed_L5 = np.array([[self.vL5], [self.vR5]]) # Vector 2x1 for Speed of Robot 5
         Speed_L6 = np.array([[self.vL6], [self.vR6]]) # Vector 2x1 for Speed of Robot 6
-
 
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
         M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
@@ -248,7 +243,6 @@ class MinimalPublisher(Node):
         VL6 = float(Speed_L6[0])
         VR6 = float(Speed_L6[1])
                 
-
         
         " Publish Speed Commands to Robot 1 "
     
@@ -258,8 +252,6 @@ class MinimalPublisher(Node):
         msgr1.data = VR1
         self.publisher_l1.publish(msgl1)
         self.publisher_r1.publish(msgr1)
-        #self.get_logger().info('Publishing R1: "%s"' % msgr1.data)
-
 
         " Publish Speed Commands to Robot 2 "
         
@@ -287,8 +279,7 @@ class MinimalPublisher(Node):
         msgr4.data = VR4
         self.publisher_l4.publish(msgl4)
         self.publisher_r4.publish(msgr4)        
-            
-            
+                        
         " Publish Speed Commands to Robot 5 "
         
         msgl5 = Float32()
@@ -297,7 +288,6 @@ class MinimalPublisher(Node):
         msgr5.data = VR5
         self.publisher_l5.publish(msgl5)
         self.publisher_r5.publish(msgr5)        
-
 
         " Publish Speed Commands to Robot 6 "
         
@@ -378,7 +368,6 @@ def main(args=None):
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
