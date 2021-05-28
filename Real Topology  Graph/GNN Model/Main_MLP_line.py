@@ -74,7 +74,7 @@ class MinimalPublisher(Node):
         self.scene = 0 # Nb of scene iteration
         
         " Mobile Robot 1 Parameters "
-        self.x1 = 10
+        self.x1 = 0
         self.y1 = 12
         self.Theta1 = 0
         self.v1 = 1

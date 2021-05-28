@@ -64,7 +64,7 @@ class MinimalPublisher(Node):
             0)
 
         " Timer Callback "
-        timer_period = 0.015  # seconds
+        timer_period = 0.05  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0   
 
@@ -73,58 +73,58 @@ class MinimalPublisher(Node):
         self.scene = 0 # Nb of scene iteration
         
         " Mobile Robot 1 Parameters "
-        self.x1 = 10
-        self.y1 = 12
+        self.x1 = 0
+        self.y1 = 0
         self.Theta1 = 0
-        self.v1 = 1
-        self.w1 = 1
-        self.vL1 = 2
-        self.vR1 = 2
+        self.v1 = 0
+        self.w1 = 0
+        self.vL1 = 0
+        self.vR1 = 0
         
         " Mobile Robot 1 Parameters "
-        self.x2 = 5
-        self.y2 = 7
+        self.x2 = 0
+        self.y2 = 0
         self.Theta2 = 0
-        self.v2 = 2
-        self.w2 = 2
-        self.vL2 = 2 
-        self.vR2 = 2
+        self.v2 = 0
+        self.w2 = 0
+        self.vL2 = 0
+        self.vR2 = 0
         
         " Mobile Robot 3 Parameters "
-        self.x3 = 13
-        self.y3 = 14
+        self.x3 = 0
+        self.y3 = 0
         self.Theta3 = 0
-        self.v3 = 3
-        self.w3 = 3
-        self.vL3 = 2
-        self.vR3 = 2                
+        self.v3 =0
+        self.w3 = 0
+        self.vL3 = 0
+        self.vR3 = 0               
         
         " Mobile Robot 4 Parameters "
-        self.x4 = 14
-        self.y4 = 15
+        self.x4 = 0
+        self.y4 = 0
         self.Theta4 = 0
-        self.v4 = 4
-        self.w4 = 4
-        self.vL4 = 2
-        self.vR4 = 2        
+        self.v4 = 0
+        self.w4 = 0
+        self.vL4 = 0
+        self.vR4 = 0       
         
         " Mobile Robot 5 Parameters "
-        self.x5 = 15
-        self.y5 = 16
+        self.x5 = 0
+        self.y5 = 0
         self.Theta5 = 0
-        self.v5 = 5
-        self.w5 = 5
-        self.vL5 = 2
-        self.vR5 = 2
+        self.v5 = 0
+        self.w5 = 0
+        self.vL5 = 0
+        self.vR5 = 0
 
         " Mobile Robot 6 Parameters "
-        self.x6 = 16
-        self.y6 = 17
+        self.x6 = 0
+        self.y6 = 0
         self.Theta6 = 0
-        self.v6 = 6
-        self.w6 = 6
-        self.vL6 = 2
-        self.vR6 = 2
+        self.v6 = 0
+        self.w6 = 0
+        self.vL6 = 0
+        self.vR6 = 0
         
     def timer_callback(self):
         

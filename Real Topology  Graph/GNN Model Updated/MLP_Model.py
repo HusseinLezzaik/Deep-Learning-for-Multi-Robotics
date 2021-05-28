@@ -62,19 +62,19 @@ class MLP(Module):
         xavier_uniform_(self.input.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
-        self.hidden1 = Linear(8, 8)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU()
+        # self.hidden1 = Linear(8, 8)
+        # xavier_uniform_(self.hidden1.weight)
+        # self.act2 = ReLU()
         # Define Hidden Layer
-        self.hidden2 = Linear(8, 8)
-        xavier_uniform_(self.hidden2.weight)
-        self.act3 = ReLU()      
+        # self.hidden2 = Linear(8, 8)
+        # xavier_uniform_(self.hidden2.weight)
+        # self.act3 = ReLU()      
         # Define Hidden Layer
-        self.hidden3 = Linear(8, 4)
-        xavier_uniform_(self.hidden3.weight)
-        self.act4 = ReLU()         
+        # self.hidden3 = Linear(8, 4)
+        # xavier_uniform_(self.hidden3.weight)
+        # self.act4 = ReLU()         
         # Output layer 4 to 2 units
-        self.output = Linear(4, 2)
+        self.output = Linear(8, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
@@ -84,14 +84,14 @@ class MLP(Module):
         X = self.input(X)
         X = self.act1(X)
         # Second hidden layer
-        X = self.hidden1(X)
-        X = self.act2(X)
+        # X = self.hidden1(X)
+        # X = self.act2(X)
         # Third hidden layer
-        X = self.hidden2(X)
-        X = self.act3(X)
+        # X = self.hidden2(X)
+        # X = self.act3(X)
         # Forth hidden layer
-        X = self.hidden3(X)
-        X = self.act4(X)         
+        # X = self.hidden3(X)
+        # X = self.act4(X)         
         # Output layer
         X = self.output(X)
         return X
@@ -103,7 +103,7 @@ def prepare_data(path):
     # calculate split
     train, test = dataset.get_splits()
     # prepare data loaders
-    train_dl = DataLoader(train, batch_size=64, shuffle=True)
+    train_dl = DataLoader(train, batch_size=100, shuffle=True)
     test_dl = DataLoader(test, batch_size=32, shuffle=False)
     return train_dl, test_dl
 
@@ -113,7 +113,7 @@ def train_model(train_dl, model):
     criterion = MSELoss()
     optimizer = SGD(model.parameters(), lr=0.01, momentum=0.9)
     # enumerate epochs
-    for epoch in range(100):
+    for epoch in range(30):
         # enumerate mini batches
         for i, (inputs, targets) in enumerate(train_dl):
             # clear the gradients
@@ -179,5 +179,5 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN
 #print(yhat)
 
 # save model using dict
-# FILE = "model.pth"
+FILE = "model.pth"
 # torch.save(model.state_dict(), FILE)
