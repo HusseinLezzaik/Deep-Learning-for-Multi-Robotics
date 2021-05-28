@@ -16,6 +16,7 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
+import time
 
 L = 1
 d = 0.5
@@ -39,15 +40,20 @@ class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('minimal_publisher1')
-        self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',10) #Change according to topic in child script,String to Float32
-        self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 10) #Change according to topic in child script,String to Float32
-        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2',10) #Change according to topic in child script,String to Float32          
+        self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',0) #Change according to topic in child script,String to Float32
+        self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2',0) #Change according to topic in child script,String to Float32          
         self.subscription = self.create_subscription(
             TFMessage,
             '/tf',
             self.listener_callback,
             0)
+       
+        " Timer Callback " 
+        timer_period = 0.1  # seconds
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.i = 0          
         
         " Mobile Robot 1 Parameters "
         self.x1 = 10
@@ -66,27 +72,9 @@ class MinimalPublisher(Node):
         self.w2 = 2
         self.vL2 = 2 
         self.vR2 = 2
+ 
+    def timer_callback(self):  
         
-    def listener_callback(self, msg):
-        
-        if msg.transforms[0].child_frame_id == 'robot1' :  
-            self.x1 = msg.transforms[0].transform.translation.x
-            self.y1 = msg.transforms[0].transform.translation.y
-            self.xr1 = msg.transforms[0].transform.rotation.x
-            self.yr1 = msg.transforms[0].transform.rotation.y
-            self.zr1 = msg.transforms[0].transform.rotation.z
-            self.wr1 = msg.transforms[0].transform.rotation.w
-            self.Theta1 = euler_from_quaternion(self.xr1,self.yr1,self.zr1,self.wr1)
-   
-        if  msg.transforms[0].child_frame_id == 'robot2' :
-            self.x2 = msg.transforms[0].transform.translation.x
-            self.y2 = msg.transforms[0].transform.translation.y
-            self.xr2 = msg.transforms[0].transform.rotation.x
-            self.yr2 = msg.transforms[0].transform.rotation.y
-            self.zr2 = msg.transforms[0].transform.rotation.z
-            self.wr2 = msg.transforms[0].transform.rotation.w
-            self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
-           
         " Calculate Mx1, My1, ...... Mx6, My6 "
         
         Mx1 = self.x2 - self.x1
@@ -156,12 +144,35 @@ class MinimalPublisher(Node):
         msgl2.data = VL2
         msgr2.data = VR2
         self.publisher_l2.publish(msgl2)
-        self.publisher_r2.publish(msgr2)        
-                    
+        self.publisher_r2.publish(msgr2)  
+        
+        self.i += 1
+
+    def listener_callback(self, msg):
+        
+        if msg.transforms[0].child_frame_id == 'robot1' :  
+            self.x1 = msg.transforms[0].transform.translation.x
+            self.y1 = msg.transforms[0].transform.translation.y
+            self.xr1 = msg.transforms[0].transform.rotation.x
+            self.yr1 = msg.transforms[0].transform.rotation.y
+            self.zr1 = msg.transforms[0].transform.rotation.z
+            self.wr1 = msg.transforms[0].transform.rotation.w
+            self.Theta1 = euler_from_quaternion(self.xr1,self.yr1,self.zr1,self.wr1)
+   
+        if  msg.transforms[0].child_frame_id == 'robot2' :
+            self.x2 = msg.transforms[0].transform.translation.x
+            self.y2 = msg.transforms[0].transform.translation.y
+            self.xr2 = msg.transforms[0].transform.rotation.x
+            self.yr2 = msg.transforms[0].transform.rotation.y
+            self.zr2 = msg.transforms[0].transform.rotation.z
+            self.wr2 = msg.transforms[0].transform.rotation.w
+            self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
+                               
         
 def main(args=None):
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
+    time.sleep(5)
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()

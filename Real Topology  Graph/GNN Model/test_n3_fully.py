@@ -180,11 +180,7 @@ class MinimalPublisher(Node):
         msgr3.data = VR3
         self.publisher_l3.publish(msgl3)
         self.publisher_r3.publish(msgr3)             
-
-        #msg = Float32()
-        #msg.data = 'Hello World: %d' % self.i
-        #self.publisher_.publish(msg)
-        #self.get_logger().info('Publishing: "%s"' % msg.data)
+        
         self.i += 1
         
     def listener_callback(self, msg):

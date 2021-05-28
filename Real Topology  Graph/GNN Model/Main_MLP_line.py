@@ -65,7 +65,7 @@ class MinimalPublisher(Node):
 
         " Timer Callback "
         #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
-        timer_period = 0.1  # seconds
+        timer_period = 0.01  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0   
 
@@ -126,51 +126,37 @@ class MinimalPublisher(Node):
         self.w6 = 6
         self.vL6 = 2
         self.vR6 = 2
-        
-        " Mx, My Initialization "
-        self.Mx1 = 0.1
-        self.My1 = 0.1
-        self.Mx2 = 0.1
-        self.My2 = 0.1
-        self.Mx3 = 0.1
-        self.My3 = 0.1
-        self.Mx4 = 0.1
-        self.My4 = 0.1
-        self.Mx5 = 0.1
-        self.My5 = 0.1
-        self.Mx6 = 0.1
-        self.My6 = 0.1        
-                
+                        
     def timer_callback(self):
         
         " Calculate Mx1, My1, ...... Mx6, My6 "
                 
-        self.Mx1 = self.x2 - self.x1 # 1x1
-        self.My1 = self.y2 - self.y1 # 1x1
+        Mx1 = self.x2 - self.x1 # 1x1
+        My1 = self.y2 - self.y1 # 1x1
         
-        self.Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
-        self.My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1            
+        Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
+        My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1            
 
-        self.Mx3 = ( ( self.x2 - self.x3 ) + ( self.x4 - self.x3 ) ) / 2 # 1x1
-        self.My3 = ( ( self.y2 - self.y3 ) + ( self.y4 - self.y3 ) ) / 2 # 1x1               
+        Mx3 = ( ( self.x2 - self.x3 ) + ( self.x4 - self.x3 ) ) / 2 # 1x1
+        My3 = ( ( self.y2 - self.y3 ) + ( self.y4 - self.y3 ) ) / 2 # 1x1               
         
-        self.Mx4 = ( ( self.x3 - self.x4 ) + ( self.x5 - self.x4 ) ) / 2 # 1x1
-        self.My4 = ( ( self.y4 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
+        Mx4 = ( ( self.x3 - self.x4 ) + ( self.x5 - self.x4 ) ) / 2 # 1x1
+        My4 = ( ( self.y4 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
 
-        self.Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
-        self.My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
+        Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
+        My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
         
-        self.Mx6 = self.x5 - self.x6 # 1x1
-        self.My6 = self.y5 - self.y6 # 1x1   
+        Mx6 = self.x5 - self.x6 # 1x1
+        My6 = self.y5 - self.y6 # 1x1   
 
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ self.Mx1, self.My1 ] # tensor data for MLP model
-        relative_pose_2 = [ self.Mx2, self.My2 ] # tensor data for MLP model
-        relative_pose_3 = [ self.Mx3, self.My3 ] # tensor data for MLP model
-        relative_pose_4 = [ self.Mx4, self.My4 ] # tensor data for MLP model
-        relative_pose_5 = [ self.Mx5, self.My5 ] # tensor data for MLP model
-        relative_pose_6 = [ self.Mx6, self.My6 ] # tensor data for MLP model
+        relative_pose_1 = [ Mx1, My1 ] # tensor data for MLP model
+        relative_pose_2 = [ Mx2, My2 ] # tensor data for MLP model
+        relative_pose_3 = [ Mx3, My3 ] # tensor data for MLP model
+        relative_pose_4 = [ Mx4, My4 ] # tensor data for MLP model
+        relative_pose_5 = [ Mx5, My5 ] # tensor data for MLP model
+        relative_pose_6 = [ Mx6, My6 ] # tensor data for MLP model
         
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
@@ -185,7 +171,6 @@ class MinimalPublisher(Node):
         u4_predicted_np = np.array([[ u4_predicted[0][0] ], [ u4_predicted[0][1] ]]) # from tensor to numpy array for calculation    
         u5_predicted_np = np.array([[ u5_predicted[0][0] ], [ u5_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u6_predicted_np = np.array([[ u6_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation
-            
                               
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
@@ -219,7 +204,6 @@ class MinimalPublisher(Node):
         R6 = np.array([[math.cos(self.Theta6),math.sin(self.Theta6)],[-math.sin(self.Theta6),math.cos(self.Theta6)]]) #2x2
         S6 = np.dot(np.dot(G6, R6), u6_predicted_np) #2x1        
                 
-        
         " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
     
         D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
@@ -231,7 +215,6 @@ class MinimalPublisher(Node):
         Speed_L4 = np.array([[self.vL4], [self.vR4]]) # Vector 2x1 for Speed of Robot 4
         Speed_L5 = np.array([[self.vL5], [self.vR5]]) # Vector 2x1 for Speed of Robot 5
         Speed_L6 = np.array([[self.vL6], [self.vR6]]) # Vector 2x1 for Speed of Robot 6
-
 
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
         M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
@@ -247,7 +230,6 @@ class MinimalPublisher(Node):
         Speed_L5 = np.dot(Di, M5) # 2x1 (VL5, VR5)
         Speed_L6 = np.dot(Di, M6) # 2x1 (VL6, VR6)
 
-
         VL1 = float(Speed_L1[0])
         VR1 = float(Speed_L1[1])
         VL2 = float(Speed_L2[0])
@@ -260,9 +242,7 @@ class MinimalPublisher(Node):
         VR5 = float(Speed_L5[1])        
         VL6 = float(Speed_L6[0])
         VR6 = float(Speed_L6[1])
-                
-
-        
+                        
         " Publish Speed Commands to Robot 1 "
     
         msgl1 = Float32()    
@@ -321,10 +301,6 @@ class MinimalPublisher(Node):
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)
 
-        #msg = Float32()
-        #msg.data = 'Hello World: %d' % self.i
-        #self.publisher_.publish(msg)
-        #self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1             
 
 

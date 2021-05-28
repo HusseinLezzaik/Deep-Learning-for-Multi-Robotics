@@ -65,7 +65,7 @@ class MinimalPublisher(Node):
 
         " Timer Callback "
         #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
-        timer_period = 0.1  # seconds
+        timer_period = 0.01  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0   
 
@@ -127,53 +127,37 @@ class MinimalPublisher(Node):
         self.vL6 = 2
         self.vR6 = 2
         
-        " Mx, My Initialization "
-        self.Mx1 = 0.1
-        self.My1 = 0.1
-        self.Mx2 = 0.1
-        self.My2 = 0.1
-        self.Mx3 = 0.1
-        self.My3 = 0.1
-        self.Mx4 = 0.1
-        self.My4 = 0.1
-        self.Mx5 = 0.1
-        self.My5 = 0.1
-        self.Mx6 = 0.1
-        self.My6 = 0.1
-        
     def timer_callback(self):
         
+        
         " Calculate Mx1, My1, ...... Mx6, My6 "
+                
+        Mx1 = ( ( self.x2 - self.x1 ) + ( self.x6 - self.x1 ) ) / 2 # 1x1
+        My1 = ( ( self.y2 - self.y1 ) + ( self.y6 - self.y1 ) ) / 2 # 1x1
         
-        #Phix = ( u1[0][0] + u3[0][0] )/2 # 1x1
-        #Phiy = ( u1[1][0] + u3[1][0] )/2 # 1x1
-        
-        self.Mx1 = ( ( self.x2 - self.x1 ) + ( self.x6 - self.x1 ) ) / 2 # 1x1
-        self.My1 = ( ( self.y2 - self.y1 ) + ( self.y6 - self.y1 ) ) / 2 # 1x1
-        
-        self.Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
-        self.My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1            
+        Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
+        My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1            
 
-        self.Mx3 = ( ( self.x2 - self.x3 ) + ( self.x4 - self.x3 ) ) / 2 # 1x1
-        self.My3 = ( ( self.y2 - self.y3 ) + ( self.y4 - self.y3 ) ) / 2 # 1x1               
+        Mx3 = ( ( self.x2 - self.x3 ) + ( self.x4 - self.x3 ) ) / 2 # 1x1
+        My3 = ( ( self.y2 - self.y3 ) + ( self.y4 - self.y3 ) ) / 2 # 1x1               
         
-        self.Mx4 = ( ( self.x3 - self.x4 ) + ( self.x5 - self.x4 ) ) / 2 # 1x1
-        self.My4 = ( ( self.y4 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
+        Mx4 = ( ( self.x3 - self.x4 ) + ( self.x5 - self.x4 ) ) / 2 # 1x1
+        My4 = ( ( self.y4 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
 
-        self.Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
-        self.My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
+        Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
+        My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
         
-        self.Mx6 = ( ( self.x5 - self.x6 ) + ( self.x1 - self.x6 ) ) / 2 # 1x1
-        self.My6 = ( ( self.y5 - self.y6 ) + ( self.y1 - self.y6 ) ) / 2 # 1x1   
+        Mx6 = ( ( self.x5 - self.x6 ) + ( self.x1 - self.x6 ) ) / 2 # 1x1
+        My6 = ( ( self.y5 - self.y6 ) + ( self.y1 - self.y6 ) ) / 2 # 1x1   
 
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ self.Mx1, self.My1 ] # tensor data for MLP model
-        relative_pose_2 = [ self.Mx2, self.My2 ] # tensor data for MLP model
-        relative_pose_3 = [ self.Mx3, self.My3 ] # tensor data for MLP model
-        relative_pose_4 = [ self.Mx4, self.My4 ] # tensor data for MLP model
-        relative_pose_5 = [ self.Mx5, self.My5 ] # tensor data for MLP model
-        relative_pose_6 = [ self.Mx6, self.My6 ] # tensor data for MLP model
+        relative_pose_1 = [ Mx1, My1 ] # tensor data for MLP model
+        relative_pose_2 = [ Mx2, My2 ] # tensor data for MLP model
+        relative_pose_3 = [ Mx3, My3 ] # tensor data for MLP model
+        relative_pose_4 = [ Mx4, My4 ] # tensor data for MLP model
+        relative_pose_5 = [ Mx5, My5 ] # tensor data for MLP model
+        relative_pose_6 = [ Mx6, My6 ] # tensor data for MLP model
         
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
@@ -323,11 +307,7 @@ class MinimalPublisher(Node):
         msgr6.data = VR6
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)
-        
-        #msg = Float32()
-        #msg.data = 'Hello World: %d' % self.i
-        #self.publisher_.publish(msg)
-        #self.get_logger().info('Publishing: "%s"' % msg.data)
+                
         self.i += 1        
 
     def listener_callback(self, msg):

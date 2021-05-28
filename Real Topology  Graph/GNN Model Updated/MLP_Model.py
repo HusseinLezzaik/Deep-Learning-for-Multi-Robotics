@@ -58,15 +58,15 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 12) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 8) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
-        self.hidden1 = Linear(12, 12)
+        self.hidden1 = Linear(8, 8)
         xavier_uniform_(self.hidden1.weight)
         self.act2 = ReLU()
         # Define Hidden Layer
-        self.hidden2 = Linear(12, 8)
+        self.hidden2 = Linear(8, 8)
         xavier_uniform_(self.hidden2.weight)
         self.act3 = ReLU()      
         # Define Hidden Layer
@@ -179,5 +179,5 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN
 #print(yhat)
 
 # save model using dict
-FILE = "model.pth"
+# FILE = "model.pth"
 # torch.save(model.state_dict(), FILE)
