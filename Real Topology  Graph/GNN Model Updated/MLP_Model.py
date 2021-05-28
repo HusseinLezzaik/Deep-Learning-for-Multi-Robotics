@@ -45,7 +45,7 @@ class CSVDataset(Dataset):
         return [self.X[idx], self.y[idx]]
 
     # get indexes for train and test rows
-    def get_splits(self, n_test=0.25):
+    def get_splits(self, n_test=0.3):
         # determine sizes
         test_size = round(n_test * len(self.X))
         train_size = len(self.X) - test_size
@@ -58,21 +58,21 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 32) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 12) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
-        self.hidden1 = Linear(32, 12)
+        self.hidden1 = Linear(12, 12)
         xavier_uniform_(self.hidden1.weight)
         self.act2 = ReLU()
         # Define Hidden Layer
-        self.hidden2 = Linear(12, 4)
+        self.hidden2 = Linear(12, 8)
         xavier_uniform_(self.hidden2.weight)
         self.act3 = ReLU()      
         # Define Hidden Layer
-        # self.hidden3 = Linear(75, 25)
-        # xavier_uniform_(self.hidden3.weight)
-        # self.act4 = ReLU()         
+        self.hidden3 = Linear(8, 4)
+        xavier_uniform_(self.hidden3.weight)
+        self.act4 = ReLU()         
         # Output layer 4 to 2 units
         self.output = Linear(4, 2)
         xavier_uniform_(self.output.weight)
@@ -90,8 +90,8 @@ class MLP(Module):
         X = self.hidden2(X)
         X = self.act3(X)
         # Forth hidden layer
-        # X = self.hidden3(X)
-        # X = self.act4(X)         
+        X = self.hidden3(X)
+        X = self.act4(X)         
         # Output layer
         X = self.output(X)
         return X
@@ -103,7 +103,7 @@ def prepare_data(path):
     # calculate split
     train, test = dataset.get_splits()
     # prepare data loaders
-    train_dl = DataLoader(train, batch_size=32, shuffle=True)
+    train_dl = DataLoader(train, batch_size=64, shuffle=True)
     test_dl = DataLoader(test, batch_size=32, shuffle=False)
     return train_dl, test_dl
 

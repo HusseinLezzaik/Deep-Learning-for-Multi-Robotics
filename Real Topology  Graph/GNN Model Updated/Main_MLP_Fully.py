@@ -56,7 +56,6 @@ class MinimalPublisher(Node):
             '/tf',
             self.listener_callback,
             0)
-        
         " Timer Callback "
         #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
         timer_period = 0.01  # seconds
