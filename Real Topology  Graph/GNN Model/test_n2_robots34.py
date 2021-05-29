@@ -56,22 +56,22 @@ class MinimalPublisher(Node):
         self.i = 0   
         
         " Mobile Robot 4 Parameters "
-        self.x4 = 14
-        self.y4 = 15
+        self.x4 = 0
+        self.y4 = 0
         self.Theta4 = 0
-        self.v4 = 4
-        self.w4 = 4
-        self.vL4 = 2
-        self.vR4 = 2    
+        self.v4 = 0
+        self.w4 = 0
+        self.vL4 = 0
+        self.vR4 = 0    
         
         " Mobile Robot 3 Parameters "
-        self.x3 = 5
-        self.y3 = 7
+        self.x3 = 0
+        self.y3 = 0
         self.Theta3 = 0
-        self.v3 = 2
-        self.w3 = 2
-        self.vL3 = 2 
-        self.vR3 = 2
+        self.v3 = 0
+        self.w3 = 0
+        self.vL3 = 0 
+        self.vR3 = 0
 
       
         

@@ -56,22 +56,22 @@ class MinimalPublisher(Node):
         self.i = 0           
         
         " Mobile Robot 1 Parameters "
-        self.x1 = 10
-        self.y1 = 12
+        self.x1 = 0
+        self.y1 = 0
         self.Theta1 = 0
-        self.v1 = 1
-        self.w1 = 1
-        self.vL1 = 2
-        self.vR1 = 2
+        self.v1 = 0
+        self.w1 = 0
+        self.vL1 = 0
+        self.vR1 = 0
         
         " Mobile Robot 3 Parameters "
-        self.x3 = 5
-        self.y3 = 7
+        self.x3 = 0
+        self.y3 = 0
         self.Theta3 = 0
-        self.v3 = 2
-        self.w3 = 2
-        self.vL3 = 2 
-        self.vR3 = 2
+        self.v3 = 0
+        self.w3 = 0
+        self.vL3 = 0 
+        self.vR3 = 0
 
     def timer_callback(self):
         
