@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm for 3 Mobile robots using MLP Model Full Graph Implementation
+Consensus Algorithm for 3 Mobile robots using MLP Model Cyclic Graph Implementation
 
 Scene: Robot 1, Robot 2, Robot 3
 

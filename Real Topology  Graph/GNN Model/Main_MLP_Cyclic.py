@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm for 6 Mobile robots using MLP Model Fully Connected Graph Implementation
+Consensus Algorithm for 6 Mobile robots using MLP Model Cyclic Connected Graph Implementation
 
 Inputs: Mx, My
 Outputs: Ux, Uy
@@ -63,8 +63,8 @@ class MinimalPublisher(Node):
             self.listener_callback,
             0)
 
-        " Timer Callback "
-        timer_period = 0.05  # seconds
+        " Timer Callback, very important for ROS time lag  "
+        timer_period = 0.05  # seconds, tune according to nb of robots and GNN model
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0   
 
