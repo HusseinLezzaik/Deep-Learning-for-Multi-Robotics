@@ -1,6 +1,6 @@
 """
 
-Data Collection for Consensus Algorithm of Six Robots
+Data Collection for Consensus Algorithm of Six Robots, and saving data for Cyclic Graph
 
 Save data for edge robot, and middle robot:
     
