@@ -1,6 +1,6 @@
 """
 
-Data Collection for Consensus Algorithm of Six Robots, and saving data for Cyclic Graph
+Data Collection for Consensus Algorithm of Six Robots, and saving data for Fully Connected Graph
 
 Save data for edge robot, and middle robot:
     
@@ -43,8 +43,6 @@ def euler_from_quaternion(x, y, z, w):
      
      return yaw_z # in radians
  
-    
-
 class MinimalPublisher(Node):
 
     def __init__(self):
@@ -131,7 +129,7 @@ class MinimalPublisher(Node):
         self.v6 = 0
         self.w6 = 0
         self.vL6 = 0
-        self.vR6 = 0            
+        self.vR6 = 0
         
     def listener_callback(self, msg):
 
@@ -205,7 +203,6 @@ class MinimalPublisher(Node):
         
             " Calculate Control inputs u1, u2, u3, u4, u5, u6 "
         
-        
             A = np.ones(6) - np.identity(6) # Adjancency Matrix
         
             self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
@@ -213,13 +210,11 @@ class MinimalPublisher(Node):
         
             ux = np.zeros((6,1)) # 6x1
             uy = np.zeros((6,1)) # 6x1
-        
                     
             for i in range(1,7):
                 for j in range(1,7):
                     ux[i-1] += -(A[i-1][j-1])*(self.X[i-1]-self.X[j-1]) # 1x1 each
-                    uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
-            
+                    uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each 
         
             u1 = np.array([ [float(ux[0])], [float(uy[0])] ]) # 2x1
             u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
@@ -230,20 +225,20 @@ class MinimalPublisher(Node):
             
             " Data Transformation into M_x, M_y, Phi_x, Phi_y for Edge Robot "
             
-            Phix1 = u2[0][0] # 1x1
-            Phiy1 = u2[1][0] # 1x1
+            Phix1 = ( u2[0][0] + u3[0][0] + u4[0][0] + u5[0][0] + u6[0][0] ) / 5 # 1x1
+            Phiy1 = ( u2[1][0] + u3[1][0] + u4[1][0] + u5[1][0] + u6[1][0] ) / 5 # 1x1
             
-            Mx1 = ( self.x2 - self.x1 )  # 1x1
-            My1 = ( self.y2 - self.y1 )  # 1x1                
+            Mx1 = ( (self.x2 - self.x1) + (self.x3 - self.x1) + (self.x4 - self.x1) + (self.x5 - self.x1) + (self.x6 - self.x1) ) / 5  # 1x1
+            My1 = ( (self.y2 - self.y1) + (self.y3 - self.y1) + (self.y4 - self.y1) + (self.y5 - self.y1) + (self.y6 - self.y1) ) / 5 # 1x1                
             
             
             " Data Transformation into M_x, M_y, Phi_x, Phi_y for Middle Robot "
             
-            Phix2 = ( u1[0][0] + u3[0][0] )/2 # 1x1
-            Phiy2 = ( u1[1][0] + u3[1][0] )/2 # 1x1
+            Phix2 = ( u1[0][0] + u3[0][0] + u4[0][0] + u5[0][0] + u6[0][0] ) / 5 # 1x1
+            Phiy2 = ( u1[1][0] + u3[1][0] + u4[1][0] + u5[1][0] + u6[1][0] ) / 5 # 1x1
             
-            Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
-            My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1      
+            Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) + ( self.x4 - self.x2 ) + ( self.x5 - self.x2 ) + ( self.x6 - self.x2 ) ) / 5 # 1x1
+            My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) + ( self.y4 - self.y2 ) + ( self.y5 - self.y2 ) + ( self.y6 - self.y2 ) ) / 5 # 1x1      
             
         
             " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
