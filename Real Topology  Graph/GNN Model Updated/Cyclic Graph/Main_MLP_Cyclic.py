@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm of Six Robots using MLP model in decentralized  way Cyclic Graph
+Consensus Algorithm of Six Robots using MLP model decentralized Cyclic Graph Implementation
 
 Inputs: Mx, My, Phix, Phiy
 Outputs: Ux, Uy

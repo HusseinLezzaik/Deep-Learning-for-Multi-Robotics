@@ -1,5 +1,5 @@
 """
-Code for building and training MLP model of Robot  ( same model for other robots by symmetry ) 
+Code for building and training MLP model of Robot from Cyclic Graph data
 
 Data collected for Middle Robot
     
@@ -157,7 +157,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model Updated/transformed_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model Updated/Cyclic Graph/transformed_dataset.csv'
 
 # train_dl, test_dl = prepare_data(path)
 
