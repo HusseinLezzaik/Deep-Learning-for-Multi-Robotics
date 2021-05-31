@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm of Six Robots using MLP model decentralized Fully Connected Graph Implementation
+Consensus Algorithm of Six Robots using MLP model decentralized Fully Graph Implementation
 
 Inputs: Mx, My, Phix, Phiy
 Outputs: Ux, Uy
@@ -56,9 +56,9 @@ class MinimalPublisher(Node):
             '/tf',
             self.listener_callback,
             0)
-        
         " Timer Callback "
-        timer_period = 0.01  # seconds
+        #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
+        timer_period = 0.05  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0  
 
@@ -66,14 +66,14 @@ class MinimalPublisher(Node):
         self.t = 0 # Just to intialized Phix's and Phiy's
         
         " Initialize Phi's"
-        self.Phix1 = 0 # 1x1
+        self.Phix1 = 0# 1x1
         self.Phiy1 = 0 # 1x1
         self.Phix2 = 0 # 1x1
         self.Phiy2 = 0 # 1x1
         self.Phix3 = 0 # 1x1
         self.Phiy3 = 0 # 1x1
         self.Phix4 = 0 # 1x1
-        self.Phiy4 = 0 # 1x1
+        self.Phiy4 = -0 # 1x1
         self.Phix5 = 0 # 1x1
         self.Phiy5 = 0 # 1x1
         self.Phix6 = 0 # 1x1
@@ -132,7 +132,8 @@ class MinimalPublisher(Node):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0
-               
+                
+
     def timer_callback(self):
         
         " Calculate Mx1, My1, ...... Mx6, My6 "            
@@ -168,7 +169,7 @@ class MinimalPublisher(Node):
         My5 = ( (self.y1-self.y5)+(self.y2-self.y5)+(self.y3-self.y5)+(self.y4-self.y5)+(self.y6-self.y5) ) / 5 # 1x1  
         
         Mx6 = ( (self.x1-self.x6)+(self.x2-self.x6)+(self.x3-self.x6)+(self.x4-self.x6)+(self.x5-self.x6) ) / 5 # 1x1
-        My6 = ( (self.y1-self.y6)+(self.y2-self.y6)+(self.y3-self.y6)+(self.y4-self.y6)+(self.y5-self.y6) ) / 5 # 1x1   
+        My6 = ( (self.y1-self.y6)+(self.y2-self.y6)+(self.y3-self.y6)+(self.y4-self.y6)+(self.y5-self.y6) ) / 5 # 1x1  
 
         " Use MLP to Predict control inputs "
         
@@ -202,7 +203,7 @@ class MinimalPublisher(Node):
         self.Phiy5 = (u1_predicted[0][1]+u2_predicted[0][1]+u3_predicted[0][1]+u4_predicted[0][1]+u6_predicted[0][1] ) / 5 # 1x1
         
         self.Phix6 = (u1_predicted[0][0]+u2_predicted[0][0]+u3_predicted[0][0]+u4_predicted[0][0]+u5_predicted[0][0] ) / 5 # 1x1
-        self.Phiy6 = (u1_predicted[0][1]+u2_predicted[0][1]+u3_predicted[0][1]+u4_predicted[0][1]+u5_predicted[0][1] ) / 5 # 1x1          
+        self.Phiy6 = (u1_predicted[0][1]+u2_predicted[0][1]+u3_predicted[0][1]+u4_predicted[0][1]+u5_predicted[0][1] ) / 5 # 1x1         
             
             
         u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
@@ -273,6 +274,7 @@ class MinimalPublisher(Node):
         Speed_L5 = np.dot(Di, M5) # 2x1 (VL5, VR5)
         Speed_L6 = np.dot(Di, M6) # 2x1 (VL6, VR6)
     
+    
         VL1 = float(Speed_L1[0])
         VR1 = float(Speed_L1[1])
         VL2 = float(Speed_L2[0])
@@ -295,6 +297,7 @@ class MinimalPublisher(Node):
         msgr1.data = VR1
         self.publisher_l1.publish(msgl1)
         self.publisher_r1.publish(msgr1)
+        #self.get_logger().info('Publishing R1: "%s"' % msgr1.data)
 
 
         " Publish Speed Commands to Robot 2 "
@@ -343,7 +346,10 @@ class MinimalPublisher(Node):
         msgr6.data = VR6
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
-
+        #msg = Float32()
+        #msg.data = 'Hello World: %d' % self.i
+        #self.publisher_.publish(msg)
+        #self.get_logger().info('Publishing: "%s"' % msg.data)
         self.i += 1          
 
     def listener_callback(self, msg):
