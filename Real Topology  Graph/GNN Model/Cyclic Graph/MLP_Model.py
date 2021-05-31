@@ -1,5 +1,7 @@
 """
 Code for building and training MLP decentralized model for Robots  
+
+Data Collected from Running a Cyclic Graph
     
 *Input: Mx, My
 *Output: Ux, Uy
@@ -133,7 +135,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model/transformed_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model/Cyclic Graph/transformed_dataset.csv'
 
 #train_dl, test_dl = prepare_data(path)
 

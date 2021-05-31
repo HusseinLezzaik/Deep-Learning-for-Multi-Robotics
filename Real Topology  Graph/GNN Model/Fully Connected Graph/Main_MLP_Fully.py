@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm for 6 Mobile robots using MLP Model Cyclic Connected Graph Implementation
+Consensus Algorithm for 6 Mobile robots using MLP Model Fully Connected Graph Implementation
 
 Inputs: Mx, My
 Outputs: Ux, Uy

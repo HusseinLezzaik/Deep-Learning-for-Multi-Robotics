@@ -1,6 +1,6 @@
 """
 Code for building and training MLP decentralized model for Robots from Fully Connected Graph
-    
+Data Collected from running a Fully Connected Graph
 *Input: Mx, My
 *Output: Ux, Uy
 """
