@@ -56,9 +56,10 @@ class MinimalPublisher(Node):
             '/tf',
             self.listener_callback,
             0)
+        
         " Timer Callback "
         #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
-        timer_period = 0.05  # seconds
+        timer_period = 0.03  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0  
 
@@ -66,14 +67,14 @@ class MinimalPublisher(Node):
         self.t = 0 # Just to intialized Phix's and Phiy's
         
         " Initialize Phi's"
-        self.Phix1 = 0# 1x1
+        self.Phix1 = 0 # 1x1
         self.Phiy1 = 0 # 1x1
         self.Phix2 = 0 # 1x1
         self.Phiy2 = 0 # 1x1
         self.Phix3 = 0 # 1x1
         self.Phiy3 = 0 # 1x1
         self.Phix4 = 0 # 1x1
-        self.Phiy4 = -0 # 1x1
+        self.Phiy4 = 0 # 1x1
         self.Phix5 = 0 # 1x1
         self.Phiy5 = 0 # 1x1
         self.Phix6 = 0 # 1x1
@@ -132,20 +133,7 @@ class MinimalPublisher(Node):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0
-        
-        " Mx, My Initialization "
-        self.Mx1 = 0
-        self.My1 = 0
-        self.Mx2 = 0
-        self.My2 = 0
-        self.Mx3 = 0
-        self.My3 = 0
-        self.Mx4 = 0
-        self.My4 = 0
-        self.Mx5 = 0
-        self.My5 = 0
-        self.Mx6 = 0
-        self.My6 = 0          
+               
 
     def timer_callback(self):
         
@@ -166,32 +154,32 @@ class MinimalPublisher(Node):
             self.Phiy6 = 0 # 1x1
             self.t += 1                
         
-        self.Mx1 = ( ( self.x2 - self.x1 ) + ( self.x6 - self.x1 ) ) / 2 # 1x1
-        self.My1 = ( ( self.y2 - self.y1 ) + ( self.y6 - self.y1 ) ) / 2 # 1x1
-        
-        self.Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
-        self.My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1            
+        Mx1 = ( ( self.x2 - self.x1 ) + ( self.x6 - self.x1 ) ) / 2 # 1x1
+        My1 = ( ( self.y2 - self.y1 ) + ( self.y6 - self.y1 ) ) / 2 # 1x1
+    
+        Mx2 = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) ) / 2 # 1x1
+        My2 = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) ) / 2 # 1x1            
 
-        self.Mx3 = ( ( self.x2 - self.x3 ) + ( self.x4 - self.x3 ) ) / 2 # 1x1
-        self.My3 = ( ( self.y2 - self.y3 ) + ( self.y4 - self.y3 ) ) / 2 # 1x1               
+        Mx3 = ( ( self.x2 - self.x3 ) + ( self.x4 - self.x3 ) ) / 2 # 1x1
+        My3 = ( ( self.y2 - self.y3 ) + ( self.y4 - self.y3 ) ) / 2 # 1x1               
         
-        self.Mx4 = ( ( self.x3 - self.x4 ) + ( self.x5 - self.x4 ) ) / 2 # 1x1
-        self.My4 = ( ( self.y3 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
+        Mx4 = ( ( self.x3 - self.x4 ) + ( self.x5 - self.x4 ) ) / 2 # 1x1
+        My4 = ( ( self.y3 - self.y4 ) + ( self.y5 - self.y4 ) ) / 2 # 1x1               
 
-        self.Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
-        self.My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
+        Mx5 = ( ( self.x4 - self.x5 ) + ( self.x6 - self.x5 ) ) / 2 # 1x1
+        My5 = ( ( self.y4 - self.y5 ) + ( self.y6 - self.y5 ) ) / 2 # 1x1   
         
-        self.Mx6 = ( ( self.x5 - self.x6 ) + ( self.x1 - self.x6 ) ) / 2 # 1x1
-        self.My6 = ( ( self.y5 - self.y6 ) + ( self.y1 - self.y6 ) ) / 2 # 1x1   
+        Mx6 = ( ( self.x5 - self.x6 ) + ( self.x1 - self.x6 ) ) / 2 # 1x1
+        My6 = ( ( self.y5 - self.y6 ) + ( self.y1 - self.y6 ) ) / 2 # 1x1   
 
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ self.Mx1, self.My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
-        relative_pose_2 = [ self.Mx2, self.My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
-        relative_pose_3 = [ self.Mx3, self.My3, self.Phix3, self.Phiy3 ] # tensor data for MLP model
-        relative_pose_4 = [ self.Mx4, self.My4, self.Phix4, self.Phiy4 ] # tensor data for MLP model
-        relative_pose_5 = [ self.Mx5, self.My5, self.Phix5, self.Phiy5 ] # tensor data for MLP model
-        relative_pose_6 = [ self.Mx6, self.My6, self.Phix6, self.Phiy6 ] # tensor data for MLP model
+        relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
+        relative_pose_2 = [ Mx2, My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
+        relative_pose_3 = [ Mx3, My3, self.Phix3, self.Phiy3 ] # tensor data for MLP model
+        relative_pose_4 = [ Mx4, My4, self.Phix4, self.Phiy4 ] # tensor data for MLP model
+        relative_pose_5 = [ Mx5, My5, self.Phix5, self.Phiy5 ] # tensor data for MLP model
+        relative_pose_6 = [ Mx6, My6, self.Phix6, self.Phiy6 ] # tensor data for MLP model
         
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
@@ -200,24 +188,23 @@ class MinimalPublisher(Node):
         u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
         u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
         
-        self.Phix1 = u2_predicted[0][0]   # 1x1
-        self.Phiy1 = u2_predicted[0][1]   # 1x1
+        self.Phix1 = ( u2_predicted[0][0] + u6_predicted[0][0] )/2   # 1x1
+        self.Phiy1 = ( u2_predicted[0][1] + u6_predicted[0][1] )/2   # 1x1
         
-        self.Phix2 = ( u1_predicted[0][0] + u3_predicted[0][0] )/2 # 1x1
-        self.Phiy2 = ( u1_predicted[0][1] + u3_predicted[0][1] )/2 # 1x1
+        self.Phix2 = ( u1_predicted[0][0] + u3_predicted[0][0] )/2   # 1x1
+        self.Phiy2 = ( u1_predicted[0][1] + u3_predicted[0][1] )/2   # 1x1
         
-        self.Phix3 = ( u2_predicted[0][0] + u4_predicted[0][0] )/2 # 1x1
-        self.Phiy3 = ( u2_predicted[0][1] + u4_predicted[0][1] )/2 # 1x1
+        self.Phix3 = ( u2_predicted[0][0] + u4_predicted[0][0] )/2   # 1x1
+        self.Phiy3 = ( u2_predicted[0][1] + u4_predicted[0][1] )/2   # 1x1
         
-        self.Phix4 = ( u3_predicted[0][0] + u5_predicted[0][0] )/2 # 1x1
-        self.Phiy4 = ( u3_predicted[0][1] + u5_predicted[0][1] )/2 # 1x1
+        self.Phix4 = ( u3_predicted[0][0] + u5_predicted[0][0] )/2   # 1x1
+        self.Phiy4 = ( u3_predicted[0][1] + u5_predicted[0][1] )/2   # 1x1
         
-        self.Phix5 = ( u4_predicted[0][0] + u6_predicted[0][0] )/2 # 1x1
-        self.Phiy5 = ( u4_predicted[0][1] + u6_predicted[0][1] )/2 # 1x1
+        self.Phix5 = ( u4_predicted[0][0] + u6_predicted[0][0] )/2   # 1x1
+        self.Phiy5 = ( u4_predicted[0][1] + u6_predicted[0][1] )/2   # 1x1
         
-        self.Phix6 = u5_predicted[0][0] # 1x1
-        self.Phiy6 = u5_predicted[0][1] # 1x1          
-            
+        self.Phix6 = ( u5_predicted[0][0] + u1_predicted[0][0] )/2   # 1x1
+        self.Phiy6 = ( u5_predicted[0][1] + u1_predicted[0][1] )/2   # 1x1          
             
         u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
