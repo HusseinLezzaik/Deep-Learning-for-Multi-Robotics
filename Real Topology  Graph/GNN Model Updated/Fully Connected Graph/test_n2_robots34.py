@@ -55,6 +55,15 @@ class MinimalPublisher(Node):
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0   
         
+        " Parameters "
+        self.t = 0 # Just to intialized Phix's and Phiy's
+        
+        " Initialize Phi's"
+        self.Phix3 = 0 # 1x1
+        self.Phiy3 = 0 # 1x1
+        self.Phix4 = 0 # 1x1
+        self.Phiy4 = 0 # 1x1         
+        
         " Mobile Robot 4 Parameters "
         self.x4 = 0
         self.y4 = 0
@@ -79,6 +88,15 @@ class MinimalPublisher(Node):
         
         " Calculate Mx1, My1, ...... Mx6, My6 "
         
+        # Initialize Phi's
+        if self.t ==0:
+            self.Phix3 = 0 # 1x1
+            self.Phiy3 = 0 # 1x1
+            self.Phix4 = 0 # 1x1
+            self.Phiy4 = 0 # 1x1
+            self.t += 1           
+        
+        
         Mx3 = self.x4 - self.x3
         My3 = self.y4 - self.y3
     
@@ -87,11 +105,17 @@ class MinimalPublisher(Node):
        
         " Use MLP to Predict control inputs "
         
-        relative_pose_3 = [ Mx3, My3 ] # tensor data for MLP model
-        relative_pose_4 = [ Mx4, My4 ] # tensor data for MLP model
+        relative_pose_3 = [ Mx3, My3, self.Phix3, self.Phiy3 ] # tensor data for MLP model
+        relative_pose_4 = [ Mx4, My4, self.Phix4, self.Phiy4 ] # tensor data for MLP model
 
         u3_predicted = MLP_Model.predict(relative_pose_3, loaded_model) # predict control input u1, tensor
         u4_predicted = MLP_Model.predict(relative_pose_4, loaded_model) # predict control input u2, tensor
+        
+        self.Phix3 = u4_predicted[0][0] # 1x1
+        self.Phiy3 = u4_predicted[0][1] # 1x1
+
+        self.Phix4 = u3_predicted[0][0] # 1x1
+        self.Phiy4 = u3_predicted[0][1] # 1x1         
         
         u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u4_predicted_np = np.array([[ u4_predicted[0][0] ], [ u4_predicted[0][1] ]]) # from tensor to numpy array for calculation

@@ -55,6 +55,15 @@ class MinimalPublisher(Node):
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0           
         
+        " Parameters "
+        self.t = 0 # Just to intialized Phix's and Phiy's
+        
+        " Initialize Phi's"
+        self.Phix1 = 0 # 1x1
+        self.Phiy1 = 0 # 1x1
+        self.Phix3 = 0 # 1x1
+        self.Phiy3 = 0 # 1x1          
+        
         " Mobile Robot 1 Parameters "
         self.x1 = 0
         self.y1 = 0
@@ -77,6 +86,15 @@ class MinimalPublisher(Node):
         
         " Calculate Mx1, My1, ...... Mx6, My6 "
         
+        # Initialize Phi's
+        if self.t ==0:
+            self.Phix1 = 0 # 1x1
+            self.Phiy1 = 0 # 1x1
+            self.Phix3 = 0 # 1x1
+            self.Phiy3 = 0 # 1x1
+            self.t += 1         
+        
+        
         Mx1 = self.x3 - self.x1
         My1 = self.y3 - self.y1
     
@@ -85,11 +103,17 @@ class MinimalPublisher(Node):
        
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ Mx1, My1 ] # tensor data for MLP model
-        relative_pose_3 = [ Mx3, My3 ] # tensor data for MLP model
+        relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
+        relative_pose_3 = [ Mx3, My3, self.Phix3, self.Phiy3 ] # tensor data for MLP model
 
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u3_predicted = MLP_Model.predict(relative_pose_3, loaded_model) # predict control input u2, tensor
+        
+        self.Phix1 = u3_predicted[0][0] # 1x1
+        self.Phiy1 = u3_predicted[0][1] # 1x1
+
+        self.Phix3 = u1_predicted[0][0] # 1x1
+        self.Phiy3 = u1_predicted[0][1] # 1x1          
         
         u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation

@@ -68,13 +68,7 @@ class MinimalPublisher(Node):
         self.Phix2 = 0 # 1x1
         self.Phiy2 = 0 # 1x1
         self.Phix3 = 0 # 1x1
-        self.Phiy3 = 0 # 1x1
-        self.Phix4 = 0 # 1x1
-        self.Phiy4 = 0 # 1x1
-        self.Phix5 = 0 # 1x1
-        self.Phiy5 = 0 # 1x1
-        self.Phix6 = 0 # 1x1
-        self.Phiy6 = 0 # 1x1          
+        self.Phiy3 = 0 # 1x1        
         
         " Mobile Robot 1 Parameters "
         self.x1 = 0
