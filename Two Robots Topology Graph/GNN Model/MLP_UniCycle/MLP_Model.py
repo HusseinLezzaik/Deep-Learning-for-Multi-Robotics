@@ -133,7 +133,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/GNN Model/MLP_UniCycle/dataset_robot1.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Two Robots Topology Graph/GNN Model/MLP_UniCycle/dataset_robot1.csv'
 #train_dl, test_dl = prepare_data(path)
 #print(len(train_dl.dataset), len(test_dl.dataset))
 # define the network

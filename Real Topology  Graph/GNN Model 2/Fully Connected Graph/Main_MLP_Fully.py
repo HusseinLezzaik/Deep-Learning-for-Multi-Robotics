@@ -58,7 +58,7 @@ class MinimalPublisher(Node):
             0)
         
         " Timer Callback "
-        timer_period = 0.05  # seconds
+        timer_period = 0.01  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0  
 
@@ -66,7 +66,7 @@ class MinimalPublisher(Node):
         self.t = 0 # Just to intialized Phix's and Phiy's
         
         " Initialize Phi's"
-        self.Phix1 = 0# 1x1
+        self.Phix1 = 0 # 1x1
         self.Phiy1 = 0 # 1x1
         self.Phix2 = 0 # 1x1
         self.Phiy2 = 0 # 1x1
