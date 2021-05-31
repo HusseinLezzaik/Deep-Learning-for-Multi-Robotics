@@ -133,7 +133,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model/Fully Connected Graph/transformed_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 1/Fully Connected Graph/transformed_dataset.csv'
 
 # train_dl, test_dl = prepare_data(path)
 
