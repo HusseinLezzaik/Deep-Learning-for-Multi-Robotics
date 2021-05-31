@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm for Six mobile robots
+Consensus Algorithm for Six mobile robots Line Graph Adjacency Matrix
 
 """
 import math

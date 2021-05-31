@@ -1,6 +1,6 @@
 """
 
-Data Collection for Consensus Algorithm of Six Robots and Saving data for Cyclic Graph
+Data Collection for Consensus Algorithm of Six Robots using Fully Connected Adjancency Matrix, and Saving data for Cyclic Graph
 
 Data Collected in transformed_dataset.csv : Mx, My, Phix, Phiy, and Control input Ux, Uy
 

@@ -1,6 +1,6 @@
 """
 
-Consensus Algorithm for Six mobile robots
+Consensus Algorithm for Six mobile robots Fully Connected Adjancency Matrix 
 
 """
 import math

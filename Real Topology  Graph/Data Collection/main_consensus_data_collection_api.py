@@ -1,6 +1,6 @@
 """
 
-Data Collection for Consensus Algorithm of Six Robots
+Data Collection for Consensus Algorithm of Six Robots using Fully Connected Adj Matrix and saving data for Cyclic Graph
 
 Data Collected in main_dataset.csv: Global Pose of each Robot: X, Y, Theta and Control input Ux, Uy
 

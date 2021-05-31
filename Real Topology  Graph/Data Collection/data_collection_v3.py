@@ -1,6 +1,6 @@
 """
 
-Data Collection for Consensus Algorithm of Six Robots and Saving data for Fully Connected Graph
+Data Collection for Consensus Algorithm of Six Robots using Fully Connected Graph Adj Matrix and Saving data for Fully Connected Graph
 
 Data Collected in transformed_dataset.csv : Mx, My, Phix, Phiy, and Control input Ux, Uy
 
