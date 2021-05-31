@@ -1,7 +1,6 @@
 """
 Code for building and training MLP decentralized model for Robots from Fully Connected Graph
 Data Collected from running a Fully Connected Graph
-    
 *Input: Mx, My, Phix, Phiy
 *Output: Ux, Uy
 """
@@ -30,7 +29,7 @@ class CSVDataset(Dataset):
         # load the csv file as a dataframe
         df = read_csv(path, header=None)
         # store the inputs and outputs
-        self.X = df.values[:, :4].astype('float32') # read first four values
+        self.X = df.values[:, :4].astype('float32') # read first two values
         self.y = df.values[:, 4:].astype('float32') # read last two values
         # ensure target has the right shape
         self.y = self.y.reshape((len(self.y), 2)) # nx2
@@ -57,41 +56,19 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 12) # 4 inputs, 10 hidden units
-        xavier_uniform_(self.input.weight)
-        self.act1 = ReLU()
-        # Define Hidden Layer
-        # self.hidden1 = Linear(8, 8)
-        # xavier_uniform_(self.hidden1.weight)
-        # self.act2 = ReLU()
-        # Define Hidden Layer
-        # self.hidden2 = Linear(8, 8)
-        # xavier_uniform_(self.hidden2.weight)
-        # self.act3 = ReLU()      
-        # Define Hidden Layer
-        # self.hidden3 = Linear(8, 4)
-        # xavier_uniform_(self.hidden3.weight)
-        # self.act4 = ReLU()         
-        # Output layer 4 to 2 units
-        self.output = Linear(12, 2)
+        self.hidden = Linear(4, 4) # 2 inputs, 10 hidden units
+        xavier_uniform_(self.hidden.weight)
+        # Define ReLU activation
+        self.act = ReLU()
+        # Output layer, 2 units
+        self.output = Linear(4, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
     def forward(self, X):
         # Pass the input tensor through each of our operations
-        # Input to first hidden layer
-        X = self.input(X)
-        X = self.act1(X)
-        # Second hidden layer
-        # X = self.hidden1(X)
-        # X = self.act2(X)
-        # Third hidden layer
-        # X = self.hidden2(X)
-        # X = self.act3(X)
-        # Forth hidden layer
-        # X = self.hidden3(X)
-        # X = self.act4(X)         
-        # Output layer
+        X = self.hidden(X)
+        X = self.act(X)
         X = self.output(X)
         return X
 
@@ -156,7 +133,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model Updated/Cyclic Graph/transformed_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 2/Fully Connected Graph/transformed_dataset.csv'
 
 # train_dl, test_dl = prepare_data(path)
 
