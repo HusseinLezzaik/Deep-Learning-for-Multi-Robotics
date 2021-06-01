@@ -73,7 +73,7 @@ class MinimalPublisher(Node):
         self.Phix3 = 0 # 1x1
         self.Phiy3 = 0 # 1x1
         self.Phix4 = 0 # 1x1
-        self.Phiy4 = -0 # 1x1
+        self.Phiy4 = 0 # 1x1
         self.Phix5 = 0 # 1x1
         self.Phiy5 = 0 # 1x1
         self.Phix6 = 0 # 1x1

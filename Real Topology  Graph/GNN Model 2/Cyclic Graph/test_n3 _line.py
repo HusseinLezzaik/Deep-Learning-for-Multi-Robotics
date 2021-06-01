@@ -61,7 +61,7 @@ class MinimalPublisher(Node):
         self.t = 0 # Just to intialized Phix's and Phiy's
         
         " Initialize Phi's"
-        self.Phix1 = 0# 1x1
+        self.Phix1 = 0 # 1x1
         self.Phiy1 = 0 # 1x1
         self.Phix2 = 0 # 1x1
         self.Phiy2 = 0 # 1x1
