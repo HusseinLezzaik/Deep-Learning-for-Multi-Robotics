@@ -56,19 +56,19 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 2) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 10) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
-        self.hidden1 = Linear(2, 2)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU()
+        # self.hidden1 = Linear(2, 2)
+        # xavier_uniform_(self.hidden1.weight)
+        # self.act2 = ReLU()
         # Define Hidden Layer
         #self.hidden2 = Linear(8, 4)
         #xavier_uniform_(self.hidden2.weight)        
         #self.act3 = ReLU()        
         # Output layer 4 to 2 units
-        self.output = Linear(2, 2)
+        self.output = Linear(10, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
@@ -78,8 +78,8 @@ class MLP(Module):
         X = self.input(X)
         X = self.act1(X)
         # Second hidden layer
-        X = self.hidden1(X)
-        X = self.act2(X)
+        # X = self.hidden1(X)
+        # X = self.act2(X)
         # Third Hidden layer
         #X = self.hidden2(X)
         #X = self.act3(X)
