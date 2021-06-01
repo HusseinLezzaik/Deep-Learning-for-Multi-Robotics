@@ -30,7 +30,6 @@ N_SCENES = 60
 scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
 
 
-
 def euler_from_quaternion(x, y, z, w):
         
      t3 = +2.0 * (w * z + x * y)
@@ -38,8 +37,7 @@ def euler_from_quaternion(x, y, z, w):
      yaw_z = math.atan2(t3, t4)
      
      return yaw_z # in radians
- 
-    
+     
 
 class MinimalPublisher(Node):
 
@@ -384,7 +382,7 @@ class MinimalPublisher(Node):
                     if self.j2 == 0: # skip first value because it's noisy
                         self.j2 = 1                            
                         
-            self.count += 0.5 # Counter to skip values while saving to csv file 
+            self.count += 1 # Counter to skip values while saving to csv file 
         
         else:
 
