@@ -51,7 +51,7 @@ class MinimalPublisher(Node):
             0)
        
         " Timer Callback " 
-        timer_period = 0.1  # seconds
+        timer_period = 0.01  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0          
 
@@ -87,12 +87,12 @@ class MinimalPublisher(Node):
         " Calculate Mx1, My1, ...... Mx6, My6 "
         
         # Initialize Phi's
-        if self.t ==0:
-            self.Phix1 = 0 # 1x1
-            self.Phiy1 = 0 # 1x1
-            self.Phix2 = 0 # 1x1
-            self.Phiy2 = 0 # 1x1
-            self.t += 1          
+        # if self.t ==0:
+        #     self.Phix1 = 0 # 1x1
+        #     self.Phiy1 = 0 # 1x1
+        #     self.Phix2 = 0 # 1x1
+        #     self.Phiy2 = 0 # 1x1
+        #     self.t += 1          
         
         Mx1 = self.x2 - self.x1
         My1 = self.y2 - self.y1
@@ -102,8 +102,8 @@ class MinimalPublisher(Node):
        
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
-        relative_pose_2 = [ Mx2, My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
+        relative_pose_1 = [ Mx1, My1, 0, 0 ] # tensor data for MLP model
+        relative_pose_2 = [ Mx2, My2, 0, 0 ] # tensor data for MLP model
 
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
