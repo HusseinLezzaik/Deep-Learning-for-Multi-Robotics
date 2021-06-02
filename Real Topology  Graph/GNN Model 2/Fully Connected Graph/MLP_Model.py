@@ -148,21 +148,21 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 2/Fully Connected Graph/43k_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 2/Fully Connected Graph/81k_dataset.csv'
 
-# train_dl, test_dl = prepare_data(path)
+train_dl, test_dl = prepare_data(path)
 
-# print(len(train_dl.dataset), len(test_dl.dataset))
+print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-# model = MLP()
+model = MLP()
 
 # train the model
-# train_model(train_dl, model)
+train_model(train_dl, model)
 
 # evaluate the model
-# mse = evaluate_model(test_dl, model)
-# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+mse = evaluate_model(test_dl, model)
+print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 # make a single prediction (expect class=1)
 #row = [-2,3]
@@ -171,4 +171,4 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN
 
 # save model using dict
 FILE = "model.pth"
-# torch.save(model.state_dict(), FILE)
+torch.save(model.state_dict(), FILE)
