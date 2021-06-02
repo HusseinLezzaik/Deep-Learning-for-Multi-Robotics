@@ -227,11 +227,10 @@ class MinimalPublisher(Node):
             
             Phix = ( u1[0][0] + u3[0][0] + u4[0][0] + u5[0][0] + u6[0][0] )/5 # 1x1
             Phiy = ( u1[1][0] + u3[1][0] + u4[1][0] + u5[1][0] + u6[1][0] )/5 # 1x1
-            
+                        
             Mx = ( ( self.x1 - self.x2 ) + ( self.x3 - self.x2 ) + ( self.x4 - self.x2 ) + ( self.x5 - self.x2 ) + ( self.x6 - self.x2 ) ) / 5 # 1x1
             My = ( ( self.y1 - self.y2 ) + ( self.y3 - self.y2 ) + ( self.y4 - self.y2 ) + ( self.y5 - self.y2 ) + ( self.y6 - self.y2 ) ) / 5 # 1x1            
             
-        
             " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
                 
             S1 = np.array([[self.v1], [self.w1]]) #2x1
@@ -264,7 +263,6 @@ class MinimalPublisher(Node):
             R6 = np.array([[math.cos(self.Theta6),math.sin(self.Theta6)],[-math.sin(self.Theta6),math.cos(self.Theta6)]]) #2x2
             S6 = np.dot(np.dot(G6, R6), u6) #2x1        
         
-        
             " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
                 
             D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
@@ -276,7 +274,6 @@ class MinimalPublisher(Node):
             Speed_L4 = np.array([[self.vL4], [self.vR4]]) # Vector 2x1 for Speed of Robot 4
             Speed_L5 = np.array([[self.vL5], [self.vR5]]) # Vector 2x1 for Speed of Robot 5
             Speed_L6 = np.array([[self.vL6], [self.vR6]]) # Vector 2x1 for Speed of Robot 6
-        
         
             M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
             M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
@@ -291,7 +288,6 @@ class MinimalPublisher(Node):
             Speed_L4 = np.dot(Di, M4) # 2x1 (VL4, VR4)
             Speed_L5 = np.dot(Di, M5) # 2x1 (VL5, VR5)
             Speed_L6 = np.dot(Di, M6) # 2x1 (VL6, VR6)
-        
         
             VL1 = float(Speed_L1[0])
             VR1 = float(Speed_L1[1])

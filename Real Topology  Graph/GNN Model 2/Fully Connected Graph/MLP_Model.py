@@ -43,7 +43,7 @@ class CSVDataset(Dataset):
         return [self.X[idx], self.y[idx]]
 
     # get indexes for train and test rows
-    def get_splits(self, n_test=0.25):
+    def get_splits(self, n_test=0.3):
         # determine sizes
         test_size = round(n_test * len(self.X))
         train_size = len(self.X) - test_size
@@ -56,19 +56,19 @@ class MLP(Module):
     def __init__(self):
         super(MLP, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 32) # 4 inputs, 10 hidden units
+        self.input = Linear(4, 4) # 4 inputs, 10 hidden units
         xavier_uniform_(self.input.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
-        self.hidden1 = Linear(32, 12)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU()
+        # self.hidden1 = Linear(4, 4)
+        # xavier_uniform_(self.hidden1.weight)
+        # self.act2 = ReLU()
         # Define Hidden Layer
         #self.hidden2 = Linear(8, 4)
         #xavier_uniform_(self.hidden2.weight)        
         #self.act3 = ReLU()        
         # Output layer 4 to 2 units
-        self.output = Linear(12, 2)
+        self.output = Linear(4, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
@@ -78,8 +78,8 @@ class MLP(Module):
         X = self.input(X)
         X = self.act1(X)
         # Second hidden layer
-        X = self.hidden1(X)
-        X = self.act2(X)
+        # X = self.hidden1(X)
+        # X = self.act2(X)
         # Third Hidden layer
         #X = self.hidden2(X)
         #X = self.act3(X)
@@ -104,7 +104,7 @@ def train_model(train_dl, model):
     criterion = MSELoss()
     optimizer = SGD(model.parameters(), lr=0.01, momentum=0.9)
     # enumerate epochs
-    for epoch in range(100):
+    for epoch in range(150):
         # enumerate mini batches
         for i, (inputs, targets) in enumerate(train_dl):
             # clear the gradients
@@ -148,27 +148,27 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 2/Fully Connected Graph/81k_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 2/Fully Connected Graph/43k_dataset.csv'
 
-# train_dl, test_dl = prepare_data(path)
+train_dl, test_dl = prepare_data(path)
 
-# print(len(train_dl.dataset), len(test_dl.dataset))
+print(len(train_dl.dataset), len(test_dl.dataset))
 
-# # define the network
-# model = MLP()
+# define the network
+model = MLP()
 
-# # train the model
-# train_model(train_dl, model)
+# train the model
+train_model(train_dl, model)
 
-# # evaluate the model
-# mse = evaluate_model(test_dl, model)
-# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+# evaluate the model
+mse = evaluate_model(test_dl, model)
+print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
-# # make a single prediction (expect class=1)
-# #row = [-2,3]
-# #yhat = predict(row, model)
-# #print(yhat)
+# make a single prediction (expect class=1)
+#row = [-2,3]
+#yhat = predict(row, model)
+#print(yhat)
 
-# # save model using dict
+# save model using dict
 FILE = "model.pth"
-# torch.save(model.state_dict(), FILE)
+torch.save(model.state_dict(), FILE)
