@@ -115,30 +115,19 @@ class ModelB(Module):
 class ModelE(Module):
     # define model elements
     def __init__(self):
-        super(ModelE, self).__init__()
-        # Inputs to hidden layer linear transformation
-        self.input = Linear(2, 3) # 2 inputs, 3 hidden units
-        xavier_uniform_(self.input.weight)
-        self.act1 = ReLU()
-        # Define Hidden Layer
-        self.hidden1 = Linear(3, 3)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU() 
-        # Output layer 3 to 2 units
-        self.output = Linear(3, 2)
-        xavier_uniform_(self.output.weight)
+        super(self, ModelA, ModelB).__init__()
+        self.modelA = ModelA
+        self.modelB = ModelB
+        self.controller = Linear(4,2)
 
     # forward propagate input
-    def forward(self, X):
+    def forward(self, M, Phi):
         # Pass the input tensor through each of our operations
         # Input to first hidden layer
-        X = self.input(X)
-        X = self.act1(X)
+        x1= self.modelA(M)
+        x2 = self.modelB(Phi)
         # Second hidden layer
-        X = self.hidden1(X)
-        X = self.act2(X)
-        # Final hidden layer and Output
-        X = self.output(X)
+        X = torch.cat((x1, x2), dim=1)
         return X
 
 # prepare the dataset
@@ -209,7 +198,9 @@ train_dl, test_dl = prepare_data(path)
 print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-model = MLP()
+modelA = ModelA()
+modelB = ModelB()
+model = ModelE(modelA, modelB)
 
 # train the model
 train_model(train_dl, model)
