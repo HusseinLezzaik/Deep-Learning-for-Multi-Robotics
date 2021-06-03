@@ -55,7 +55,7 @@ class CSVDataset(Dataset):
 
 class ModelE(Module):
     # define model elements
-    def __init__(self, M, Phi):
+    def __init__(self):
         super(ModelE, self).__init__()
         
         " Model A of Mxy "
@@ -75,23 +75,23 @@ class ModelE(Module):
         # Inputs to hidden layer linear transformation
         self.inputB = Linear(2, 3) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputB.weight)
-        self.act1 = ReLU()
+        self.actB1 = ReLU()
         # Define Hidden Layer
-        self.hidden1 = Linear(3, 3)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU() 
+        self.hiddenB = Linear(3, 3)
+        xavier_uniform_(self.hiddenB.weight)
+        self.actB2 = ReLU() 
         # Output layer 3 to 2 units
-        self.output = Linear(3, 2)
-        xavier_uniform_(self.output.weight)        
+        self.outputB = Linear(3, 2)
+        xavier_uniform_(self.outputB.weight)        
         
-        " Model E"        
+        " Model E "        
         # Define 4x3 hidden unit
-        self.hidden = Linear(4,3)
-        xavier_uniform_(self.hidden.weight)
-        self.act1 = ReLU()
+        self.inputE = Linear(4,3)
+        xavier_uniform_(self.inputE.weight)
+        self.actE1 = ReLU()
         # Define Output 3x2 unit        
-        self.output = Linear(3,2)
-        xavier_uniform_(self.output.weight)
+        self.outputE = Linear(3,2)
+        xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
     def forward(self, M, Phi):
@@ -99,34 +99,32 @@ class ModelE(Module):
         " Model A "
         # Input to first hidden layer
         X1 = self.inputA(M)
-        X1 = self.actA1(M)
+        X1 = self.actA1(X1)
         # Second hidden layer
-        X1 = self.hiddenA(M)
-        X1 = self.actA2(M)
+        X1 = self.hiddenA(X1)
+        X1 = self.actA2(X1)
         # Final hidden layer and Output
-        X1 = self.outputA(M)        
+        X1 = self.outputA(X1)        
 
         " Model B "
         # Input to first hidden layer
-        X = self.inputB(Phi)
-        X = self.actB1(Phi)
+        X2 = self.inputB(Phi)
+        X2 = self.actB1(X2)
         # Second hidden layer
-        X = self.hiddenB(Phi)
-        X = self.actB2(Phi)
+        X2 = self.hiddenB(X2)
+        X2 = self.actB2(X2)
         # Final hidden layer and Output
-        X = self.outputB(Phi)        
+        X2 = self.outputB(X2)        
         
         " Model E "
-        # Input to first hidden layer
-        x1 = self.modelA(M)
-        x2 = self.modelB(Phi)
         # Combine Models
-        X = torch.cat((x1, x2), dim=1)
+        X = torch.cat((X1, X2), dim=1)
         # Define Hidden Layer
-        X = self.hidden(X)
-        X = self.act1(X)
+        X = self.inputE(X)
+        X = self.actE1(X)
         # Output Layer
-        X = self.output(X)
+        X = self.outputE(X)
+        
         return X
 
 # prepare the dataset
@@ -160,34 +158,34 @@ def train_model(train_dl, model):
             # update model weights
             optimizer.step()
 
-# evaluate the model
-def evaluate_model(test_dl, model):
-    predictions, actuals = list(), list()
-    for i, (inputs, targets) in enumerate(test_dl):
-        # evaluate the model on the test set
-        yhat = model(inputs)
-        # retrieve numpy array
-        yhat = yhat.detach().numpy()
-        actual = targets.numpy()
-        actual = actual.reshape((len(actual), 2))
-        # store
-        predictions.append(yhat)
-        actuals.append(actual)
-    predictions, actuals = vstack(predictions), vstack(actuals)
-    print(predictions)
-    # calculate mse
-    mse = mean_squared_error(actuals, predictions)
-    return mse
+# # evaluate the model
+# def evaluate_model(test_dl, model):
+#     predictions, actuals = list(), list()
+#     for i, (inputs, targets) in enumerate(test_dl):
+#         # evaluate the model on the test set
+#         yhat = model(inputs)
+#         # retrieve numpy array
+#         yhat = yhat.detach().numpy()
+#         actual = targets.numpy()
+#         actual = actual.reshape((len(actual), 2))
+#         # store
+#         predictions.append(yhat)
+#         actuals.append(actual)
+#     predictions, actuals = vstack(predictions), vstack(actuals)
+#     print(predictions)
+#     # calculate mse
+#     mse = mean_squared_error(actuals, predictions)
+#     return mse
 
-# make a class prediction for one row of data
-def predict(row, model):
-    # convert row to data
-    row = Tensor([row])
-    # make prediction
-    yhat = model(row)
-    # retrieve numpy array
-    yhat = yhat.detach().numpy()
-    return yhat
+# # make a class prediction for one row of data
+# def predict(row, model):
+#     # convert row to data
+#     row = Tensor([row])
+#     # make prediction
+#     yhat = model(row)
+#     # retrieve numpy array
+#     yhat = yhat.detach().numpy()
+#     return yhat
 
 # prepare the data
 path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/43k_dataset.csv'
@@ -197,16 +195,14 @@ train_dl, test_dl = prepare_data(path)
 print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-modelA = ModelA()
-modelB = ModelB()
-model = ModelE(modelA, modelB)
+model = ModelE()
 
 # train the model
 train_model(train_dl, model)
 
 # evaluate the model
-mse = evaluate_model(test_dl, model)
-print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+# mse = evaluate_model(test_dl, model)
+# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
 # save model using dict
