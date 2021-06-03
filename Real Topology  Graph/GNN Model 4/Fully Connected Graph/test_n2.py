@@ -23,7 +23,7 @@ d = 0.5
 
 # load model using dict
 FILE = "model.pth"
-loaded_model = MLP_Model.MLP()
+loaded_model = MLP_Model.ModelE()
 loaded_model.load_state_dict(torch.load(FILE))
 loaded_model.eval()
 

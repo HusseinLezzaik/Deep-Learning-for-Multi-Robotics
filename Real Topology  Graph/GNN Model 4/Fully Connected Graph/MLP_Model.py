@@ -50,7 +50,7 @@ class CSVDataset(Dataset):
     # get indexes for train and test rows
     def get_splits(self, n_test=0.3):
         # determine sizes
-        test_size = round(n_test * len(self.X))
+        test_size = round(n_test * len(self.M))
         train_size = len(self.X) - test_size
         # calculate the split
         return random_split(self, [train_size, test_size])
@@ -86,7 +86,7 @@ class ModelE(Module):
         self.outputB = Linear(3, 2)
         xavier_uniform_(self.outputB.weight)        
         
-        " Model E "        
+        " Model E Merged "        
         # Define 4x3 hidden unit
         self.inputE = Linear(4,3)
         xavier_uniform_(self.inputE.weight)
@@ -96,11 +96,11 @@ class ModelE(Module):
         xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
-    def forward(self, M):
+    def forward(self, Phi):
         
         " Model A "
         # Input to first hidden layer
-        X1 = self.inputA(M)
+        X1 = self.inputA(Phi)
         X1 = self.actA1(X1)
         # Second hidden layer
         X1 = self.hiddenA(X1)
@@ -110,7 +110,7 @@ class ModelE(Module):
 
         " Model B "
         # Input to first hidden layer
-        X2 = self.inputB(M)
+        X2 = self.inputB(Phi)
         X2 = self.actB1(X2)
         # Second hidden layer
         X2 = self.hiddenB(X2)
@@ -159,37 +159,37 @@ def train_model(train_dl, model):
             # update model weights
             optimizer.step()
 
-# # evaluate the model
-# def evaluate_model(test_dl, model):
-#     predictions, actuals = list(), list()
-#     for i, (inputs, targets) in enumerate(test_dl):
-#         # evaluate the model on the test set
-#         yhat = model(inputs)
-#         # retrieve numpy array
-#         yhat = yhat.detach().numpy()
-#         actual = targets.numpy()
-#         actual = actual.reshape((len(actual), 2))
-#         # store
-#         predictions.append(yhat)
-#         actuals.append(actual)
-#     predictions, actuals = vstack(predictions), vstack(actuals)
-#     print(predictions)
-#     # calculate mse
-#     mse = mean_squared_error(actuals, predictions)
-#     return mse
+# evaluate the model
+def evaluate_model(test_dl, model):
+    predictions, actuals = list(), list()
+    for i, (inputs, targets) in enumerate(test_dl):
+        # evaluate the model on the test set
+        yhat = model(inputs)
+        # retrieve numpy array
+        yhat = yhat.detach().numpy()
+        actual = targets.numpy()
+        actual = actual.reshape((len(actual), 2))
+        # store
+        predictions.append(yhat)
+        actuals.append(actual)
+    predictions, actuals = vstack(predictions), vstack(actuals)
+    print(predictions)
+    # calculate mse
+    mse = mean_squared_error(actuals, predictions)
+    return mse
 
-# # make a class prediction for one row of data
-# def predict(row, model):
-#     # convert row to data
-#     row = Tensor([row])
-#     # make prediction
-#     yhat = model(row)
-#     # retrieve numpy array
-#     yhat = yhat.detach().numpy()
-#     return yhat
+# make a class prediction for one row of data
+def predict(row, model):
+    # convert row to data
+    row = Tensor([row])
+    # make prediction
+    yhat = model(row)
+    # retrieve numpy array
+    yhat = yhat.detach().numpy()
+    return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/43k_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
 
 train_dl, test_dl = prepare_data(path)
 
@@ -202,10 +202,10 @@ model = ModelE()
 train_model(train_dl, model)
 
 # evaluate the model
-# mse = evaluate_model(test_dl, model)
-# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+mse = evaluate_model(test_dl, model)
+print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
-# save model using dict
+# # save model using dict
 FILE = "model.pth"
 torch.save(model.state_dict(), FILE)
