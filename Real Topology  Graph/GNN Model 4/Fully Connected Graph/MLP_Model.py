@@ -62,7 +62,7 @@ class ModelE(Module):
         
         " Model A of Mxy "
         # Inputs to hidden layer linear transformation
-        self.inputA = Linear(4, 3) # 2 inputs, 3 hidden units
+        self.inputA = Linear(2, 3) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputA.weight)
         self.actA1 = ReLU()
         # Define Hidden Layer
@@ -75,7 +75,7 @@ class ModelE(Module):
         
         " Model B " 
         # Inputs to hidden layer linear transformation
-        self.inputB = Linear(4, 3) # 2 inputs, 3 hidden units
+        self.inputB = Linear(2, 3) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputB.weight)
         self.actB1 = ReLU()
         # Define Hidden Layer
@@ -151,7 +151,7 @@ def train_model(train_dl, model):
             # clear the gradients
             optimizer.zero_grad()
             # compute the model output
-            yhat = model(input[:,:2], input[:,2:4])
+            yhat = model(inputs[:,:2], inputs[:,2:4])
             # calculate loss
             loss = criterion(yhat, targets)
             # credit assignment
