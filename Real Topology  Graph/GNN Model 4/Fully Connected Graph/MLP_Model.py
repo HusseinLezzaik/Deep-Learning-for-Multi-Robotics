@@ -96,11 +96,11 @@ class ModelE(Module):
         xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
-    def forward(self, Phi):
+    def forward(self, Phi, M):
         
         " Model A "
         # Input to first hidden layer
-        X1 = self.inputA(Phi)
+        X1 = self.inputA(M)
         X1 = self.actA1(X1)
         # Second hidden layer
         X1 = self.hiddenA(X1)
