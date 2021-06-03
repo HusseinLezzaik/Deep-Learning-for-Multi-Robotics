@@ -53,43 +53,28 @@ class CSVDataset(Dataset):
         # calculate the split
         return random_split(self, [train_size, test_size])
 
-# model definition
-class ModelA(Module):
+class ModelE(Module):
     # define model elements
-    def __init__(self):
-        super(ModelA, self).__init__()
+    def __init__(self, M, Phi):
+        super(ModelE, self).__init__()
+        
+        " Model A of Mxy "
         # Inputs to hidden layer linear transformation
-        self.input = Linear(2, 3) # 2 inputs, 3 hidden units
-        xavier_uniform_(self.input.weight)
-        self.act1 = ReLU()
+        self.inputA = Linear(2, 3) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.inputA.weight)
+        self.actA1 = ReLU()
         # Define Hidden Layer
-        self.hidden1 = Linear(3, 3)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU() 
+        self.hiddenA = Linear(3, 3)
+        xavier_uniform_(self.hiddenA.weight)
+        self.actA2 = ReLU() 
         # Output Layer 3 to 2 units
-        self.output = Linear(3, 2)
-        xavier_uniform_(self.output.weight)
-
-    # forward propagate input
-    def forward(self, M):
-        # Pass the input tensor through each of our operations
-        # Input to first hidden layer
-        X = self.input(M)
-        X = self.act1(M)
-        # Second hidden layer
-        X = self.hidden1(M)
-        X = self.act2(M)
-        # Final hidden layer and Output
-        X = self.output(M)
-        return X
-
-class ModelB(Module):
-    # define model elements
-    def __init__(self):
-        super(ModelB, self).__init__()
+        self.outputA = Linear(3, 2)
+        xavier_uniform_(self.outputA.weight)        
+        
+        " Model B " 
         # Inputs to hidden layer linear transformation
-        self.input = Linear(2, 3) # 2 inputs, 3 hidden units
-        xavier_uniform_(self.input.weight)
+        self.inputB = Linear(2, 3) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.inputB.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
         self.hidden1 = Linear(3, 3)
@@ -97,27 +82,9 @@ class ModelB(Module):
         self.act2 = ReLU() 
         # Output layer 3 to 2 units
         self.output = Linear(3, 2)
-        xavier_uniform_(self.output.weight)
-
-    # forward propagate input
-    def forward(self, Phi):
-        # Pass the input tensor through each of our operations
-        # Input to first hidden layer
-        X = self.input(Phi)
-        X = self.act1(Phi)
-        # Second hidden layer
-        X = self.hidden1(Phi)
-        X = self.act2(Phi)
-        # Final hidden layer and Output
-        X = self.output(Phi)
-        return X
-
-class ModelE(Module):
-    # define model elements
-    def __init__(self, ModelA, ModelB):
-        super(ModelE, self).__init__()
-        self.modelA = ModelA
-        self.modelB = ModelB
+        xavier_uniform_(self.output.weight)        
+        
+        " Model E"        
         # Define 4x3 hidden unit
         self.hidden = Linear(4,3)
         xavier_uniform_(self.hidden.weight)
@@ -128,7 +95,28 @@ class ModelE(Module):
 
     # forward propagate input
     def forward(self, M, Phi):
-        # Pass the input tensor through each of our operations
+        
+        " Model A "
+        # Input to first hidden layer
+        X1 = self.inputA(M)
+        X1 = self.actA1(M)
+        # Second hidden layer
+        X1 = self.hiddenA(M)
+        X1 = self.actA2(M)
+        # Final hidden layer and Output
+        X1 = self.outputA(M)        
+
+        " Model B "
+        # Input to first hidden layer
+        X = self.inputB(Phi)
+        X = self.actB1(Phi)
+        # Second hidden layer
+        X = self.hiddenB(Phi)
+        X = self.actB2(Phi)
+        # Final hidden layer and Output
+        X = self.outputB(Phi)        
+        
+        " Model E "
         # Input to first hidden layer
         x1 = self.modelA(M)
         x2 = self.modelB(Phi)
