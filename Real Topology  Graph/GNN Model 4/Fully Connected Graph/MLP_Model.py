@@ -1,9 +1,11 @@
 """
+
 Code for building and training MLP decentralized model for Robots from Fully Connected Graph
 Data Collected from running a Fully Connected Graph
 Deeper GNN Network
 *Input: Mx, My, Phix, Phiy
 *Output: Ux, Uy
+
 """
 
 # PyTorch MLP for Regression
@@ -60,7 +62,7 @@ class ModelE(Module):
         
         " Model A of Mxy "
         # Inputs to hidden layer linear transformation
-        self.inputA = Linear(2, 3) # 2 inputs, 3 hidden units
+        self.inputA = Linear(4, 3) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputA.weight)
         self.actA1 = ReLU()
         # Define Hidden Layer
@@ -73,7 +75,7 @@ class ModelE(Module):
         
         " Model B " 
         # Inputs to hidden layer linear transformation
-        self.inputB = Linear(2, 3) # 2 inputs, 3 hidden units
+        self.inputB = Linear(4, 3) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputB.weight)
         self.actB1 = ReLU()
         # Define Hidden Layer
@@ -94,7 +96,7 @@ class ModelE(Module):
         xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
-    def forward(self, M, Phi):
+    def forward(self, M):
         
         " Model A "
         # Input to first hidden layer
@@ -108,7 +110,7 @@ class ModelE(Module):
 
         " Model B "
         # Input to first hidden layer
-        X2 = self.inputB(Phi)
+        X2 = self.inputB(M)
         X2 = self.actB1(X2)
         # Second hidden layer
         X2 = self.hiddenB(X2)
@@ -124,7 +126,6 @@ class ModelE(Module):
         X = self.actE1(X)
         # Output Layer
         X = self.outputE(X)
-        
         return X
 
 # prepare the dataset
