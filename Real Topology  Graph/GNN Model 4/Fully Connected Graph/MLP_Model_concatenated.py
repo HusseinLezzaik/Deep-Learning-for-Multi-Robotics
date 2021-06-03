@@ -114,20 +114,31 @@ class ModelB(Module):
 
 class ModelE(Module):
     # define model elements
-    def __init__(self):
-        super(self, ModelA, ModelB).__init__()
+    def __init__(self, ModelA, ModelB):
+        super(ModelE, self).__init__()
         self.modelA = ModelA
         self.modelB = ModelB
-        self.controller = Linear(4,2)
+        # Define 4x3 hidden unit
+        self.hidden = Linear(4,3)
+        xavier_uniform_(self.hidden.weight)
+        self.act1 = ReLU()
+        # Define Output 3x2 unit        
+        self.output = Linear(3,2)
+        xavier_uniform_(self.output.weight)
 
     # forward propagate input
     def forward(self, M, Phi):
         # Pass the input tensor through each of our operations
         # Input to first hidden layer
-        x1= self.modelA(M)
+        x1 = self.modelA(M)
         x2 = self.modelB(Phi)
-        # Second hidden layer
+        # Combine Models
         X = torch.cat((x1, x2), dim=1)
+        # Define Hidden Layer
+        X = self.hidden(X)
+        X = self.act1(X)
+        # Output Layer
+        X = self.output(X)
         return X
 
 # prepare the dataset
@@ -209,10 +220,6 @@ train_model(train_dl, model)
 mse = evaluate_model(test_dl, model)
 print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
-# make a single prediction (expect class=1)
-#row = [-2,3]
-#yhat = predict(row, model)
-#print(yhat)
 
 # save model using dict
 FILE = "model.pth"
