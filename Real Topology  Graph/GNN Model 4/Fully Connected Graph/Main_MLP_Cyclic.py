@@ -21,7 +21,7 @@ d = 0.5
 
 # load model using dict
 FILE = "model.pth"
-loaded_model = MLP_Model.MLP()
+loaded_model = MLP_Model.ModelE()
 loaded_model.load_state_dict(torch.load(FILE))
 loaded_model.eval()
 
@@ -59,7 +59,7 @@ class MinimalPublisher(Node):
         
         " Timer Callback "
         #self.publisher_ = self.create_publisher(Float32(), 'topic', 10)
-        timer_period = 0.001  # seconds
+        timer_period = 0.03  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0  
 
@@ -174,12 +174,12 @@ class MinimalPublisher(Node):
 
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ Mx1, My1, 0, 0 ] # tensor data for MLP model
-        relative_pose_2 = [ Mx2, My2, 0, 0 ] # tensor data for MLP model
-        relative_pose_3 = [ Mx3, My3, 0, 0 ] # tensor data for MLP model
-        relative_pose_4 = [ Mx4, My4, 0, 0 ] # tensor data for MLP model
-        relative_pose_5 = [ Mx5, My5, 0, 0 ] # tensor data for MLP model
-        relative_pose_6 = [ Mx6, My6, 0, 0 ] # tensor data for MLP model
+        relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
+        relative_pose_2 = [ Mx2, My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
+        relative_pose_3 = [ Mx3, My3, self.Phix3, self.Phiy3 ] # tensor data for MLP model
+        relative_pose_4 = [ Mx4, My4, self.Phix4, self.Phiy4 ] # tensor data for MLP model
+        relative_pose_5 = [ Mx5, My5, self.Phix5, self.Phiy5 ] # tensor data for MLP model
+        relative_pose_6 = [ Mx6, My6, self.Phix1, self.Phiy6 ] # tensor data for MLP model
         
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
@@ -188,23 +188,23 @@ class MinimalPublisher(Node):
         u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
         u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
         
-        self.Phix1 = ( u2_predicted[0][0] + u6_predicted[0][0] )/2   # 1x1
-        self.Phiy1 = ( u2_predicted[0][1] + u6_predicted[0][1] )/2   # 1x1
+        self.Phix1 = 0.3*( u2_predicted[0][0] + u6_predicted[0][0] )/2   # 1x1
+        self.Phiy1 = 0.3*( u2_predicted[0][1] + u6_predicted[0][1] )/2   # 1x1
         
-        self.Phix2 = ( u1_predicted[0][0] + u3_predicted[0][0] )/2   # 1x1
-        self.Phiy2 = ( u1_predicted[0][1] + u3_predicted[0][1] )/2   # 1x1
+        self.Phix2 = 0.3*( u1_predicted[0][0] + u3_predicted[0][0] )/2   # 1x1
+        self.Phiy2 = 0.3*( u1_predicted[0][1] + u3_predicted[0][1] )/2   # 1x1
         
-        self.Phix3 = ( u2_predicted[0][0] + u4_predicted[0][0] )/2   # 1x1
-        self.Phiy3 = ( u2_predicted[0][1] + u4_predicted[0][1] )/2   # 1x1
+        self.Phix3 = 0.3*( u2_predicted[0][0] + u4_predicted[0][0] )/2   # 1x1
+        self.Phiy3 = 0.3*( u2_predicted[0][1] + u4_predicted[0][1] )/2   # 1x1
         
-        self.Phix4 = ( u3_predicted[0][0] + u5_predicted[0][0] )/2   # 1x1
-        self.Phiy4 = ( u3_predicted[0][1] + u5_predicted[0][1] )/2   # 1x1
+        self.Phix4 = 0.3*( u3_predicted[0][0] + u5_predicted[0][0] )/2   # 1x1
+        self.Phiy4 = 0.3*( u3_predicted[0][1] + u5_predicted[0][1] )/2   # 1x1
         
-        self.Phix5 = ( u4_predicted[0][0] + u6_predicted[0][0] )/2   # 1x1
-        self.Phiy5 = ( u4_predicted[0][1] + u6_predicted[0][1] )/2   # 1x1
+        self.Phix5 = 0.3*( u4_predicted[0][0] + u6_predicted[0][0] )/2   # 1x1
+        self.Phiy5 = 0.3*( u4_predicted[0][1] + u6_predicted[0][1] )/2   # 1x1
         
-        self.Phix6 = ( u5_predicted[0][0] + u1_predicted[0][0] )/2   # 1x1
-        self.Phiy6 = ( u5_predicted[0][1] + u1_predicted[0][1] )/2   # 1x1          
+        self.Phix6 = 0.3*( u5_predicted[0][0] + u1_predicted[0][0] )/2   # 1x1
+        self.Phiy6 = 0.3*( u5_predicted[0][1] + u1_predicted[0][1] )/2   # 1x1          
             
         u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
         u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
