@@ -151,7 +151,7 @@ def train_model(train_dl, model):
             # clear the gradients
             optimizer.zero_grad()
             # compute the model output
-            yhat = model(inputs)
+            yhat = model(input[:,:2], input[:,2:4])
             # calculate loss
             loss = criterion(yhat, targets)
             # credit assignment
@@ -162,9 +162,9 @@ def train_model(train_dl, model):
 # evaluate the model
 def evaluate_model(test_dl, model):
     predictions, actuals = list(), list()
-    for i, (inputs, targets) in enumerate(test_dl):
+    for i, (input, targets) in enumerate(test_dl):
         # evaluate the model on the test set
-        yhat = model(inputs)
+        yhat = model(input[:,:2], input[:,2:4])
         # retrieve numpy array
         yhat = yhat.detach().numpy()
         actual = targets.numpy()
