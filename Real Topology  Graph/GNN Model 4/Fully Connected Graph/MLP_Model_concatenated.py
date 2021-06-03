@@ -66,7 +66,7 @@ class ModelA(Module):
         self.hidden1 = Linear(3, 3)
         xavier_uniform_(self.hidden1.weight)
         self.act2 = ReLU() 
-        # Output layer 3 to 2 units
+        # Output Layer 3 to 2 units
         self.output = Linear(3, 2)
         xavier_uniform_(self.output.weight)
 

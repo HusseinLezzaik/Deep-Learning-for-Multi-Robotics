@@ -54,39 +54,90 @@ class CSVDataset(Dataset):
         return random_split(self, [train_size, test_size])
 
 # model definition
-class MLP(Module):
+class ModelA(Module):
     # define model elements
     def __init__(self):
-        super(MLP, self).__init__()
+        super(ModelA, self).__init__()
         # Inputs to hidden layer linear transformation
-        self.input = Linear(4, 4) # 4 inputs, 10 hidden units
+        self.input = Linear(2, 3) # 2 inputs, 3 hidden units
         xavier_uniform_(self.input.weight)
         self.act1 = ReLU()
         # Define Hidden Layer
-        # self.hidden1 = Linear(4, 4)
-        # xavier_uniform_(self.hidden1.weight)
-        # self.act2 = ReLU()
-        # Define Hidden Layer
-        #self.hidden2 = Linear(8, 4)
-        #xavier_uniform_(self.hidden2.weight)        
-        #self.act3 = ReLU()        
-        # Output layer 4 to 2 units
-        self.output = Linear(4, 2)
+        self.hidden1 = Linear(3, 3)
+        xavier_uniform_(self.hidden1.weight)
+        self.act2 = ReLU() 
+        # Output Layer 3 to 2 units
+        self.output = Linear(3, 2)
         xavier_uniform_(self.output.weight)
 
     # forward propagate input
-    def forward(self, X):
+    def forward(self, M):
         # Pass the input tensor through each of our operations
         # Input to first hidden layer
-        X = self.input(X)
-        X = self.act1(X)
+        X = self.input(M)
+        X = self.act1(M)
         # Second hidden layer
-        # X = self.hidden1(X)
-        # X = self.act2(X)
-        # Third Hidden layer
-        #X = self.hidden2(X)
-        #X = self.act3(X)
+        X = self.hidden1(M)
+        X = self.act2(M)
         # Final hidden layer and Output
+        X = self.output(M)
+        return X
+
+class ModelB(Module):
+    # define model elements
+    def __init__(self):
+        super(ModelB, self).__init__()
+        # Inputs to hidden layer linear transformation
+        self.input = Linear(2, 3) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.input.weight)
+        self.act1 = ReLU()
+        # Define Hidden Layer
+        self.hidden1 = Linear(3, 3)
+        xavier_uniform_(self.hidden1.weight)
+        self.act2 = ReLU() 
+        # Output layer 3 to 2 units
+        self.output = Linear(3, 2)
+        xavier_uniform_(self.output.weight)
+
+    # forward propagate input
+    def forward(self, Phi):
+        # Pass the input tensor through each of our operations
+        # Input to first hidden layer
+        X = self.input(Phi)
+        X = self.act1(Phi)
+        # Second hidden layer
+        X = self.hidden1(Phi)
+        X = self.act2(Phi)
+        # Final hidden layer and Output
+        X = self.output(Phi)
+        return X
+
+class ModelE(Module):
+    # define model elements
+    def __init__(self, ModelA, ModelB):
+        super(ModelE, self).__init__()
+        self.modelA = ModelA
+        self.modelB = ModelB
+        # Define 4x3 hidden unit
+        self.hidden = Linear(4,3)
+        xavier_uniform_(self.hidden.weight)
+        self.act1 = ReLU()
+        # Define Output 3x2 unit        
+        self.output = Linear(3,2)
+        xavier_uniform_(self.output.weight)
+
+    # forward propagate input
+    def forward(self, M, Phi):
+        # Pass the input tensor through each of our operations
+        # Input to first hidden layer
+        x1 = self.modelA(M)
+        x2 = self.modelB(Phi)
+        # Combine Models
+        X = torch.cat((x1, x2), dim=1)
+        # Define Hidden Layer
+        X = self.hidden(X)
+        X = self.act1(X)
+        # Output Layer
         X = self.output(X)
         return X
 
@@ -158,7 +209,9 @@ train_dl, test_dl = prepare_data(path)
 print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-model = MLP()
+modelA = ModelA()
+modelB = ModelB()
+model = ModelE(modelA, modelB)
 
 # train the model
 train_model(train_dl, model)
@@ -167,10 +220,6 @@ train_model(train_dl, model)
 mse = evaluate_model(test_dl, model)
 print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
-# make a single prediction (expect class=1)
-#row = [-2,3]
-#yhat = predict(row, model)
-#print(yhat)
 
 # save model using dict
 FILE = "model.pth"
