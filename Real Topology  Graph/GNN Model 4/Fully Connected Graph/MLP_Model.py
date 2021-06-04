@@ -33,8 +33,8 @@ class CSVDataset(Dataset):
         df = read_csv(path, header=None)
         # store the inputs and outputs
         self.X = df.values[:, :4].astype('float32') # read first 4 values
-        self.M = df.values[:, :2].astype('float32') # read first two values
-        self.Phi = df.values[:, 2:4].astype('float32') # read 3rd/4th values
+        #self.M = df.values[:, :2].astype('float32') # read first two values
+        #self.Phi = df.values[:, 2:4].astype('float32') # read 3rd/4th values
         self.y = df.values[:, 4:].astype('float32') # read last two values
         # ensure target has the right shape
         self.y = self.y.reshape((len(self.y), 2)) # nx2
@@ -50,7 +50,7 @@ class CSVDataset(Dataset):
     # get indexes for train and test rows
     def get_splits(self, n_test=0.3):
         # determine sizes
-        test_size = round(n_test * len(self.M))
+        test_size = round(n_test * len(self.X))
         train_size = len(self.X) - test_size
         # calculate the split
         return random_split(self, [train_size, test_size])
@@ -198,17 +198,17 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN
 
 # print(len(train_dl.dataset), len(test_dl.dataset))
 
-# # define the network
+# define the network
 # model = ModelE()
 
-# # train the model
+# train the model
 # train_model(train_dl, model)
 
-# # evaluate the model
+# evaluate the model
 # mse = evaluate_model(test_dl, model)
 # print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
-# # save model using dict
+# save model using dict
 FILE = "model.pth"
 # torch.save(model.state_dict(), FILE)
