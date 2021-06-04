@@ -96,8 +96,10 @@ class ModelE(Module):
         xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
-    def forward(self, Phi, M):
+    def forward(self, inputs):
         
+        Phi = inputs[:,2:4]
+        M = inputs[:,:2]
         " Model A "
         # Input to first hidden layer
         X1 = self.inputA(M)
@@ -145,13 +147,13 @@ def train_model(train_dl, model):
     criterion = MSELoss()
     optimizer = SGD(model.parameters(), lr=0.01, momentum=0.9)
     # enumerate epochs
-    for epoch in range(150):
+    for epoch in range(50):
         # enumerate mini batches
         for i, (inputs, targets) in enumerate(train_dl):
             # clear the gradients
             optimizer.zero_grad()
             # compute the model output
-            yhat = model(inputs[:,:2], inputs[:,2:4])
+            yhat = model(inputs)
             # calculate loss
             loss = criterion(yhat, targets)
             # credit assignment
@@ -164,7 +166,7 @@ def evaluate_model(test_dl, model):
     predictions, actuals = list(), list()
     for i, (input, targets) in enumerate(test_dl):
         # evaluate the model on the test set
-        yhat = model(input[:,:2], input[:,2:4])
+        yhat = model(input)
         # retrieve numpy array
         yhat = yhat.detach().numpy()
         actual = targets.numpy()
@@ -191,21 +193,21 @@ def predict(row, model):
 # prepare the data
 path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
 
-train_dl, test_dl = prepare_data(path)
+# train_dl, test_dl = prepare_data(path)
 
-print(len(train_dl.dataset), len(test_dl.dataset))
+# print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-model = ModelE()
+# model = ModelE()
 
 # train the model
-train_model(train_dl, model)
+# train_model(train_dl, model)
 
 # evaluate the model
-mse = evaluate_model(test_dl, model)
-print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+# mse = evaluate_model(test_dl, model)
+# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
 # save model using dict
 FILE = "model.pth"
-torch.save(model.state_dict(), FILE)
+# torch.save(model.state_dict(), FILE)

@@ -1,9 +1,11 @@
 """
+
 Code for building and training MLP decentralized model for Robots from Fully Connected Graph
 Data Collected from running a Fully Connected Graph
 Deeper GNN Network
 *Input: Mx, My, Phix, Phiy
 *Output: Ux, Uy
+
 """
 
 # PyTorch MLP for Regression
@@ -48,97 +50,82 @@ class CSVDataset(Dataset):
     # get indexes for train and test rows
     def get_splits(self, n_test=0.3):
         # determine sizes
-        test_size = round(n_test * len(self.X))
+        test_size = round(n_test * len(self.M))
         train_size = len(self.X) - test_size
         # calculate the split
         return random_split(self, [train_size, test_size])
 
-# model definition
-class ModelA(Module):
-    # define model elements
-    def __init__(self):
-        super(ModelA, self).__init__()
-        # Inputs to hidden layer linear transformation
-        self.input = Linear(2, 3) # 2 inputs, 3 hidden units
-        xavier_uniform_(self.input.weight)
-        self.act1 = ReLU()
-        # Define Hidden Layer
-        self.hidden1 = Linear(3, 3)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU() 
-        # Output Layer 3 to 2 units
-        self.output = Linear(3, 2)
-        xavier_uniform_(self.output.weight)
-
-    # forward propagate input
-    def forward(self, M):
-        # Pass the input tensor through each of our operations
-        # Input to first hidden layer
-        X = self.input(M)
-        X = self.act1(M)
-        # Second hidden layer
-        X = self.hidden1(M)
-        X = self.act2(M)
-        # Final hidden layer and Output
-        X = self.output(M)
-        return X
-
-class ModelB(Module):
-    # define model elements
-    def __init__(self):
-        super(ModelB, self).__init__()
-        # Inputs to hidden layer linear transformation
-        self.input = Linear(2, 3) # 2 inputs, 3 hidden units
-        xavier_uniform_(self.input.weight)
-        self.act1 = ReLU()
-        # Define Hidden Layer
-        self.hidden1 = Linear(3, 3)
-        xavier_uniform_(self.hidden1.weight)
-        self.act2 = ReLU() 
-        # Output layer 3 to 2 units
-        self.output = Linear(3, 2)
-        xavier_uniform_(self.output.weight)
-
-    # forward propagate input
-    def forward(self, Phi):
-        # Pass the input tensor through each of our operations
-        # Input to first hidden layer
-        X = self.input(Phi)
-        X = self.act1(Phi)
-        # Second hidden layer
-        X = self.hidden1(Phi)
-        X = self.act2(Phi)
-        # Final hidden layer and Output
-        X = self.output(Phi)
-        return X
-
 class ModelE(Module):
     # define model elements
-    def __init__(self, ModelA, ModelB):
+    def __init__(self):
         super(ModelE, self).__init__()
-        self.modelA = ModelA
-        self.modelB = ModelB
+        
+        " Model A of Mxy "
+        # Inputs to hidden layer linear transformation
+        self.inputA = Linear(2, 3) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.inputA.weight)
+        self.actA1 = ReLU()
+        # Define Hidden Layer
+        self.hiddenA = Linear(3, 3)
+        xavier_uniform_(self.hiddenA.weight)
+        self.actA2 = ReLU() 
+        # Output Layer 3 to 2 units
+        self.outputA = Linear(3, 2)
+        xavier_uniform_(self.outputA.weight)        
+        
+        " Model B " 
+        # Inputs to hidden layer linear transformation
+        self.inputB = Linear(2, 3) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.inputB.weight)
+        self.actB1 = ReLU()
+        # Define Hidden Layer
+        self.hiddenB = Linear(3, 3)
+        xavier_uniform_(self.hiddenB.weight)
+        self.actB2 = ReLU() 
+        # Output layer 3 to 2 units
+        self.outputB = Linear(3, 2)
+        xavier_uniform_(self.outputB.weight)        
+        
+        " Model E Merged "        
         # Define 4x3 hidden unit
-        self.hidden = Linear(4,3)
-        xavier_uniform_(self.hidden.weight)
-        self.act1 = ReLU()
+        self.inputE = Linear(4,3)
+        xavier_uniform_(self.inputE.weight)
+        self.actE1 = ReLU()
         # Define Output 3x2 unit        
-        self.output = Linear(3,2)
-        xavier_uniform_(self.output.weight)
+        self.outputE = Linear(3,2)
+        xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
-    def forward(self, M, Phi):
-        # Pass the input tensor through each of our operations
+    def forward(self, Phi, M):
+        
+        " Model A "
         # Input to first hidden layer
-        x1 = self.modelA(M)
-        x2 = self.modelB(Phi)
+        X1 = self.inputA(M)
+        X1 = self.actA1(X1)
+        # Second hidden layer
+        X1 = self.hiddenA(X1)
+        X1 = self.actA2(X1)
+        # Final hidden layer and Output
+        X1 = self.outputA(X1)        
+
+        " Model B "
+        # Input to first hidden layer
+        X2 = self.inputB(Phi)
+        X2 = self.actB1(X2)
+        # Second hidden layer
+        X2 = self.hiddenB(X2)
+        X2 = self.actB2(X2)
+        # Final hidden layer and Output
+        X2 = self.outputB(X2)        
+        
+        " Model E "
         # Combine Models
-        X = torch.cat((x1, x2), dim=1)
+        X = torch.cat((X1, X2), dim=1)
         # Define Hidden Layer
-        X = self.hidden(X)
-        X = self.act1(X)
+        X = self.inputE(X)
+        X = self.actE1(X)
         # Output Layer
-        X = self.output(X)
+        X = self.outputE(X)
         return X
 
 # prepare the dataset
@@ -164,7 +151,7 @@ def train_model(train_dl, model):
             # clear the gradients
             optimizer.zero_grad()
             # compute the model output
-            yhat = model(inputs)
+            yhat = model(inputs[:,:2], inputs[:,2:4])
             # calculate loss
             loss = criterion(yhat, targets)
             # credit assignment
@@ -175,9 +162,9 @@ def train_model(train_dl, model):
 # evaluate the model
 def evaluate_model(test_dl, model):
     predictions, actuals = list(), list()
-    for i, (inputs, targets) in enumerate(test_dl):
+    for i, (input, targets) in enumerate(test_dl):
         # evaluate the model on the test set
-        yhat = model(inputs)
+        yhat = model(input[:,:2], input[:,2:4])
         # retrieve numpy array
         yhat = yhat.detach().numpy()
         actual = targets.numpy()
@@ -202,25 +189,23 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/43k_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
 
-train_dl, test_dl = prepare_data(path)
+# train_dl, test_dl = prepare_data(path)
 
-print(len(train_dl.dataset), len(test_dl.dataset))
+# print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-modelA = ModelA()
-modelB = ModelB()
-model = ModelE(modelA, modelB)
+# model = ModelE()
 
 # train the model
-train_model(train_dl, model)
+# train_model(train_dl, model)
 
 # evaluate the model
-mse = evaluate_model(test_dl, model)
-print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+# mse = evaluate_model(test_dl, model)
+# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
 # save model using dict
 FILE = "model.pth"
-torch.save(model.state_dict(), FILE)
+# torch.save(model.state_dict(), FILE)
