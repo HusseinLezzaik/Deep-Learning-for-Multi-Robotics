@@ -102,10 +102,10 @@ class MinimalPublisher(Node):
         " Use MLP to Predict control inputs "
         
         relative_pose_M1 = [ Mx1, My1 ] # tensor data for MLP model
-        relative_pose_Phi1 = [ self.Phix1, self.Phiy1 ] # tensor data for MLP model
+        relative_pose_Phi1 = [ 0, 0 ] # tensor data for MLP model
         
         relative_pose_M2 = [ Mx2, My2 ] # tensor data for MLP model
-        relative_pose_Phi2 = [ self.Phix2, self.Phiy2 ] # tensor data for MLP model
+        relative_pose_Phi2 = [ 0, 0 ] # tensor data for MLP model
 
         u1_predicted = MLP_Model_v1.predict(relative_pose_M1, relative_pose_Phi1 ,loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model_v1.predict(relative_pose_M2, relative_pose_Phi2 ,loaded_model) # predict control input u2, tensor

@@ -148,7 +148,7 @@ def train_model(train_dl, model):
     criterion = MSELoss()
     optimizer = SGD(model.parameters(), lr=0.01, momentum=0.9)
     # enumerate epochs
-    for epoch in range(50):
+    for epoch in range(100):
         # enumerate mini batches
         for i, (inputs, targets) in enumerate(train_dl):
             # clear the gradients
@@ -198,17 +198,17 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN
 
 # print(len(train_dl.dataset), len(test_dl.dataset))
 
-# define the network
+# # define the network
 # model = ModelE()
 
-# train the model
+# # train the model
 # train_model(train_dl, model)
 
-# evaluate the model
+# # evaluate the model
 # mse = evaluate_model(test_dl, model)
 # print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
-# save model using dict
+# # save model using dict
 FILE = "model.pth"
 # torch.save(model.state_dict(), FILE)

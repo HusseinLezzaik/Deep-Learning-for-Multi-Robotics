@@ -101,22 +101,22 @@ class MinimalPublisher(Node):
        
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
-        relative_pose_2 = [ Mx2, My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
+        relative_pose_1 = [ Mx1, My1, 0, 0 ] # tensor data for MLP model
+        relative_pose_2 = [ Mx2, My2, 0, 0 ] # tensor data for MLP model
 
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
         
         print(u1_predicted)
         
-        self.Phix1 = 0.3* u2_predicted[0][0] # 1x1
-        self.Phiy1 = 0.3* u2_predicted[0][1] # 1x1
+        self.Phix1 = 0.5* u2_predicted[0][0] # 1x1
+        self.Phiy1 = 0.5* u2_predicted[0][1] # 1x1
 
-        self.Phix2 = 0.3* u1_predicted[0][0] # 1x1
-        self.Phiy2 = 0.3* u1_predicted[0][1] # 1x1          
+        self.Phix2 = 0.5* u1_predicted[0][0] # 1x1
+        self.Phiy2 = 0.5* u1_predicted[0][1] # 1x1          
         
-        u1_predicted_np = 0.3* np.array([[u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u2_predicted_np = 0.3* np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u1_predicted_np = 0.5* np.array([[u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u2_predicted_np = 0.5* np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
 
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
