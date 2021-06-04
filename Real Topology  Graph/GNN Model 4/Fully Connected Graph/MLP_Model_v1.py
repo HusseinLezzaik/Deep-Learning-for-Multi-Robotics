@@ -96,7 +96,7 @@ class ModelE(Module):
         xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
-    def forward(self, Phi, M):
+    def forward(self, M, Phi):
         
         " Model A "
         # Input to first hidden layer
@@ -145,7 +145,7 @@ def train_model(train_dl, model):
     criterion = MSELoss()
     optimizer = SGD(model.parameters(), lr=0.01, momentum=0.9)
     # enumerate epochs
-    for epoch in range(150):
+    for epoch in range(100):
         # enumerate mini batches
         for i, (inputs, targets) in enumerate(train_dl):
             # clear the gradients
@@ -179,11 +179,12 @@ def evaluate_model(test_dl, model):
     return mse
 
 # make a class prediction for one row of data
-def predict(row, model):
+def predict(row1, row2, model):
     # convert row to data
-    row = Tensor([row])
+    row1 = Tensor([row1])
+    row2 = Tensor([row2])
     # make prediction
-    yhat = model(row)
+    yhat = model(row1, row2)
     # retrieve numpy array
     yhat = yhat.detach().numpy()
     return yhat
@@ -191,21 +192,21 @@ def predict(row, model):
 # prepare the data
 path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
 
-# train_dl, test_dl = prepare_data(path)
+train_dl, test_dl = prepare_data(path)
 
-# print(len(train_dl.dataset), len(test_dl.dataset))
+print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-# model = ModelE()
+model = ModelE()
 
 # train the model
-# train_model(train_dl, model)
+train_model(train_dl, model)
 
 # evaluate the model
-# mse = evaluate_model(test_dl, model)
-# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+mse = evaluate_model(test_dl, model)
+print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
 # save model using dict
-FILE = "model.pth"
-# torch.save(model.state_dict(), FILE)
+FILE = "modelv1.pth"
+torch.save(model.state_dict(), FILE)

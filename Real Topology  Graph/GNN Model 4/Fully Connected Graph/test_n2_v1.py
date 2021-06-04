@@ -9,7 +9,7 @@ Outputs: Ux, Uy
 
 """
 import torch
-import MLP_Model
+import MLP_Model_v1
 import math
 import numpy as np
 import rclpy
@@ -22,8 +22,8 @@ L = 1
 d = 0.5
 
 # load model using dict
-FILE = "model.pth"
-loaded_model = MLP_Model.ModelE()
+FILE = "modelv1.pth"
+loaded_model = MLP_Model_v1.ModelE()
 loaded_model.load_state_dict(torch.load(FILE))
 loaded_model.eval()
 
@@ -101,11 +101,14 @@ class MinimalPublisher(Node):
        
         " Use MLP to Predict control inputs "
         
-        relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
-        relative_pose_2 = [ Mx2, My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
+        relative_pose_M1 = [ Mx1, My1 ] # tensor data for MLP model
+        relative_pose_Phi1 = [ self.Phix1, self.Phiy1 ] # tensor data for MLP model
+        
+        relative_pose_M2 = [ Mx2, My2 ] # tensor data for MLP model
+        relative_pose_Phi2 = [ self.Phix2, self.Phiy2 ] # tensor data for MLP model
 
-        u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
-        u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
+        u1_predicted = MLP_Model_v1.predict(relative_pose_M1, relative_pose_Phi1 ,loaded_model) # predict control input u1, tensor
+        u2_predicted = MLP_Model_v1.predict(relative_pose_M2, relative_pose_Phi2 ,loaded_model) # predict control input u2, tensor
         
         print(u1_predicted)
         

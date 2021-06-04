@@ -98,8 +98,9 @@ class ModelE(Module):
     # forward propagate input
     def forward(self, inputs):
         
-        Phi = inputs[:,2:4]
         M = inputs[:,:2]
+        Phi = inputs[:,2:4]
+        
         " Model A "
         # Input to first hidden layer
         X1 = self.inputA(M)
