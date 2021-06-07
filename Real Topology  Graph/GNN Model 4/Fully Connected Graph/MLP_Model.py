@@ -208,7 +208,6 @@ path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN
 # mse = evaluate_model(test_dl, model)
 # print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
-
 # save model using dict
 FILE = "model.pth"
 # torch.save(model.state_dict(), FILE)
