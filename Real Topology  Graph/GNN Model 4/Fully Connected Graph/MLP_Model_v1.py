@@ -62,37 +62,37 @@ class ModelE(Module):
         
         " Model A of Mxy "
         # Inputs to hidden layer linear transformation
-        self.inputA = Linear(2, 3) # 2 inputs, 3 hidden units
+        self.inputA = Linear(2, 2) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputA.weight)
         self.actA1 = ReLU()
         # Define Hidden Layer
-        self.hiddenA = Linear(3, 3)
+        self.hiddenA = Linear(2, 2)
         xavier_uniform_(self.hiddenA.weight)
         self.actA2 = ReLU() 
         # Output Layer 3 to 2 units
-        self.outputA = Linear(3, 2)
+        self.outputA = Linear(2, 2)
         xavier_uniform_(self.outputA.weight)        
         
         " Model B " 
         # Inputs to hidden layer linear transformation
-        self.inputB = Linear(2, 3) # 2 inputs, 3 hidden units
+        self.inputB = Linear(2, 2) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputB.weight)
         self.actB1 = ReLU()
         # Define Hidden Layer
-        self.hiddenB = Linear(3, 3)
+        self.hiddenB = Linear(2, 2)
         xavier_uniform_(self.hiddenB.weight)
         self.actB2 = ReLU() 
         # Output layer 3 to 2 units
-        self.outputB = Linear(3, 2)
+        self.outputB = Linear(2, 2)
         xavier_uniform_(self.outputB.weight)        
         
         " Model E Merged "        
         # Define 4x3 hidden unit
-        self.inputE = Linear(4,3)
+        self.inputE = Linear(4,2)
         xavier_uniform_(self.inputE.weight)
         self.actE1 = ReLU()
         # Define Output 3x2 unit        
-        self.outputE = Linear(3,2)
+        self.outputE = Linear(2,2)
         xavier_uniform_(self.outputE.weight)
 
     # forward propagate input
@@ -190,9 +190,9 @@ def predict(row1, row2, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/43k_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
 
-train_dl, test_dl = prepare_data(path)
+# train_dl, test_dl = prepare_data(path)
 
 # print(len(train_dl.dataset), len(test_dl.dataset))
 
