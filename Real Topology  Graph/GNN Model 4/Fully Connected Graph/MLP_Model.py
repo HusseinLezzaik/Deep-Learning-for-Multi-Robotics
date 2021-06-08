@@ -33,8 +33,8 @@ class CSVDataset(Dataset):
         df = read_csv(path, header=None)
         # store the inputs and outputs
         self.X = df.values[:, :4].astype('float32') # read first 4 values
-        #self.M = df.values[:, :2].astype('float32') # read first two values
-        #self.Phi = df.values[:, 2:4].astype('float32') # read 3rd/4th values
+        self.M = df.values[:, :2].astype('float32') # read first two values
+        self.Phi = df.values[:, 2:4].astype('float32') # read 3rd/4th values
         self.y = df.values[:, 4:].astype('float32') # read last two values
         # ensure target has the right shape
         self.y = self.y.reshape((len(self.y), 2)) # nx2
@@ -66,9 +66,9 @@ class ModelE(Module):
         xavier_uniform_(self.inputA.weight)
         self.actA1 = ReLU()
         # Define Hidden Layer
-        self.hiddenA = Linear(2, 2)
-        xavier_uniform_(self.hiddenA.weight)
-        self.actA2 = ReLU() 
+        # self.hiddenA = Linear(2, 2)
+        # xavier_uniform_(self.hiddenA.weight)
+        # self.actA2 = ReLU() 
         # Output Layer 3 to 2 units
         self.outputA = Linear(2, 2)
         xavier_uniform_(self.outputA.weight)        
@@ -79,9 +79,9 @@ class ModelE(Module):
         xavier_uniform_(self.inputB.weight)
         self.actB1 = ReLU()
         # Define Hidden Layer
-        self.hiddenB = Linear(2, 2)
-        xavier_uniform_(self.hiddenB.weight)
-        self.actB2 = ReLU() 
+        # self.hiddenB = Linear(2, 2)
+        # xavier_uniform_(self.hiddenB.weight)
+        # self.actB2 = ReLU() 
         # Output layer 3 to 2 units
         self.outputB = Linear(2, 2)
         xavier_uniform_(self.outputB.weight)        
@@ -106,8 +106,8 @@ class ModelE(Module):
         X1 = self.inputA(M)
         X1 = self.actA1(X1)
         # Second hidden layer
-        X1 = self.hiddenA(X1)
-        X1 = self.actA2(X1)
+        # X1 = self.hiddenA(X1)
+        # X1 = self.actA2(X1)
         # Final hidden layer and Output
         X1 = self.outputA(X1)        
 
@@ -116,8 +116,8 @@ class ModelE(Module):
         X2 = self.inputB(Phi)
         X2 = self.actB1(X2)
         # Second hidden layer
-        X2 = self.hiddenB(X2)
-        X2 = self.actB2(X2)
+        # X2 = self.hiddenB(X2)
+        # X2 = self.actB2(X2)
         # Final hidden layer and Output
         X2 = self.outputB(X2)        
         
@@ -192,7 +192,7 @@ def predict(row, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/43k_dataset.csv'
 
 # train_dl, test_dl = prepare_data(path)
 
