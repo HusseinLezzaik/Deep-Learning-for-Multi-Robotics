@@ -62,28 +62,28 @@ class ModelE(Module):
         
         " Model A of Mxy "
         # Inputs to hidden layer linear transformation
-        self.inputA = Linear(2, 6) # 2 inputs, 3 hidden units
+        self.inputA = Linear(2, 12) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputA.weight)
         self.actA1 = ReLU()
         # Define Hidden Layer
-        self.hiddenA = Linear(6, 4)
+        self.hiddenA = Linear(12, 12)
         xavier_uniform_(self.hiddenA.weight)
         self.actA2 = ReLU() 
         # Output Layer 3 to 2 units
-        self.outputA = Linear(4, 2)
+        self.outputA = Linear(12, 2)
         xavier_uniform_(self.outputA.weight)        
         
         " Model B " 
         # Inputs to hidden layer linear transformation
-        self.inputB = Linear(2, 6) # 2 inputs, 3 hidden units
+        self.inputB = Linear(2, 12) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputB.weight)
         self.actB1 = ReLU()
         # Define Hidden Layer
-        self.hiddenB = Linear(6, 4)
+        self.hiddenB = Linear(12, 12)
         xavier_uniform_(self.hiddenB.weight)
         self.actB2 = ReLU() 
         # Output layer 3 to 2 units
-        self.outputB = Linear(4, 2)
+        self.outputB = Linear(12, 2)
         xavier_uniform_(self.outputB.weight)        
         
         " Model E Merged "        

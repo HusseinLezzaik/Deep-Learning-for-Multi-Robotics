@@ -62,28 +62,28 @@ class ModelE(Module):
         
         " Model A of Mxy "
         # Inputs to hidden layer linear transformation
-        self.inputA = Linear(2, 12) # 2 inputs, 3 hidden units
+        self.inputA = Linear(2, 32) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputA.weight)
         self.actA1 = ReLU()
         # Define Hidden Layer
-        self.hiddenA = Linear(12, 8)
+        self.hiddenA = Linear(32, 32)
         xavier_uniform_(self.hiddenA.weight)
         self.actA2 = ReLU() 
         # Output Layer 3 to 2 units
-        self.outputA = Linear(8, 2)
+        self.outputA = Linear(32, 2)
         xavier_uniform_(self.outputA.weight)        
         
         " Model B " 
         # Inputs to hidden layer linear transformation
-        self.inputB = Linear(2, 12) # 2 inputs, 3 hidden units
+        self.inputB = Linear(2, 32) # 2 inputs, 3 hidden units
         xavier_uniform_(self.inputB.weight)
         self.actB1 = ReLU()
         # Define Hidden Layer
-        self.hiddenB = Linear(12, 8)
+        self.hiddenB = Linear(32, 32)
         xavier_uniform_(self.hiddenB.weight)
         self.actB2 = ReLU() 
         # Output layer 3 to 2 units
-        self.outputB = Linear(8, 2)
+        self.outputB = Linear(32, 2)
         xavier_uniform_(self.outputB.weight)        
         
         " Model E Merged "        
@@ -190,23 +190,23 @@ def predict(row1, row2, model):
     return yhat
 
 # prepare the data
-path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/26k_dataset.csv'
+path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
 
-# train_dl, test_dl = prepare_data(path)
+train_dl, test_dl = prepare_data(path)
 
-# print(len(train_dl.dataset), len(test_dl.dataset))
+print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-# model = ModelE()
+model = ModelE()
 
 # train the model
-# train_model(train_dl, model)
+train_model(train_dl, model)
 
 # evaluate the model
-# mse = evaluate_model(test_dl, model)
-# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+mse = evaluate_model(test_dl, model)
+print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 
 # save model using dict
 FILE = "modelv1.pth"
-# torch.save(model.state_dict(), FILE)
+torch.save(model.state_dict(), FILE)
