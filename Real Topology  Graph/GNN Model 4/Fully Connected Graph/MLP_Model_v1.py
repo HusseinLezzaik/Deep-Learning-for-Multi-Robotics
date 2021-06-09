@@ -66,11 +66,15 @@ class ModelE(Module):
         xavier_uniform_(self.inputA.weight)
         self.actA1 = ReLU()
         # Define Hidden Layer
-        self.hiddenA = Linear(32, 32)
-        xavier_uniform_(self.hiddenA.weight)
+        self.hiddenA1 = Linear(32, 12)
+        xavier_uniform_(self.hiddenA1.weight)
         self.actA2 = ReLU() 
+        # Define Hidden Layer
+        self.hiddenA2 = Linear(12, 8)
+        xavier_uniform_(self.hiddenA2.weight)
+        self.actA3 = ReLU()         
         # Output Layer 3 to 2 units
-        self.outputA = Linear(32, 2)
+        self.outputA = Linear(8, 2)
         xavier_uniform_(self.outputA.weight)        
         
         " Model B " 
@@ -79,18 +83,26 @@ class ModelE(Module):
         xavier_uniform_(self.inputB.weight)
         self.actB1 = ReLU()
         # Define Hidden Layer
-        self.hiddenB = Linear(32, 32)
-        xavier_uniform_(self.hiddenB.weight)
+        self.hiddenB1 = Linear(32, 12)
+        xavier_uniform_(self.hiddenB1.weight)
         self.actB2 = ReLU() 
+        # Define Hidden Layer
+        self.hiddenB2 = Linear(12, 8)
+        xavier_uniform_(self.hiddenB2.weight)
+        self.actB3 = ReLU()         
         # Output layer 3 to 2 units
-        self.outputB = Linear(32, 2)
+        self.outputB = Linear(8, 2)
         xavier_uniform_(self.outputB.weight)        
         
         " Model E Merged "        
         # Define 4x3 hidden unit
-        self.inputE = Linear(4,3)
+        self.inputE = Linear(4,6)
         xavier_uniform_(self.inputE.weight)
         self.actE1 = ReLU()
+        # Define Hidden Layer
+        self.hiddenE = Linear(6, 3)
+        xavier_uniform_(self.hiddenE.weight)
+        self.actE2 = ReLU()         
         # Define Output 3x2 unit        
         self.outputE = Linear(3,2)
         xavier_uniform_(self.outputE.weight)
@@ -103,8 +115,11 @@ class ModelE(Module):
         X1 = self.inputA(M)
         X1 = self.actA1(X1)
         # Second hidden layer
-        X1 = self.hiddenA(X1)
+        X1 = self.hiddenA1(X1)
         X1 = self.actA2(X1)
+        # Third hidden layer
+        X1 = self.hiddenA2(X1)
+        X1 = self.actA3(X1)        
         # Final hidden layer and Output
         X1 = self.outputA(X1)        
 
@@ -113,8 +128,11 @@ class ModelE(Module):
         X2 = self.inputB(Phi)
         X2 = self.actB1(X2)
         # Second hidden layer
-        X2 = self.hiddenB(X2)
+        X2 = self.hiddenB1(X2)
         X2 = self.actB2(X2)
+        # Third hidden layer
+        X2 = self.hiddenB2(X2)
+        X2 = self.actB3(X2)        
         # Final hidden layer and Output
         X2 = self.outputB(X2)        
         
@@ -124,6 +142,9 @@ class ModelE(Module):
         # Define Hidden Layer
         X = self.inputE(X)
         X = self.actE1(X)
+        # Define Hidden Layer
+        X = self.hiddenE(X)
+        X = self.actE2(X)        
         # Output Layer
         X = self.outputE(X)
         return X
