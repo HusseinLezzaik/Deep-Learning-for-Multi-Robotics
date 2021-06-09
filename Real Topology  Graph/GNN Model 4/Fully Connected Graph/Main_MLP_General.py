@@ -18,6 +18,7 @@ import time
 L = 1
 d = 0.5
 A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
+#A = np.array([ [0,1,0,0,0,0], [1,0,1,0,0,0], [0,1,0,1,0,0], [0,0,1,0,1,0], [0,0,0,1,0,1], [0,0,0,0,1,0] ]) # Line Graph 6x6 for communication
 
 # load model using dict
 FILE = "model.pth"
@@ -154,7 +155,7 @@ class MinimalPublisher(Node):
 
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
-        A = np.ones(6) - np.identity(6) # Adjancency Matrix
+        #A = np.ones(6) - np.identity(6) # Adjancency Matrix
     
         self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
         self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
@@ -219,41 +220,52 @@ class MinimalPublisher(Node):
         u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
         u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
         
-        # u1_predicted[0][0] = max(min(1, u1_predicted[0][0]), -1)
-        # u1_predicted[0][1] = max(min(1, u1_predicted[0][1]), -1)
         
-        # u2_predicted[0][0] = max(min(1, u2_predicted[0][0]), -1)
-        # u2_predicted[0][1] = max(min(1, u2_predicted[0][1]), -1)          
+        Phix = np.zeros((6,1)) # 6x1
+        Phiy = np.zeros((6,1)) # 6x1
+                
+        for i in range(1,7):
+            for j in range(1,7):
+                Phix[i-1] += (A[i-1][j-1])*(Mx[j-1]) # 1x1 each
+                Phiy[i-1] += (A[i-1][j-1])*(My[j-1]) # 1x1 each        
+
+
+        self.Phix1 = float(Phix[0]) / 5 # 1x1
+        self.Phiy1 = float(Phiy[0]) / 5 # 1x1
         
-        # u3_predicted[0][0] = max(min(1, u3_predicted[0][0]), -1)
-        # u3_predicted[0][1] = max(min(1, u3_predicted[0][1]), -1)
+        self.Phix2 = float(Phix[1]) / 5 # 1x1
+        self.Phiy2 = float(Phiy[1]) / 5 # 1x1        
+    
+        self.Phix3 = float(Phix[2]) / 5 # 1x1
+        self.Phiy3 = float(Phiy[2]) / 5 # 1x1
         
-        # u4_predicted[0][0] = max(min(1, u4_predicted[0][0]), -1)
-        # u4_predicted[0][1] = max(min(1, u4_predicted[0][1]), -1)          
+        self.Phix4 = float(Phix[3]) / 5 # 1x1
+        self.Phiy4 = float(Phiy[3]) / 5 # 1x1
         
-        # u5_predicted[0][0] = max(min(1, u5_predicted[0][0]), -1)
-        # u5_predicted[0][1] = max(min(1, u5_predicted[0][1]), -1)
+        self.Phix5 = float(Phix[4]) / 5 # 1x1
+        self.Phiy5 = float(Phiy[4]) / 5 # 1x1
         
-        # u6_predicted[0][0] = max(min(1, u6_predicted[0][0]), -1)
-        # u6_predicted[0][1] = max(min(1, u6_predicted[0][1]), -1)  
+        self.Phix6 = float(Phix[5]) / 5 # 1x1
+        self.Phiy6 = float(Phiy[5]) / 5 # 1x1     
         
-        self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        # self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
+        # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+        # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
-        self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+        # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
-        self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
+        # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+        # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+        
+        # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
+        # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
             
             
         u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
