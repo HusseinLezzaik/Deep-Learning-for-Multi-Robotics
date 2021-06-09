@@ -51,7 +51,7 @@ class MinimalPublisher(Node):
             0)
        
         " Timer Callback " 
-        timer_period = 0.03  # seconds
+        timer_period = 0.01  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0          
 
@@ -112,14 +112,14 @@ class MinimalPublisher(Node):
         
         print(u1_predicted)
         
-        self.Phix1 =  u2_predicted[0][0] # 1x1
-        self.Phiy1 =  u2_predicted[0][1] # 1x1
+        self.Phix1 =  0.1*u2_predicted[0][0] # 1x1
+        self.Phiy1 =  0.1*u2_predicted[0][1] # 1x1
 
-        self.Phix2 =  u1_predicted[0][0] # 1x1
-        self.Phiy2 =  u1_predicted[0][1] # 1x1          
+        self.Phix2 =  0.1*u1_predicted[0][0] # 1x1
+        self.Phiy2 =  0.1*u1_predicted[0][1] # 1x1          
         
-        u1_predicted_np =  np.array([[u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u2_predicted_np =  np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u1_predicted_np =  0.1*np.array([[u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u2_predicted_np =  0.1*np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
 
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
