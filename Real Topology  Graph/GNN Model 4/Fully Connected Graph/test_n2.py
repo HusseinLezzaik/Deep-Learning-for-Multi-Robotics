@@ -107,7 +107,7 @@ class MinimalPublisher(Node):
         u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
         u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
         
-        print(u1_predicted)
+        print(u1_predicted[0][0] - u2_predicted[0][0])
         
         self.Phix1 = 0.3 *u2_predicted[0][0] # 1x1
         self.Phiy1 = 0.3 *u2_predicted[0][1] # 1x1

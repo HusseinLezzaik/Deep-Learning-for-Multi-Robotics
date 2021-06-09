@@ -33,8 +33,8 @@ class CSVDataset(Dataset):
         df = read_csv(path, header=None)
         # store the inputs and outputs
         self.X = df.values[:, :4].astype('float32') # read first 4 values
-        self.M = df.values[:, :2].astype('float32') # read first two values
-        self.Phi = df.values[:, 2:4].astype('float32') # read 3rd/4th values
+        # self.M = df.values[:, :2].astype('float32') # read first two values
+        # self.Phi = df.values[:, 2:4].astype('float32') # read 3rd/4th values
         self.y = df.values[:, 4:].astype('float32') # read last two values
         # ensure target has the right shape
         self.y = self.y.reshape((len(self.y), 2)) # nx2
@@ -194,20 +194,20 @@ def predict(row, model):
 # prepare the data
 path = '/home/hussein/Desktop/Multi-agent-path-planning/Real Topology  Graph/GNN Model 4/Fully Connected Graph/81k_dataset.csv'
 
-train_dl, test_dl = prepare_data(path)
+# train_dl, test_dl = prepare_data(path)
 
-print(len(train_dl.dataset), len(test_dl.dataset))
+# print(len(train_dl.dataset), len(test_dl.dataset))
 
 # define the network
-model = ModelE()
+# model = ModelE()
 
 # train the model
-train_model(train_dl, model)
+# train_model(train_dl, model)
 
 # evaluate the model
-mse = evaluate_model(test_dl, model)
-print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
+# mse = evaluate_model(test_dl, model)
+# print('MSE: %.3f, RMSE: %.3f' % (mse, sqrt(mse)))
 
 # save model using dict
 FILE = "model.pth"
-torch.save(model.state_dict(), FILE)
+# torch.save(model.state_dict(), FILE)
