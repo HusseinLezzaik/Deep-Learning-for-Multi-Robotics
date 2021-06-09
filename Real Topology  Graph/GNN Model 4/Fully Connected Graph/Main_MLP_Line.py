@@ -188,30 +188,30 @@ class MinimalPublisher(Node):
         u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
         u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
         
-        self.Phix1 = 0.3*u2_predicted[0][0]   # 1x1
-        self.Phiy1 = 0.3*u2_predicted[0][1]   # 1x1
+        self.Phix1 = Mx2   # 1x1
+        self.Phiy1 = My2   # 1x1
         
-        self.Phix2 = 0.3*( u1_predicted[0][0] + u3_predicted[0][0] )/2   # 1x1
-        self.Phiy2 = 0.3*( u1_predicted[0][1] + u3_predicted[0][1] )/2   # 1x1
+        self.Phix2 = ( Mx1 + Mx3 )/2   # 1x1
+        self.Phiy2 = ( My1 + My3 )/2   # 1x1
         
-        self.Phix3 = 0.3*( u2_predicted[0][0] + u4_predicted[0][0] )/2   # 1x1
-        self.Phiy3 = 0.3*( u2_predicted[0][1] + u4_predicted[0][1] )/2   # 1x1
+        self.Phix3 = ( Mx2 + Mx4 )/2   # 1x1
+        self.Phiy3 = ( My2 + My4 )/2   # 1x1
         
-        self.Phix4 = 0.3*( u3_predicted[0][0] + u5_predicted[0][0] )/2   # 1x1
-        self.Phiy4 = 0.3*( u3_predicted[0][1] + u5_predicted[0][1] )/2   # 1x1
+        self.Phix4 = ( Mx3 + Mx5 )/2   # 1x1
+        self.Phiy4 = ( My3 + My5 )/2   # 1x1
         
-        self.Phix5 = 0.3*( u4_predicted[0][0] + u6_predicted[0][0] )/2   # 1x1
-        self.Phiy5 = 0.3*( u4_predicted[0][1] + u6_predicted[0][1] )/2   # 1x1
+        self.Phix5 = ( Mx4 + Mx6 )/2   # 1x1
+        self.Phiy5 = ( My4 + My6 )/2   # 1x1
         
-        self.Phix6 = 0.3*u5_predicted[0][0] # 1x1
-        self.Phiy6 = 0.3*u5_predicted[0][1] # 1x1          
+        self.Phix6 = Mx5 # 1x1
+        self.Phiy6 = My5 # 1x1          
             
-        u1_predicted_np = 0.3*np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u2_predicted_np = 0.3*np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u3_predicted_np = 0.3*np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u4_predicted_np = 0.3*np.array([[ u4_predicted[0][0] ], [ u4_predicted[0][1] ]]) # from tensor to numpy array for calculation    
-        u5_predicted_np = 0.3*np.array([[ u5_predicted[0][0] ], [ u5_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u6_predicted_np = 0.3*np.array([[ u6_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u4_predicted_np = np.array([[ u4_predicted[0][0] ], [ u4_predicted[0][1] ]]) # from tensor to numpy array for calculation    
+        u5_predicted_np = np.array([[ u5_predicted[0][0] ], [ u5_predicted[0][1] ]]) # from tensor to numpy array for calculation
+        u6_predicted_np = np.array([[ u6_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation
             
                               
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
