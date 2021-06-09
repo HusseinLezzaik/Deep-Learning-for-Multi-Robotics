@@ -186,23 +186,23 @@ class MinimalPublisher(Node):
         u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
         u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
         
-        u1_predicted[0][0] = max(min(1, u1_predicted[0][0]), -1)
-        u1_predicted[0][1] = max(min(1, u1_predicted[0][1]), -1)
+        # u1_predicted[0][0] = max(min(1, u1_predicted[0][0]), -1)
+        # u1_predicted[0][1] = max(min(1, u1_predicted[0][1]), -1)
         
-        u2_predicted[0][0] = max(min(1, u2_predicted[0][0]), -1)
-        u2_predicted[0][1] = max(min(1, u2_predicted[0][1]), -1)          
+        # u2_predicted[0][0] = max(min(1, u2_predicted[0][0]), -1)
+        # u2_predicted[0][1] = max(min(1, u2_predicted[0][1]), -1)          
         
-        u3_predicted[0][0] = max(min(1, u3_predicted[0][0]), -1)
-        u3_predicted[0][1] = max(min(1, u3_predicted[0][1]), -1)
+        # u3_predicted[0][0] = max(min(1, u3_predicted[0][0]), -1)
+        # u3_predicted[0][1] = max(min(1, u3_predicted[0][1]), -1)
         
-        u4_predicted[0][0] = max(min(1, u4_predicted[0][0]), -1)
-        u4_predicted[0][1] = max(min(1, u4_predicted[0][1]), -1)          
+        # u4_predicted[0][0] = max(min(1, u4_predicted[0][0]), -1)
+        # u4_predicted[0][1] = max(min(1, u4_predicted[0][1]), -1)          
         
-        u5_predicted[0][0] = max(min(1, u5_predicted[0][0]), -1)
-        u5_predicted[0][1] = max(min(1, u5_predicted[0][1]), -1)
+        # u5_predicted[0][0] = max(min(1, u5_predicted[0][0]), -1)
+        # u5_predicted[0][1] = max(min(1, u5_predicted[0][1]), -1)
         
-        u6_predicted[0][0] = max(min(1, u6_predicted[0][0]), -1)
-        u6_predicted[0][1] = max(min(1, u6_predicted[0][1]), -1)  
+        # u6_predicted[0][0] = max(min(1, u6_predicted[0][0]), -1)
+        # u6_predicted[0][1] = max(min(1, u6_predicted[0][1]), -1)  
         
         self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
