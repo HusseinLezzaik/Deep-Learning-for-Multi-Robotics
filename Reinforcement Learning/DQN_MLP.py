@@ -32,12 +32,12 @@ plt.ion()
 # if gpu is to be used
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-class CoppeliaSimEnv(gym.Env):
-  """Custom Environment for robots in CoppeliaSim"""
+class CustomEnv(gym.Env):
+  """Custom Environment for V-Rep"""
   metadata = {'render.modes': ['human']}
 
   def __init__(self, arg1, arg2, ...):
-    super(CoppeliaSimEnv, self).__init__()
+    super(CustomEnv, self).__init__()
     # Define action and observation space
     # They must be gym.spaces objects
     # Example when using discrete actions:
