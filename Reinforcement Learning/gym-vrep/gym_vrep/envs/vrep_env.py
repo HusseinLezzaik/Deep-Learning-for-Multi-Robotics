@@ -1,5 +1,5 @@
 """
-Created on Fri Jun 11 15:30:43 2021
+Defining Class of custom environment for V-Rep
 
 @author: hussein
 """
