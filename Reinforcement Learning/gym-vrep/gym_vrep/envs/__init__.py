@@ -1,5 +1,5 @@
 """
-Init file
+Init file to import VrepEnv Class
 
 @author: hussein
 """
