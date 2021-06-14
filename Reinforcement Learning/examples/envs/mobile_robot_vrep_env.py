@@ -5,11 +5,11 @@ Defining Class of custom environment for V-Rep
 @author: hussein
 """
 
-from vrep_env import vrep_env
+import vrep_env
 from vrep_env import vrep
 
 import os
-vrep_scenes_path = os.environ['VREP_SCENES_PATH']
+vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning']
 
 import math
 import gym
@@ -26,7 +26,7 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 		self,
 		server_addr='127.0.0.1',
 		server_port=19997,
-		scene_path=vrep_scenes_path+'/gym_cartpole.ttt',
+		scene_path=vrep_scenes_path+'/Scene_of_Six_Robots.ttt',
 	):
 		vrep_env.VrepEnv.__init__(
 			self,
