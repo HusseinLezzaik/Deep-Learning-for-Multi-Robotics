@@ -13,7 +13,7 @@ class VrepEnv(gym.Env):
   """Custom Environment for V-Rep"""
   metadata = {'render.modes': ['human']}
 
-  def __init__(self, arg1, arg2):
+  def __init__(self):
     super(VrepEnv, self).__init__()
     # Define action and observation space
     # They must be gym.spaces objects
