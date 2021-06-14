@@ -1,4 +1,4 @@
-from vrep_env import vrep
+import vrep
 
 import gym
 import time
