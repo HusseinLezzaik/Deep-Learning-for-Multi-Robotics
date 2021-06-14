@@ -34,6 +34,101 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 			server_port,
 			scene_path,
 		)
+
+        super().__init__('minimal_publisher1')
+        self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',0) #Change according to topic in child script,String to Float32
+        self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r2 = self.create_publisher(Float32, '/rightMotorSpeedrobot2',0) #Change according to topic in child script,String to Float32
+        self.publisher_l3 = self.create_publisher(Float32, '/leftMotorSpeedrobot3', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r3 = self.create_publisher(Float32, '/rightMotorSpeedrobot3',0) #Change according to topic in child script,String to Float32
+        self.publisher_l4 = self.create_publisher(Float32, '/leftMotorSpeedrobot4', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r4 = self.create_publisher(Float32, '/rightMotorSpeedrobot4',0) #Change according to topic in child script,String to Float32
+        self.publisher_l5 = self.create_publisher(Float32, '/leftMotorSpeedrobot5', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r5 = self.create_publisher(Float32, '/rightMotorSpeedrobot5',0) #Change according to topic in child script,String to Float32
+        self.publisher_l6 = self.create_publisher(Float32, '/leftMotorSpeedrobot6', 0) #Change according to topic in child script,String to Float32
+        self.publisher_r6 = self.create_publisher(Float32, '/rightMotorSpeedrobot6',0) #Change according to topic in child script,String to Float32              
+        self.subscription = self.create_subscription(
+            TFMessage,
+            '/tf',
+            self.listener_callback,
+            0)
+        
+        " Timer Callback "
+        timer_period = 0.03  # seconds
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.i = 0  
+    
+        " Parameters "
+        self.t = 0 # Just to intialized Phix's and Phiy's
+        
+        " Initialize Phi's "
+        self.Phix1 = 0 # 1x1
+        self.Phiy1 = 0 # 1x1
+        self.Phix2 = 0 # 1x1
+        self.Phiy2 = 0 # 1x1
+        self.Phix3 = 0 # 1x1
+        self.Phiy3 = 0 # 1x1
+        self.Phix4 = 0 # 1x1
+        self.Phiy4 = 0 # 1x1
+        self.Phix5 = 0 # 1x1
+        self.Phiy5 = 0 # 1x1
+        self.Phix6 = 0 # 1x1
+        self.Phiy6 = 0 # 1x1        
+        
+        " Mobile Robot 1 Parameters "
+        self.x1 = 0
+        self.y1 = 0
+        self.Theta1 = 0
+        self.v1 = 0
+        self.w1 = 0
+        self.vL1 = 0
+        self.vR1 = 0
+        
+        " Mobile Robot 1 Parameters "
+        self.x2 = 0
+        self.y2 = 0
+        self.Theta2 = 0
+        self.v2 = 0
+        self.w2 = 0
+        self.vL2 = 0 
+        self.vR2 = 0
+        
+        " Mobile Robot 3 Parameters "
+        self.x3 = 0
+        self.y3 = 0
+        self.Theta3 = 0
+        self.v3 = 0
+        self.w3 = 0
+        self.vL3 = 0
+        self.vR3 = 0                
+        
+        " Mobile Robot 4 Parameters "
+        self.x4 = 0
+        self.y4 = 0
+        self.Theta4 = 0
+        self.v4 = 0
+        self.w4 = 0
+        self.vL4 = 0
+        self.vR4 = 0        
+        
+        " Mobile Robot 5 Parameters "
+        self.x5 = 0
+        self.y5 = 0
+        self.Theta5 = 0
+        self.v5 = 0
+        self.w5 = 0
+        self.vL5 = 0
+        self.vR5 = 0
+    
+        " Mobile Robot 6 Parameters "
+        self.x6 = 0
+        self.y6 = 0
+        self.Theta6 = 0
+        self.v6 = 0
+        self.w6 = 0
+        self.vL6 = 0
+        self.vR6 = 0
 		
 		# getting object handles
 		self.action   = self.get_object_handle('action')
