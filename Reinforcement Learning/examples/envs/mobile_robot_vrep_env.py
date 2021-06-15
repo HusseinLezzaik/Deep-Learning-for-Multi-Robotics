@@ -11,6 +11,11 @@ from vrep_env import vrep
 import os
 vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning']
 
+import rclpy
+from rclpy.node import Node
+from tf2_msgs.msg import TFMessage
+from std_msgs.msg import Float32
+
 import math
 import gym
 from gym import spaces
@@ -129,7 +134,20 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0
-		
+        
+        # Adjusting Parameters
+        self.L = 1
+        self.d = 0.5
+        A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
+
+        def euler_from_quaternion(x, y, z, w):
+                
+             t3 = +2.0 * (w * z + x * y)
+             t4 = +1.0 - 2.0 * (y * y + z * z)
+             yaw_z = math.atan2(t3, t4)
+             
+             return yaw_z # in radians
+        
 		# getting object handles
 		self.action   = self.get_object_handle('action')
 		self.cart     = self.get_object_handle('cart')
