@@ -62,7 +62,7 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         " Timer Callback "
         timer_period = 0.03  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
-        self.i = 0  
+        self.i = 0
     
         " Parameters "
         self.t = 0 # Just to intialized Phix's and Phiy's
@@ -362,20 +362,6 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 		if self.viewer: self.viewer.close()
 		vrep_env.VrepEnv.close(self)
 
-def main(args):
-	env = CartPoleContinuousVrepEnv()
-	for i_episode in range(8):
-		observation = env.reset()
-		total_reward = 0
-		for t in range(200):
-			action = env.action_space.sample()
-			observation, reward, done, _ = env.step(action)
-			total_reward += reward
-			if done:
-				break
-		print("Episode finished after {} timesteps.\tTotal reward: {}".format(t+1,total_reward))
-	env.close()
-	return 0
 
 if __name__ == '__main__':
 	import sys
