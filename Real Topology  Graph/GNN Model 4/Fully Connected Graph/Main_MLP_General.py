@@ -91,7 +91,7 @@ class MinimalPublisher(Node):
         self.vL1 = 0
         self.vR1 = 0
         
-        " Mobile Robot 1 Parameters "
+        " Mobile Robot 2 Parameters "
         self.x2 = 0
         self.y2 = 0
         self.Theta2 = 0

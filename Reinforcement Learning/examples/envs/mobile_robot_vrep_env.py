@@ -63,7 +63,7 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         timer_period = 0.03  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
-    
+        
         " Parameters "
         self.t = 0 # Just to intialized Phix's and Phiy's
         
@@ -90,7 +90,7 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.vL1 = 0
         self.vR1 = 0
         
-        " Mobile Robot 1 Parameters "
+        " Mobile Robot 2 Parameters "
         self.x2 = 0
         self.y2 = 0
         self.Theta2 = 0
@@ -125,7 +125,7 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.w5 = 0
         self.vL5 = 0
         self.vR5 = 0
-    
+        
         " Mobile Robot 6 Parameters "
         self.x6 = 0
         self.y6 = 0
@@ -144,18 +144,18 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         
 		self.distance_threshold = 2.2
 		
-		self.min_action = -1.0
-		self.max_action =  1.0
+		self.min_action = -4.0
+		self.max_action =  4.0
 		
         " Observation & Action Space "
+        
 		self.action_space = spaces.Box(low=self.min_action, high=self.max_action, shape=(1,))
-		self.observation_space = spaces.Box(-high, high)
 		
         # Define a 2-D observation space
-        # self.observation_shape = (600, 800, 3)
-        # self.observation_space = spaces.Box(low = np.zeros(self.observation_shape), 
-        #                                     high = np.ones(self.observation_shape),
-        #                                     dtype = np.float16)        
+        self.observation_shape = (600, 800, 3)
+        self.observation_space = spaces.Box(low = np.zeros(self.observation_shape), 
+                                            high = np.ones(self.observation_shape),
+                                            dtype = np.float16)        
         
 		self.seed()
 		self.viewer = None
