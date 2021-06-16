@@ -139,34 +139,15 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.L = 1
         self.d = 0.5
         A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
+        				
+		" Distance at which to fail the episode "
         
-		# getting object handles
-		self.action   = self.get_object_handle('action')
-		self.cart     = self.get_object_handle('cart')
-		self.pole     = self.get_object_handle('pole')
-		self.viewer   = self.get_object_handle('viewer')
-		
-		# adjusting parameters
-		self.tau = 0.02  # seconds between state updates
-		self.gravity = 9.8
-		#self.force_mag = 10.0
-		self.force_mag = 100.0
-		
-		self.set_float_parameter(vrep.sim_floatparam_simulation_time_step, self.tau)
-		self.set_array_parameter(vrep.sim_arrayparam_gravity,[0,0,-self.gravity])
-		self.obj_set_force(self.action,self.force_mag)
-		
-		# Angle at which to fail the episode
-		self.theta_threshold_radians = 12 * 2 * math.pi / 360
-		self.x_threshold = 2.4
-		# Angle limit set to 2 * theta_threshold_radians so failing observation is still within bounds
-		high = np.array([
-			self.x_threshold * 2,             np.finfo(np.float32).max,
-			self.theta_threshold_radians * 2, np.finfo(np.float32).max])
+		self.distance_threshold = 2.2
 		
 		self.min_action = -1.0
 		self.max_action =  1.0
 		
+        " Observation & Action Space "
 		self.action_space = spaces.Box(low=self.min_action, high=self.max_action, shape=(1,))
 		self.observation_space = spaces.Box(-high, high)
 		
@@ -200,7 +181,6 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
             self.zr1 = msg.transforms[0].transform.rotation.z
             self.wr1 = msg.transforms[0].transform.rotation.w
             self.Theta1 = euler_from_quaternion(self.xr1,self.yr1,self.zr1,self.wr1)
-       
     
         if  msg.transforms[0].child_frame_id == 'robot2' :
             self.x2 = msg.transforms[0].transform.translation.x
@@ -361,8 +341,3 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 	def close(self):
 		if self.viewer: self.viewer.close()
 		vrep_env.VrepEnv.close(self)
-
-
-if __name__ == '__main__':
-	import sys
-	sys.exit(main(sys.argv))
