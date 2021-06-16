@@ -135,18 +135,10 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.vL6 = 0
         self.vR6 = 0
         
-        # Adjusting Parameters
+        " Adjusting Parameters "
         self.L = 1
         self.d = 0.5
         A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
-
-        def euler_from_quaternion(x, y, z, w):
-                
-             t3 = +2.0 * (w * z + x * y)
-             t4 = +1.0 - 2.0 * (y * y + z * z)
-             yaw_z = math.atan2(t3, t4)
-             
-             return yaw_z # in radians
         
 		# getting object handles
 		self.action   = self.get_object_handle('action')
@@ -178,11 +170,89 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 		self.action_space = spaces.Box(low=self.min_action, high=self.max_action, shape=(1,))
 		self.observation_space = spaces.Box(-high, high)
 		
+        # Define a 2-D observation space
+        # self.observation_shape = (600, 800, 3)
+        # self.observation_space = spaces.Box(low = np.zeros(self.observation_shape), 
+        #                                     high = np.ones(self.observation_shape),
+        #                                     dtype = np.float16)        
+        
 		self.seed()
 		self.viewer = None
 		self.state = None
 		self.steps_beyond_done = None
 	
+    def euler_from_quaternion(x, y, z, w):
+            
+         t3 = +2.0 * (w * z + x * y)
+         t4 = +1.0 - 2.0 * (y * y + z * z)
+         yaw_z = math.atan2(t3, t4)
+         
+         return yaw_z # in radians     
+    
+    
+    def listener_callback(self, msg):
+        
+        if msg.transforms[0].child_frame_id == 'robot1' :  
+            self.x1 = msg.transforms[0].transform.translation.x
+            self.y1 = msg.transforms[0].transform.translation.y
+            self.xr1 = msg.transforms[0].transform.rotation.x
+            self.yr1 = msg.transforms[0].transform.rotation.y
+            self.zr1 = msg.transforms[0].transform.rotation.z
+            self.wr1 = msg.transforms[0].transform.rotation.w
+            self.Theta1 = euler_from_quaternion(self.xr1,self.yr1,self.zr1,self.wr1)
+       
+    
+        if  msg.transforms[0].child_frame_id == 'robot2' :
+            self.x2 = msg.transforms[0].transform.translation.x
+            self.y2 = msg.transforms[0].transform.translation.y
+            self.xr2 = msg.transforms[0].transform.rotation.x
+            self.yr2 = msg.transforms[0].transform.rotation.y
+            self.zr2 = msg.transforms[0].transform.rotation.z
+            self.wr2 = msg.transforms[0].transform.rotation.w
+            self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2) 
+        
+        if  msg.transforms[0].child_frame_id == 'robot3' :
+            
+            self.x3 = msg.transforms[0].transform.translation.x
+            self.y3 = msg.transforms[0].transform.translation.y
+            self.xr3 = msg.transforms[0].transform.rotation.x
+            self.yr3 = msg.transforms[0].transform.rotation.y
+            self.zr3 = msg.transforms[0].transform.rotation.z
+            self.wr3 = msg.transforms[0].transform.rotation.w
+            self.Theta3 = euler_from_quaternion(self.xr3,self.yr3,self.zr3,self.wr3)
+    
+        if  msg.transforms[0].child_frame_id == 'robot4' :
+            
+            self.x4 = msg.transforms[0].transform.translation.x
+            self.y4 = msg.transforms[0].transform.translation.y
+            self.xr4 = msg.transforms[0].transform.rotation.x
+            self.yr4 = msg.transforms[0].transform.rotation.y
+            self.zr4 = msg.transforms[0].transform.rotation.z
+            self.wr4 = msg.transforms[0].transform.rotation.w
+            self.Theta4 = euler_from_quaternion(self.xr4,self.yr4,self.zr4,self.wr4)        
+            
+        if  msg.transforms[0].child_frame_id == 'robot5' :
+            
+            self.x5 = msg.transforms[0].transform.translation.x
+            self.y5 = msg.transforms[0].transform.translation.y
+            self.xr5 = msg.transforms[0].transform.rotation.x
+            self.yr5 = msg.transforms[0].transform.rotation.y
+            self.zr5 = msg.transforms[0].transform.rotation.z
+            self.wr5 = msg.transforms[0].transform.rotation.w
+            self.Theta5 = euler_from_quaternion(self.xr5,self.yr5,self.zr5,self.wr5)               
+            
+        if  msg.transforms[0].child_frame_id == 'robot6' :
+            
+            self.x6 = msg.transforms[0].transform.translation.x
+            self.y6 = msg.transforms[0].transform.translation.y
+            self.xr6 = msg.transforms[0].transform.rotation.x
+            self.yr6 = msg.transforms[0].transform.rotation.y
+            self.zr6 = msg.transforms[0].transform.rotation.z
+            self.wr6 = msg.transforms[0].transform.rotation.w
+            self.Theta6 = euler_from_quaternion(self.xr6,self.yr6,self.zr6,self.wr6)        
+    
+       
+    
 	def seed(self, seed=None):
 		self.np_random, seed = seeding.np_random(seed)
 		return [seed]
