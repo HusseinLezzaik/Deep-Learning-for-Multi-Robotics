@@ -237,7 +237,6 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
             self.Theta6 = euler_from_quaternion(self.xr6,self.yr6,self.zr6,self.wr6)
             self.state6 = (self.x6,self.y6,self.Theta6)
     
-       
 	def seed(self, seed=None):
 		self.np_random, seed = seeding.np_random(seed)
 		return [seed]
