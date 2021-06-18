@@ -138,10 +138,15 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         " Adjusting Parameters "
         self.L = 1
         self.d = 0.5
+        
+        " Adjacency Matrix "
         A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
+        
+        " Control Inputs "
+        ux = np.zeros((6,1)) # 6x1
+        uy = np.zeros((6,1)) # 6x1
         				
 		" Distance at which to fail the episode "
-        
 		self.distance_threshold = 2.2
 		
 		self.min_action = -4.0
