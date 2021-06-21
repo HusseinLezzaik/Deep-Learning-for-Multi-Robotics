@@ -29,11 +29,18 @@ A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
 ux = np.zeros((6,1)) # 6x1
 uy = np.zeros((6,1)) # 6x1
 
-
 " Connecting to V-Rep "
 
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
+
+def euler_from_quaternion(x, y, z, w):
+        
+     t3 = +2.0 * (w * z + x * y)
+     t4 = +1.0 - 2.0 * (y * y + z * z)
+     yaw_z = math.atan2(t3, t4)
+     
+     return yaw_z # in radians     
 
 
 class MobileRobotVrepEnv(vrep_env.VrepEnv):
@@ -169,16 +176,7 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 		self.viewer = None
 		self.state = None
 		self.steps_beyond_done = None
-	
-    def euler_from_quaternion(x, y, z, w):
-            
-         t3 = +2.0 * (w * z + x * y)
-         t4 = +1.0 - 2.0 * (y * y + z * z)
-         yaw_z = math.atan2(t3, t4)
-         
-         return yaw_z # in radians     
-    
-    
+	        
     def listener_callback(self, msg):
         
         if msg.transforms[0].child_frame_id == 'robot1' :  
