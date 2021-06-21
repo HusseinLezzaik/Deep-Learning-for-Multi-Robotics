@@ -22,6 +22,20 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 
+L = 1 # Parameter of robot
+d = 0.5 # Parameter of robot
+A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
+
+ux = np.zeros((6,1)) # 6x1
+uy = np.zeros((6,1)) # 6x1
+
+
+" Connecting to V-Rep "
+
+sim.simxFinish(-1) # just in case, close all opened connections
+clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
+
+
 class MobileRobotVrepEnv(vrep_env.VrepEnv):
 	metadata = {
 		'render.modes': ['human', 'rgb_array'],
@@ -134,17 +148,6 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0
-        
-        " Adjusting Parameters "
-        self.L = 1
-        self.d = 0.5
-        
-        " Adjacency Matrix "
-        A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
-        
-        " Control Inputs "
-        ux = np.zeros((6,1)) # 6x1
-        uy = np.zeros((6,1)) # 6x1
         				
 		" Distance at which to fail the episode "
 		self.distance_threshold = 2.2
@@ -457,7 +460,6 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         VL6 = float(Speed_L6[0])
         VR6 = float(Speed_L6[1])
                 
-    
         " Publish Speed Commands to Robot 1 "
     
         msgl1 = Float32()    
