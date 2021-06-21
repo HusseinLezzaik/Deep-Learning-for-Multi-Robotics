@@ -9,7 +9,7 @@ import vrep_env
 from vrep_env import vrep
 
 import os
-vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning']
+vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/scenes']
 
 import rclpy
 from rclpy.node import Node
@@ -261,6 +261,9 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
             self.Phix6 = 0 # 1x1
             self.Phiy6 = 0 # 1x1
             self.t += 1
+
+        " Distance Threshold "
+        self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)
 
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
