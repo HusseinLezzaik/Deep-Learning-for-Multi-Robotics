@@ -140,7 +140,6 @@ class MinimalPublisher(Node):
             self.wr1 = msg.transforms[0].transform.rotation.w
             self.Theta1 = euler_from_quaternion(self.xr1,self.yr1,self.zr1,self.wr1)
                        
-            
         if  msg.transforms[0].child_frame_id == 'robot2' :
             
             self.x2 = msg.transforms[0].transform.translation.x

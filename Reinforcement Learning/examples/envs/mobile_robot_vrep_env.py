@@ -258,28 +258,28 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         Mx = np.zeros((6,1)) # 6x1
         My = np.zeros((6,1)) # 6x1
                 
-        for i in range(1,7):
-            for j in range(1,7):
-                Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
-                My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
+        # for i in range(1,7):
+        #     for j in range(1,7):
+        #         Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
+        #         My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
     
-        Mx1 = float(Mx[0]) / 5 # 1x1
-        My1 = float(My[0]) / 5 # 1x1
+        # Mx1 = float(Mx[0]) / 5 # 1x1
+        # My1 = float(My[0]) / 5 # 1x1
         
-        Mx2 = float(Mx[1]) / 5 # 1x1
-        My2 = float(My[1]) / 5 # 1x1        
+        # Mx2 = float(Mx[1]) / 5 # 1x1
+        # My2 = float(My[1]) / 5 # 1x1        
     
-        Mx3 = float(Mx[2]) / 5 # 1x1
-        My3 = float(My[2]) / 5 # 1x1
+        # Mx3 = float(Mx[2]) / 5 # 1x1
+        # My3 = float(My[2]) / 5 # 1x1
         
-        Mx4 = float(Mx[3]) / 5 # 1x1
-        My4 = float(My[3]) / 5 # 1x1
+        # Mx4 = float(Mx[3]) / 5 # 1x1
+        # My4 = float(My[3]) / 5 # 1x1
         
-        Mx5 = float(Mx[4]) / 5 # 1x1
-        My5 = float(My[4]) / 5 # 1x1
+        # Mx5 = float(Mx[4]) / 5 # 1x1
+        # My5 = float(My[4]) / 5 # 1x1
         
-        Mx6 = float(Mx[5]) / 5 # 1x1
-        My6 = float(My[5]) / 5 # 1x1          
+        # Mx6 = float(Mx[5]) / 5 # 1x1
+        # My6 = float(My[5]) / 5 # 1x1          
     
         # Mx1 = ( (self.x2-self.x1)+(self.x3-self.x1)+(self.x4-self.x1)+(self.x5-self.x1)+(self.x6-self.x1) ) / 5 # 1x1
         # My1 = ( (self.y2-self.y1)+(self.y3-self.y1)+(self.y4-self.y1)+(self.y5-self.y1)+(self.y6-self.y1) ) / 5 # 1x1
