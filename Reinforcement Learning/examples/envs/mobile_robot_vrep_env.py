@@ -186,11 +186,15 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         
 		self.action_space = spaces.Box(low=self.min_action, high=self.max_action, shape=(1,))
 		
-        # Define a 2-D observation space
-        self.observation_shape = (600, 800, 3)
-        self.observation_space = spaces.Box(low = np.zeros(self.observation_shape), 
-                                            high = np.ones(self.observation_shape),
-                                            dtype = np.float16)        
+        # Define Observation Space
+        
+        high = np.array([4.8,
+                         4.8,
+                         4.8,
+                         4.8],
+                        dtype=np.float32)
+        
+        self.observation_space = spaces.Box(-high, high, dtype=np.float32)        
         
 		self.seed()
 		self.viewer = None
