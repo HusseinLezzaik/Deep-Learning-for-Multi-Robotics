@@ -47,7 +47,7 @@ def euler_from_quaternion(x, y, z, w):
      
 """
 Description:
-    Consensus environment of 6 robots, where each episode they converge towards each other.
+    Consensus environment of 6 robots, where each episode they converge towards each other. DQN applied to robot 1 and rest are controlled with the consensus algorithm.
     
 Source:
     This environment corresponds to V-Rep simulator, integrated with ROS to publish actions & subscribe to observations.
@@ -58,12 +58,15 @@ Observation:
     1       My                        -4.8                    4.8
     2       Phix                      -4.8                    4.8
     3       Phiy                      -4.8                    4.8
-Action:
-    Type: Box(2) 
-    Num     Action              Min                    Max
-    0       Ux                  -10                    10
-    1       Uy                  -10                    10
-       
+
+Actions: 
+    Type: Discrete(2) 
+    Num   Action 
+    0     Move the robot upwards
+    1     Move the robot downwards
+    2     Move the robot to the left
+    3     Move the robot to the right   
+    
 """
 
 class MobileRobotVrepEnv(vrep_env.VrepEnv):
