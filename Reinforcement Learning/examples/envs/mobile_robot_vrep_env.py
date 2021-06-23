@@ -178,16 +178,17 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         				
 		" Distance at which to fail the episode "
 		self.distance_threshold = 2.2
-		
-		self.min_action = -4.0
-		self.max_action =  4.0
-		
+				
         " Observation & Action Space "
+        # Define Action Space
+        high = np.array([10,
+                         10],
+                        dtype=np.float32)
         
-		self.action_space = spaces.Box(low=self.min_action, high=self.max_action, shape=(1,))
-		
+        self.action_space = spaces.Box(-high, high, dtype=np.float32)            	
+        
+            
         # Define Observation Space
-        
         high = np.array([4.8,
                          4.8,
                          4.8,
