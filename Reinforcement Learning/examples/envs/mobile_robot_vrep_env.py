@@ -181,21 +181,20 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 				
         " Observation & Action Space "
         # Define Action Space
-        high = np.array([10,
+        high_action = np.array([10,
                          10],
                         dtype=np.float32)
         
-        self.action_space = spaces.Box(-high, high, dtype=np.float32)            	
+        self.action_space = spaces.Box(-high_action, high_action, dtype=np.float32)            	
         
-            
         # Define Observation Space
-        high = np.array([4.8,
+        high_observation = np.array([4.8,
                          4.8,
                          4.8,
                          4.8],
                         dtype=np.float32)
         
-        self.observation_space = spaces.Box(-high, high, dtype=np.float32)        
+        self.observation_space = spaces.Box(-high_observation, high_observation, dtype=np.float32)        
         
 		self.seed()
 		self.viewer = None
