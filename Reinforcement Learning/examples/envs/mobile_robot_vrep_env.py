@@ -259,41 +259,59 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 
     def timer_callback(self):
         
-              
 
+        A = np.ones(6) - np.identity(6) # Adjancency Matrix
+
+        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
+        self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1
+
+        ux = np.zeros((6,1)) # 6x1
+        uy = np.zeros((6,1)) # 6x1
+
+            
+        for i in range(1,7):
+            for j in range(1,7):
+                ux[i-1] += -(A[i-1][j-1])*(self.X[i-1]-self.X[j-1]) # 1x1 each
+                uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
+    
+        u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
+        u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
+        u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
+        u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
+        u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1        
         
-                              
+        
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
         S1 = np.array([[self.v1], [self.w1]]) #2x1
         G1 = np.array([[1,0], [0,1/L]]) #2x2
         R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
-        S1 = np.dot(np.dot(G1, R1), u1_predicted_np) #2x1
+        S1 = np.dot(np.dot(G1, R1), u1) #2x1
 
         S2 = np.array([[self.v2], [self.w2]]) #2x1
         G2 = np.array([[1,0], [0,1/L]]) #2x2
         R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
-        S2 = np.dot(np.dot(G2, R2), u2_predicted_np) # 2x1
+        S2 = np.dot(np.dot(G2, R2), u2) # 2x1
 
         S3 = np.array([[self.v3], [self.w3]]) #2x1
         G3 = np.array([[1,0], [0,1/L]]) #2x2
         R3 = np.array([[math.cos(self.Theta3),math.sin(self.Theta3)],[-math.sin(self.Theta3),math.cos(self.Theta3)]]) #2x2
-        S3 = np.dot(np.dot(G3, R3), u3_predicted_np) #2x1        
+        S3 = np.dot(np.dot(G3, R3), u3) #2x1        
 
         S4 = np.array([[self.v4], [self.w4]]) #2x1
         G4 = np.array([[1,0], [0,1/L]]) #2x2
         R4 = np.array([[math.cos(self.Theta4),math.sin(self.Theta4)],[-math.sin(self.Theta4),math.cos(self.Theta4)]]) #2x2
-        S4 = np.dot(np.dot(G4, R4), u4_predicted_np) #2x1        
+        S4 = np.dot(np.dot(G4, R4), u4) #2x1        
 
         S5 = np.array([[self.v5], [self.w5]]) #2x1
         G5 = np.array([[1,0], [0,1/L]]) #2x2
         R5 = np.array([[math.cos(self.Theta5),math.sin(self.Theta5)],[-math.sin(self.Theta5),math.cos(self.Theta5)]]) #2x2
-        S5 = np.dot(np.dot(G5, R5), u5_predicted_np) #2x1
+        S5 = np.dot(np.dot(G5, R5), u5) #2x1
 
         S6 = np.array([[self.v6], [self.w6]]) #2x1
         G6 = np.array([[1,0], [0,1/L]]) #2x2
         R6 = np.array([[math.cos(self.Theta6),math.sin(self.Theta6)],[-math.sin(self.Theta6),math.cos(self.Theta6)]]) #2x2
-        S6 = np.dot(np.dot(G6, R6), u6_predicted_np) #2x1        
+        S6 = np.dot(np.dot(G6, R6), u6) #2x1        
                 
         
         " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
@@ -393,7 +411,6 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
 
-
     
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -460,7 +477,7 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         
         observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
         
-        self.input1 = action
+        self.action_input1 = action
         done = self.distance < self.distance_threshold 
         done = bool(done)
         reward = -self.distanced
@@ -591,52 +608,8 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
             
         return observation_DQN
     
-    def render(self, mode='human'):
-        screen_width = 600
-        screen_height = 400
-        
-        world_width = self.x_threshold*2
-        scale = screen_width/world_width
-        carty = 100 # TOP OF CART
-        polewidth = 10.0
-        polelen = scale * 1.0
-        cartwidth = 50.0
-        cartheight = 30.0
-        
-        if self.viewer is None:
-            from gym.envs.classic_control import rendering
-            self.viewer = rendering.Viewer(screen_width, screen_height)
-            l,r,t,b = -cartwidth/2, cartwidth/2, cartheight/2, -cartheight/2
-            axleoffset =cartheight/4.0
-            cart = rendering.FilledPolygon([(l,b), (l,t), (r,t), (r,b)])
-            self.carttrans = rendering.Transform()
-            cart.add_attr(self.carttrans)
-            self.viewer.add_geom(cart)
-            l,r,t,b = -polewidth/2,polewidth/2,polelen-polewidth/2,-polewidth/2
-            pole = rendering.FilledPolygon([(l,b), (l,t), (r,t), (r,b)])
-            pole.set_color(.8,.6,.4)
-            self.poletrans = rendering.Transform(translation=(0, axleoffset))
-            pole.add_attr(self.poletrans)
-            pole.add_attr(self.carttrans)
-            self.viewer.add_geom(pole)
-            self.axle = rendering.make_circle(polewidth/2)
-            self.axle.add_attr(self.poletrans)
-            self.axle.add_attr(self.carttrans)
-            self.axle.set_color(.5,.5,.8)
-            self.viewer.add_geom(self.axle)
-            self.track = rendering.Line((0,carty), (screen_width,carty))
-            self.track.set_color(0,0,0)
-            self.viewer.add_geom(self.track)
-        
-        if self.state is None: return None
-        
-        x = self.state
-        cartx = x[0]*scale+screen_width/2.0 # MIDDLE OF CART
-        self.carttrans.set_translation(cartx, carty)
-        self.poletrans.set_rotation(-x[2])
-        
-        return self.viewer.render(return_rgb_array = mode=='rgb_array')
+    def render(self):
+        pass
     
     def close(self):
-        if self.viewer: self.viewer.close()
         vrep_env.VrepEnv.close(self)
