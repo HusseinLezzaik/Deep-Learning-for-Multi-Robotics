@@ -15,12 +15,14 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
+import sim
 
 import math
 import gym
 from gym import spaces
 from gym.utils import seeding
 import numpy as np
+import time
 
 L = 1 # Parameter of robot
 d = 0.5 # Parameter of robot
@@ -30,9 +32,10 @@ ux = np.zeros((6,1)) # 6x1
 uy = np.zeros((6,1)) # 6x1
 
 " Connecting to V-Rep "
-
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
+N_SCENES = 80
+scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
 
 def euler_from_quaternion(x, y, z, w):
         
@@ -64,23 +67,13 @@ Action:
 """
 
 class MobileRobotVrepEnv(vrep_env.VrepEnv):
-	metadata = {
-		'render.modes': ['human', 'rgb_array'],
-		'video.frames_per_second' : 50
-	}
-	def __init__(
-		self,
-		server_addr='127.0.0.1',
-		server_port=19997,
-		scene_path=vrep_scenes_path+'/Scene_of_Six_Robots.ttt',
-	):
-		vrep_env.VrepEnv.__init__(
-			self,
-			server_addr,
-			server_port,
-			scene_path,
-		)
-
+    metadata = {
+        'render.modes': ['human', 'rgb_array'],
+        'video.frames_per_second' : 50
+        }
+    def __init__(self, server_addr='127.0.0.1', server_port=19997, scene_path=vrep_scenes_path+'/Scene_of_Six_Robots.ttt'):
+        
+        vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
         super().__init__('minimal_publisher1')
         self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
         self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',0) #Change according to topic in child script,String to Float32
@@ -175,32 +168,29 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0
-        				
-		" Distance at which to fail the episode "
-		self.distance_threshold = 2.2
-				
+                        
+        " Distance at which to fail the episode "
+        self.distance_threshold = 2.2
+                
         " Observation & Action Space "
         # Define Action Space
-        high_action = np.array([10,
-                         10],
-                        dtype=np.float32)
-        
-        self.action_space = spaces.Box(-high_action, high_action, dtype=np.float32)            	
+            
+        self.action_space = spaces.Discrete(4)               
         
         # Define Observation Space
         high_observation = np.array([4.8,
-                         4.8,
-                         4.8,
-                         4.8],
-                        dtype=np.float32)
+                                     4.8,
+                                     4.8,
+                                     4.8],
+                                    dtype=np.float32)
         
-        self.observation_space = spaces.Box(-high_observation, high_observation, dtype=np.float32)        
+        self.observation_space = spaces.Box(-high_observation, -high_observation, dtype=np.float32)        
         
-		self.seed()
-		self.viewer = None
-		self.state = None
-		self.steps_beyond_done = None
-	        
+        self.seed()
+        self.viewer = None
+        self.state = None
+        self.steps_beyond_done = None
+            
     def listener_callback(self, msg):
         
         if msg.transforms[0].child_frame_id == 'robot1' :  
@@ -269,131 +259,9 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
 
     def timer_callback(self):
         
-        " Distance Threshold "
-        self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)
+              
 
-        " Use Adjacency Matrix to find Mxy and Phi's "                
         
-        #A = np.ones(6) - np.identity(6) # Adjancency Matrix
-    
-        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
-        self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
-        
-        Mx = np.zeros((6,1)) # 6x1
-        My = np.zeros((6,1)) # 6x1
-                
-        # for i in range(1,7):
-        #     for j in range(1,7):
-        #         Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
-        #         My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
-    
-        # Mx1 = float(Mx[0]) / 5 # 1x1
-        # My1 = float(My[0]) / 5 # 1x1
-        
-        # Mx2 = float(Mx[1]) / 5 # 1x1
-        # My2 = float(My[1]) / 5 # 1x1        
-    
-        # Mx3 = float(Mx[2]) / 5 # 1x1
-        # My3 = float(My[2]) / 5 # 1x1
-        
-        # Mx4 = float(Mx[3]) / 5 # 1x1
-        # My4 = float(My[3]) / 5 # 1x1
-        
-        # Mx5 = float(Mx[4]) / 5 # 1x1
-        # My5 = float(My[4]) / 5 # 1x1
-        
-        # Mx6 = float(Mx[5]) / 5 # 1x1
-        # My6 = float(My[5]) / 5 # 1x1          
-    
-        # Mx1 = ( (self.x2-self.x1)+(self.x3-self.x1)+(self.x4-self.x1)+(self.x5-self.x1)+(self.x6-self.x1) ) / 5 # 1x1
-        # My1 = ( (self.y2-self.y1)+(self.y3-self.y1)+(self.y4-self.y1)+(self.y5-self.y1)+(self.y6-self.y1) ) / 5 # 1x1
-        
-        # Mx2 = ( (self.x1-self.x2)+(self.x3-self.x2)+(self.x4-self.x2)+(self.x5-self.x2)+(self.x6-self.x2) ) / 5 # 1x1
-        # My2 = ( (self.y1-self.y2)+(self.y3-self.y2)+(self.y4-self.y2)+(self.y5-self.y2)+(self.y6-self.y2) ) / 5 # 1x1            
-
-        # Mx3 = ( (self.x1-self.x3)+(self.x2-self.x3)+(self.x4-self.x3)+(self.x5-self.x3)+(self.x6-self.x3) ) / 5 # 1x1
-        # My3 = ( (self.y1-self.y3)+(self.y2-self.y3)+(self.y4-self.y3)+(self.y5-self.y3)+(self.y6-self.y3) ) / 5 # 1x1             
-        
-        # Mx4 = ( (self.x1-self.x4)+(self.x2-self.x4)+(self.x3-self.x4)+(self.x5-self.x4)+(self.x6-self.x4) ) / 5 # 1x1
-        # My4 = ( (self.y1-self.y4)+(self.y2-self.y4)+(self.y3-self.y4)+(self.y5-self.y4)+(self.y6-self.y4) ) / 5 # 1x1               
-
-        # Mx5 = ( (self.x1-self.x5)+(self.x2-self.x5)+(self.x3-self.x5)+(self.x4-self.x5)+(self.x6-self.x5) ) / 5 # 1x1
-        # My5 = ( (self.y1-self.y5)+(self.y2-self.y5)+(self.y3-self.y5)+(self.y4-self.y5)+(self.y6-self.y5) ) / 5 # 1x1  
-        
-        # Mx6 = ( (self.x1-self.x6)+(self.x2-self.x6)+(self.x3-self.x6)+(self.x4-self.x6)+(self.x5-self.x6) ) / 5 # 1x1
-        # My6 = ( (self.y1-self.y6)+(self.y2-self.y6)+(self.y3-self.y6)+(self.y4-self.y6)+(self.y5-self.y6) ) / 5 # 1x1   
-
-        " Use MLP to Predict control inputs "
-        
-        relative_pose_1 = [ Mx1, My1, self.Phix1, self.Phiy1 ] # tensor data for MLP model
-        relative_pose_2 = [ Mx2, My2, self.Phix2, self.Phiy2 ] # tensor data for MLP model
-        relative_pose_3 = [ Mx3, My3, self.Phix3, self.Phiy3 ] # tensor data for MLP model
-        relative_pose_4 = [ Mx4, My4, self.Phix4, self.Phiy4 ] # tensor data for MLP model
-        relative_pose_5 = [ Mx5, My5, self.Phix5, self.Phiy5 ] # tensor data for MLP model
-        relative_pose_6 = [ Mx6, My6, self.Phix6, self.Phiy6 ] # tensor data for MLP model
-        
-        u1_predicted = MLP_Model.predict(relative_pose_1, loaded_model) # predict control input u1, tensor
-        u2_predicted = MLP_Model.predict(relative_pose_2, loaded_model) # predict control input u2, tensor
-        u3_predicted = MLP_Model.predict(relative_pose_3, loaded_model) # predict control input u3, tensor
-        u4_predicted = MLP_Model.predict(relative_pose_4, loaded_model) # predict control input u4, tensor
-        u5_predicted = MLP_Model.predict(relative_pose_5, loaded_model) # predict control input u5, tensor
-        u6_predicted = MLP_Model.predict(relative_pose_6, loaded_model) # predict control input u6, tensor
-        
-        
-        Phix = np.zeros((6,1)) # 6x1
-        Phiy = np.zeros((6,1)) # 6x1
-                
-        for i in range(1,7):
-            for j in range(1,7):
-                Phix[i-1] += (A[i-1][j-1])*(Mx[j-1]) # 1x1 each
-                Phiy[i-1] += (A[i-1][j-1])*(My[j-1]) # 1x1 each        
-
-
-        self.Phix1 = float(Phix[0]) / 5 # 1x1
-        self.Phiy1 = float(Phiy[0]) / 5 # 1x1
-        
-        self.Phix2 = float(Phix[1]) / 5 # 1x1
-        self.Phiy2 = float(Phiy[1]) / 5 # 1x1        
-    
-        self.Phix3 = float(Phix[2]) / 5 # 1x1
-        self.Phiy3 = float(Phiy[2]) / 5 # 1x1
-        
-        self.Phix4 = float(Phix[3]) / 5 # 1x1
-        self.Phiy4 = float(Phiy[3]) / 5 # 1x1
-        
-        self.Phix5 = float(Phix[4]) / 5 # 1x1
-        self.Phiy5 = float(Phiy[4]) / 5 # 1x1
-        
-        self.Phix6 = float(Phix[5]) / 5 # 1x1
-        self.Phiy6 = float(Phiy[5]) / 5 # 1x1     
-        
-        
-        # self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
-        # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
-        
-        # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
-        # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
-            
-            
-        u1_predicted_np = np.array([[ u1_predicted[0][0] ], [ u1_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u2_predicted_np = np.array([[ u2_predicted[0][0] ], [ u2_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u3_predicted_np = np.array([[ u3_predicted[0][0] ], [ u3_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u4_predicted_np = np.array([[ u4_predicted[0][0] ], [ u4_predicted[0][1] ]]) # from tensor to numpy array for calculation    
-        u5_predicted_np = np.array([[ u5_predicted[0][0] ], [ u5_predicted[0][1] ]]) # from tensor to numpy array for calculation
-        u6_predicted_np = np.array([[ u6_predicted[0][0] ], [ u6_predicted[0][1] ]]) # from tensor to numpy array for calculation
-            
                               
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
@@ -525,113 +393,250 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
 
-        self.i += 1  
+
     
-	def seed(self, seed=None):
-		self.np_random, seed = seeding.np_random(seed)
-		return [seed]
-	
-	def _make_observation(self):
-		# discard y and z values
-		[  x   ,_,_ ]         = self.obj_get_position(self.cart)
-		[x_dot ,_,_ ] , _     = self.obj_get_velocity(self.cart)
-		
-		[_, theta ,_]         = self.obj_get_orientation(self.pole)
-		_ , [_, theta_dot ,_] = self.obj_get_velocity(self.pole)
-		
-		self.state = (x,x_dot,theta,theta_dot)
-	
-	def _make_action(self, u):
-		self.obj_set_velocity(self.action,u)
-	
-	def step(self, action):
-		assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
-		
-		# Actuate
-		self._make_action(action)
-		# Step
-		self.step_simulation()
-		# Observe
-		self._make_observation()
-		
-		(x,x_dot,theta,theta_dot) = self.state
-		
-		done = x < -self.x_threshold or theta < -self.theta_threshold_radians \
-			or x >  self.x_threshold or theta >  self.theta_threshold_radians
-		done = bool(done)
-		
-		if not done:
-			reward = 1.0
-		elif self.steps_beyond_done is None:
-			self.steps_beyond_done = 0
-			reward = 1.0
-		else:
-			if self.steps_beyond_done == 0:
-				logger.warning("You are calling 'step()' even though this environment has already returned done = True. You should always call 'reset()' once you receive 'done = True' -- any further steps are undefined behavior.")
-			self.steps_beyond_done += 1
-			reward = 0.0
-		
-		return np.array(self.state), reward, done, {}
-	
-	def reset(self):
-		if self.sim_running:
-			self.stop_simulation()
-		self.start_simulation()
-		self.steps_beyond_done = None
-		
-		v = self.np_random.uniform(low=-0.04, high=0.04, size=(1,))
-		self.obj_set_velocity(self.action,v)
-		self.step_simulation()
-		
-		self._make_observation()
-		return np.array(self.state)
-	
-	def render(self, mode='human'):
-		screen_width = 600
-		screen_height = 400
-		
-		world_width = self.x_threshold*2
-		scale = screen_width/world_width
-		carty = 100 # TOP OF CART
-		polewidth = 10.0
-		polelen = scale * 1.0
-		cartwidth = 50.0
-		cartheight = 30.0
-		
-		if self.viewer is None:
-			from gym.envs.classic_control import rendering
-			self.viewer = rendering.Viewer(screen_width, screen_height)
-			l,r,t,b = -cartwidth/2, cartwidth/2, cartheight/2, -cartheight/2
-			axleoffset =cartheight/4.0
-			cart = rendering.FilledPolygon([(l,b), (l,t), (r,t), (r,b)])
-			self.carttrans = rendering.Transform()
-			cart.add_attr(self.carttrans)
-			self.viewer.add_geom(cart)
-			l,r,t,b = -polewidth/2,polewidth/2,polelen-polewidth/2,-polewidth/2
-			pole = rendering.FilledPolygon([(l,b), (l,t), (r,t), (r,b)])
-			pole.set_color(.8,.6,.4)
-			self.poletrans = rendering.Transform(translation=(0, axleoffset))
-			pole.add_attr(self.poletrans)
-			pole.add_attr(self.carttrans)
-			self.viewer.add_geom(pole)
-			self.axle = rendering.make_circle(polewidth/2)
-			self.axle.add_attr(self.poletrans)
-			self.axle.add_attr(self.carttrans)
-			self.axle.set_color(.5,.5,.8)
-			self.viewer.add_geom(self.axle)
-			self.track = rendering.Line((0,carty), (screen_width,carty))
-			self.track.set_color(0,0,0)
-			self.viewer.add_geom(self.track)
-		
-		if self.state is None: return None
-		
-		x = self.state
-		cartx = x[0]*scale+screen_width/2.0 # MIDDLE OF CART
-		self.carttrans.set_translation(cartx, carty)
-		self.poletrans.set_rotation(-x[2])
-		
-		return self.viewer.render(return_rgb_array = mode=='rgb_array')
-	
-	def close(self):
-		if self.viewer: self.viewer.close()
-		vrep_env.VrepEnv.close(self)
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+        
+    def step(self, action):
+        
+        assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
+        
+        " Distance Threshold "
+        self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)
+
+        " Use Adjacency Matrix to find Mxy and Phi's "                
+        
+        A = np.ones(6) - np.identity(6) # Adjancency Matrix
+    
+        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
+        self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
+        
+        Mx = np.zeros((6,1)) # 6x1
+        My = np.zeros((6,1)) # 6x1
+                
+        for i in range(1,7):
+            for j in range(1,7):
+                Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
+                My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
+    
+        Mx1 = float(Mx[0]) / 5 # 1x1
+        My1 = float(My[0]) / 5 # 1x1
+        
+        Mx2 = float(Mx[1]) / 5 # 1x1
+        My2 = float(My[1]) / 5 # 1x1        
+    
+        Mx3 = float(Mx[2]) / 5 # 1x1
+        My3 = float(My[2]) / 5 # 1x1
+        
+        Mx4 = float(Mx[3]) / 5 # 1x1
+        My4 = float(My[3]) / 5 # 1x1
+        
+        Mx5 = float(Mx[4]) / 5 # 1x1
+        My5 = float(My[4]) / 5 # 1x1
+        
+        Mx6 = float(Mx[5]) / 5 # 1x1
+        My6 = float(My[5]) / 5 # 1x1         
+        
+        
+        self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        
+        self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        
+        self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
+        
+        self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+        self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+        
+        self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+        self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+        
+        self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
+        self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1         
+        
+        observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
+        
+        self.input1 = action
+        done = self.distance < self.distance_threshold 
+        done = bool(done)
+        reward = -self.distanced
+        
+        return observation_DQN, reward, done, {}
+    
+    def reset(self):
+        if self.sim_running:
+            self.stop_simulation()
+            # Stop Simulation
+            sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
+
+            # Retrieve some handles:
+                
+            ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'robot1', sim.simx_opmode_oneshot_wait)
+        
+            if (not ErrLocM1==sim.simx_return_ok):
+                pass
+            
+            ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'robot2#0', sim.simx_opmode_oneshot_wait)
+        
+            if (not ErrLocM2==sim.simx_return_ok):
+                pass           
+
+            ErrLoc1,Loc1 =sim.simxGetObjectPosition(clientID, LocM1, -1, sim.simx_opmode_oneshot_wait)
+        
+            if (not ErrLoc1==sim.simx_return_ok):
+                pass            
+        
+            ErrLoc2,Loc2 =sim.simxGetObjectPosition(clientID, LocM2, -1, sim.simx_opmode_oneshot_wait)
+
+            if (not ErrLoc2==sim.simx_return_ok):
+                pass     
+
+            ErrLocO1,OriRobo1 =sim.simxGetObjectOrientation(clientID,LocM1, -1, sim.simx_opmode_oneshot_wait)
+        
+            if (not ErrLocO1==sim.simx_return_ok):
+                pass             
+        
+            ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
+
+            if (not ErrLocO2==sim.simx_return_ok):
+                pass     
+
+            OriRobo1[2] = scenes[self.scene][2]
+            OriRobo2[2] = scenes[self.scene][5]
+
+
+            # Set Robot Orientation
+
+            sim.simxSetObjectOrientation(clientID, LocM1, -1, OriRobo1, sim.simx_opmode_oneshot_wait) 
+            sim.simxSetObjectOrientation(clientID, LocM2, -1, OriRobo2, sim.simx_opmode_oneshot_wait)
+
+
+            Loc1[0] = scenes[self.scene][0]
+            Loc2[0] = scenes[self.scene][3]
+
+
+            Loc1[1] = scenes[self.scene][1]
+            Loc2[1] = scenes[self.scene][4]
+
+            # Set Robot Position
+
+            sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
+            sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
+                    
+            # Nb of Scene Counter
+            self.scene += 1
+                        
+            " Use Adjacency Matrix to find Mxy and Phi's "                
+            
+            A = np.ones(6) - np.identity(6) # Adjancency Matrix
+        
+            self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
+            self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
+            
+            Mx = np.zeros((6,1)) # 6x1
+            My = np.zeros((6,1)) # 6x1
+                    
+            for i in range(1,7):
+                for j in range(1,7):
+                    Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
+                    My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
+        
+            Mx1 = float(Mx[0]) / 5 # 1x1
+            My1 = float(My[0]) / 5 # 1x1
+            
+            Mx2 = float(Mx[1]) / 5 # 1x1
+            My2 = float(My[1]) / 5 # 1x1        
+        
+            Mx3 = float(Mx[2]) / 5 # 1x1
+            My3 = float(My[2]) / 5 # 1x1
+            
+            Mx4 = float(Mx[3]) / 5 # 1x1
+            My4 = float(My[3]) / 5 # 1x1
+            
+            Mx5 = float(Mx[4]) / 5 # 1x1
+            My5 = float(My[4]) / 5 # 1x1
+            
+            Mx6 = float(Mx[5]) / 5 # 1x1
+            My6 = float(My[5]) / 5 # 1x1         
+            
+            
+            self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+            self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+            
+            self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+            self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+            
+            self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+            self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
+            
+            self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+            self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+            
+            self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+            self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+            
+            self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
+            self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
+            
+            observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
+            
+            # Start Simulation
+            sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
+            time.sleep(5)
+            
+            
+        return observation_DQN
+    
+    def render(self, mode='human'):
+        screen_width = 600
+        screen_height = 400
+        
+        world_width = self.x_threshold*2
+        scale = screen_width/world_width
+        carty = 100 # TOP OF CART
+        polewidth = 10.0
+        polelen = scale * 1.0
+        cartwidth = 50.0
+        cartheight = 30.0
+        
+        if self.viewer is None:
+            from gym.envs.classic_control import rendering
+            self.viewer = rendering.Viewer(screen_width, screen_height)
+            l,r,t,b = -cartwidth/2, cartwidth/2, cartheight/2, -cartheight/2
+            axleoffset =cartheight/4.0
+            cart = rendering.FilledPolygon([(l,b), (l,t), (r,t), (r,b)])
+            self.carttrans = rendering.Transform()
+            cart.add_attr(self.carttrans)
+            self.viewer.add_geom(cart)
+            l,r,t,b = -polewidth/2,polewidth/2,polelen-polewidth/2,-polewidth/2
+            pole = rendering.FilledPolygon([(l,b), (l,t), (r,t), (r,b)])
+            pole.set_color(.8,.6,.4)
+            self.poletrans = rendering.Transform(translation=(0, axleoffset))
+            pole.add_attr(self.poletrans)
+            pole.add_attr(self.carttrans)
+            self.viewer.add_geom(pole)
+            self.axle = rendering.make_circle(polewidth/2)
+            self.axle.add_attr(self.poletrans)
+            self.axle.add_attr(self.carttrans)
+            self.axle.set_color(.5,.5,.8)
+            self.viewer.add_geom(self.axle)
+            self.track = rendering.Line((0,carty), (screen_width,carty))
+            self.track.set_color(0,0,0)
+            self.viewer.add_geom(self.track)
+        
+        if self.state is None: return None
+        
+        x = self.state
+        cartx = x[0]*scale+screen_width/2.0 # MIDDLE OF CART
+        self.carttrans.set_translation(cartx, carty)
+        self.poletrans.set_rotation(-x[2])
+        
+        return self.viewer.render(return_rgb_array = mode=='rgb_array')
+    
+    def close(self):
+        if self.viewer: self.viewer.close()
+        vrep_env.VrepEnv.close(self)
