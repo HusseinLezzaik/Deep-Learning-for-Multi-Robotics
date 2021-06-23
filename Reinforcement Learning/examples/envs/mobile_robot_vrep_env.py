@@ -41,7 +41,26 @@ def euler_from_quaternion(x, y, z, w):
      yaw_z = math.atan2(t3, t4)
      
      return yaw_z # in radians     
-
+    """
+    Description:
+        Consensus environment of 6 robots, where each episode they converge towards each other.
+        
+    Source:
+        This environment corresponds to V-Rep simulator, integrated with ROS to publish actions & subscribe to observations.
+    Observation:
+        Type: Box(4) 
+        Num     Observation               Min                     Max
+        0       Mx                        -4.8                    4.8
+        1       My                        -Inf                    Inf
+        2       Phix                      -0.41                   0.4
+        3       Phiy                      -Inf                    Inf
+    Action:
+        Type: Box(2) 
+        Num     Action              Min                    Max
+        0       Ux                  -4.8                    4.8
+        1       Uy                  -Inf                    Inf
+           
+        """
 
 class MobileRobotVrepEnv(vrep_env.VrepEnv):
 	metadata = {
