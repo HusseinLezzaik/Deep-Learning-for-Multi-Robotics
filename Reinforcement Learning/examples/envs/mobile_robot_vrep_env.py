@@ -60,7 +60,7 @@ Observation:
     3       Phiy                      -4.8                    4.8
 
 Actions: 
-    Type: Discrete(2) 
+    Type: Discrete(4) 
     Num   Action 
     0     Move the robot upwards
     1     Move the robot downwards
@@ -276,6 +276,9 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
             for j in range(1,7):
                 ux[i-1] += -(A[i-1][j-1])*(self.X[i-1]-self.X[j-1]) # 1x1 each
                 uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
+    
+        if self.action_input1 >0:
+            self.v1 = 0
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
