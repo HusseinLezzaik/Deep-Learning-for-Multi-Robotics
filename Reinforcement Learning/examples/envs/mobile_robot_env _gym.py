@@ -5,11 +5,11 @@ Defining Class of custom environment for V-Rep
 @author: hussein
 """
 
-import vrep_env
-from vrep_env import vrep
+# import vrep_env
+# from vrep_env import vrep
 
 import os
-vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/scenes']
+# vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/scenes']
 
 import rclpy
 from rclpy.node import Node
@@ -69,14 +69,14 @@ Actions:
     
 """
 
-class MobileRobotVrepEnv(vrep_env.VrepEnv):
+class MobileRobotVrepEnv(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
         'video.frames_per_second' : 50
         }
-    def __init__(self, server_addr='127.0.0.1', server_port=19997, scene_path=vrep_scenes_path+'/Scene_of_Six_Robots.ttt'):
+    def __init__(self):
         
-        vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
+        #vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
         super().__init__('minimal_publisher1')
         self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
         self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',0) #Change according to topic in child script,String to Float32
@@ -626,6 +626,3 @@ class MobileRobotVrepEnv(vrep_env.VrepEnv):
     
     def render(self):
         pass
-    
-    def close(self):
-        vrep_env.VrepEnv.close(self)
