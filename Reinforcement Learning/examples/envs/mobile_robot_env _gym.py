@@ -69,11 +69,7 @@ Actions:
     
 """
 
-class MobileRobotVrepEnv(gym.Env):
-    metadata = {
-        'render.modes': ['human', 'rgb_array'],
-        'video.frames_per_second' : 50
-        }
+class MinimalPublisherGym(gym.Env):
     def __init__(self):
         
         #vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
@@ -428,6 +424,17 @@ class MobileRobotVrepEnv(gym.Env):
         self.publisher_r6.publish(msgr6)        
 
     
+
+
+class MobileRobotVrepEnv(gym.Env):
+    metadata = {
+        'render.modes': ['human', 'rgb_array'],
+        'video.frames_per_second' : 50
+        }
+    def __init__(self):
+        mpg = MinimalPublisherGym()
+        
+        
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
