@@ -168,27 +168,6 @@ class MinimalPublisherGym(gym.Env):
         self.vL6 = 0
         self.vR6 = 0
                         
-        " Distance at which to fail the episode "
-        self.distance_threshold = 2.2
-                
-        " Observation & Action Space "
-        # Define Action Space
-            
-        self.action_space = spaces.Discrete(4)               
-        
-        # Define Observation Space
-        high_observation = np.array([4.8,
-                                     4.8,
-                                     4.8,
-                                     4.8],
-                                    dtype=np.float32)
-        
-        self.observation_space = spaces.Box(-high_observation, -high_observation, dtype=np.float32)        
-        
-        self.seed()
-        self.viewer = None
-        self.state = None
-        self.steps_beyond_done = None
             
     def listener_callback(self, msg):
         
@@ -434,6 +413,27 @@ class MobileRobotVrepEnv(gym.Env):
     def __init__(self):
         mpg = MinimalPublisherGym()
         
+        " Distance at which to fail the episode "
+        self.distance_threshold = 2.2
+                
+        " Observation & Action Space "
+        # Define Action Space
+            
+        self.action_space = spaces.Discrete(4)               
+        
+        # Define Observation Space
+        high_observation = np.array([4.8,
+                                     4.8,
+                                     4.8,
+                                     4.8],
+                                    dtype=np.float32)
+        
+        self.observation_space = spaces.Box(-high_observation, -high_observation, dtype=np.float32)        
+        
+        self.seed()
+        self.viewer = None
+        self.state = None
+        self.steps_beyond_done = None        
         
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
