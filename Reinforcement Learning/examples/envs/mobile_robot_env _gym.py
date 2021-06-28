@@ -46,6 +46,7 @@ def euler_from_quaternion(x, y, z, w):
      return yaw_z # in radians
      
 """
+
 Description:
     Consensus environment of 6 robots, where each episode they converge towards each other. DQN applied to robot 1 and rest are controlled with the consensus algorithm.
     
@@ -263,7 +264,6 @@ class MinimalPublisherGym(gym.Env):
         else:
             self.w1 = +1.0
     
-    
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
         u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
@@ -317,7 +317,6 @@ class MinimalPublisherGym(gym.Env):
         Speed_L5 = np.array([[self.vL5], [self.vR5]]) # Vector 2x1 for Speed of Robot 5
         Speed_L6 = np.array([[self.vL6], [self.vR6]]) # Vector 2x1 for Speed of Robot 6
 
-
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
         M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
         M3 = np.array([[S3[0]],[S3[1]]]).reshape(2,1) #2x1
@@ -353,7 +352,6 @@ class MinimalPublisherGym(gym.Env):
         msgr1.data = VR1
         self.publisher_l1.publish(msgl1)
         self.publisher_r1.publish(msgr1)
-
 
         " Publish Speed Commands to Robot 2 "
         
@@ -401,8 +399,6 @@ class MinimalPublisherGym(gym.Env):
         msgr6.data = VR6
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
-
-    
 
 
 class MobileRobotVrepEnv(gym.Env):
@@ -461,6 +457,7 @@ class MobileRobotVrepEnv(gym.Env):
                 Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
                 My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
     
+            
         Mx1 = float(Mx[0]) / 5 # 1x1
         My1 = float(My[0]) / 5 # 1x1
         
