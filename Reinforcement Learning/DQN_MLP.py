@@ -19,6 +19,10 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
+from torch.nn import Module
+from torch.nn import Linear
+from torch.nn.init import xavier_uniform_
+from torch.nn import ReLU
 
 env = gym.make('CartPole-v0').unwrapped
 
@@ -84,6 +88,81 @@ resize = T.Compose([T.ToPILImage(),
                     T.Resize(40, interpolation=Image.CUBIC),
                     T.ToTensor()])
 
+class ModelE(Module):
+    # define model elements
+    def __init__(self):
+        super(ModelE, self).__init__()
+        
+        " Model A of Mxy "
+        # Inputs to hidden layer linear transformation
+        self.inputA = Linear(2, 12) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.inputA.weight)
+        self.actA1 = ReLU()
+        # Define Hidden Layer
+        self.hiddenA = Linear(12, 12)
+        xavier_uniform_(self.hiddenA.weight)
+        self.actA2 = ReLU() 
+        # Output Layer 3 to 2 units
+        self.outputA = Linear(12, 2)
+        xavier_uniform_(self.outputA.weight)        
+        
+        " Model B " 
+        # Inputs to hidden layer linear transformation
+        self.inputB = Linear(2, 12) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.inputB.weight)
+        self.actB1 = ReLU()
+        # Define Hidden Layer
+        self.hiddenB = Linear(12, 12)
+        xavier_uniform_(self.hiddenB.weight)
+        self.actB2 = ReLU() 
+        # Output layer 3 to 2 units
+        self.outputB = Linear(12, 2)
+        xavier_uniform_(self.outputB.weight)        
+        
+        " Model E Merged "        
+        # Define 4x3 hidden unit
+        self.inputE = Linear(4,3)
+        xavier_uniform_(self.inputE.weight)
+        self.actE1 = ReLU()
+        # Define Output 3x2 unit        
+        self.outputE = Linear(3,2)
+        xavier_uniform_(self.outputE.weight)
+
+    # forward propagate input
+    def forward(self, inputs):
+        
+        M = inputs[:,:2]
+        Phi = inputs[:,2:4]
+        
+        " Model A "
+        # Input to first hidden layer
+        X1 = self.inputA(M)
+        X1 = self.actA1(X1)
+        # Second hidden layer
+        X1 = self.hiddenA(X1)
+        X1 = self.actA2(X1)
+        # Final hidden layer and Output
+        X1 = self.outputA(X1)        
+
+        " Model B "
+        # Input to first hidden layer
+        X2 = self.inputB(Phi)
+        X2 = self.actB1(X2)
+        # Second hidden layer
+        X2 = self.hiddenB(X2)
+        X2 = self.actB2(X2)
+        # Final hidden layer and Output
+        X2 = self.outputB(X2)        
+        
+        " Model E "
+        # Combine Models
+        X = torch.cat((X1, X2), dim=1)
+        # Define Hidden Layer
+        X = self.inputE(X)
+        X = self.actE1(X)
+        # Output Layer
+        X = self.outputE(X)
+        return X
 
 def get_cart_location(screen_width):
     world_width = env.x_threshold * 2
