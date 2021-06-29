@@ -628,3 +628,15 @@ class MobileRobotVrepEnv(gym.Env):
     
     def render(self):
         pass
+    
+    
+# def main(args=None):
+#     rclpy.init(args=args)
+#     minimal_publisher = MinimalPublisherGym()
+#     time.sleep(5)
+#     rclpy.spin(minimal_publisher)
+#     minimal_publisher.destroy_node()
+#     rclpy.shutdown()
+
+# if __name__ == '__main__':
+#     main()    
