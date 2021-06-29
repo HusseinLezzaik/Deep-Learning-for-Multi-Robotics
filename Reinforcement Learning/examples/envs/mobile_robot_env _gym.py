@@ -398,6 +398,9 @@ class MinimalPublisherGym(gym.Env):
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
 
+    def spin_once_gym():
+        rclpy.spin_once()
+
 
 class MobileRobotVrepEnv(gym.Env):
     metadata = {
@@ -499,6 +502,8 @@ class MobileRobotVrepEnv(gym.Env):
         done = self.distance < self.distance_threshold 
         done = bool(done)
         reward = -self.distanced
+        
+        mpg.spin_once_gym()
         
         return observation_DQN, reward, done, {}
     
