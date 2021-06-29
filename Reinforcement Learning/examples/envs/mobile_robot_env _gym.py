@@ -15,7 +15,7 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
-import sim
+from vrep_env import sim
 
 import math
 import gym
@@ -72,7 +72,6 @@ Actions:
 
 class MinimalPublisherGym(gym.Env):
     def __init__(self):
-        
         #vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
         super().__init__('minimal_publisher1')
         self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
@@ -238,7 +237,6 @@ class MinimalPublisherGym(gym.Env):
 
     def timer_callback(self):
         
-
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
 
         self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
@@ -253,7 +251,7 @@ class MinimalPublisherGym(gym.Env):
                 ux[i-1] += -(A[i-1][j-1])*(self.X[i-1]-self.X[j-1]) # 1x1 each
                 uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
     
-    
+        # Manage 4 directions (Up/Down/Left/Right)
         if self.action_input1[0]==0:
             self.v1 = -1.0
         else:
