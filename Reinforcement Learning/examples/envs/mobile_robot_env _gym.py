@@ -181,7 +181,6 @@ class MinimalPublisherGym(MinimalPublisher):
             self.zr1 = msg.transforms[0].transform.rotation.z
             self.wr1 = msg.transforms[0].transform.rotation.w
             self.Theta1 = euler_from_quaternion(self.xr1,self.yr1,self.zr1,self.wr1)
-            self.state1 = (self.x1,self.y1,self.Theta1)
     
         if  msg.transforms[0].child_frame_id == 'robot2' :
             self.x2 = msg.transforms[0].transform.translation.x
@@ -191,7 +190,6 @@ class MinimalPublisherGym(MinimalPublisher):
             self.zr2 = msg.transforms[0].transform.rotation.z
             self.wr2 = msg.transforms[0].transform.rotation.w
             self.Theta2 = euler_from_quaternion(self.xr2,self.yr2,self.zr2,self.wr2)
-            self.state2 = (self.x2,self.y2,self.Theta2)
         
         if  msg.transforms[0].child_frame_id == 'robot3' :
             
@@ -202,7 +200,6 @@ class MinimalPublisherGym(MinimalPublisher):
             self.zr3 = msg.transforms[0].transform.rotation.z
             self.wr3 = msg.transforms[0].transform.rotation.w
             self.Theta3 = euler_from_quaternion(self.xr3,self.yr3,self.zr3,self.wr3)
-            self.state3 = (self.x3,self.y3,self.Theta3)
     
         if  msg.transforms[0].child_frame_id == 'robot4' :
             
@@ -213,7 +210,6 @@ class MinimalPublisherGym(MinimalPublisher):
             self.zr4 = msg.transforms[0].transform.rotation.z
             self.wr4 = msg.transforms[0].transform.rotation.w
             self.Theta4 = euler_from_quaternion(self.xr4,self.yr4,self.zr4,self.wr4)        
-            self.state4 = (self.x4,self.y4,self.Theta4)
             
         if  msg.transforms[0].child_frame_id == 'robot5' :
             
@@ -223,8 +219,7 @@ class MinimalPublisherGym(MinimalPublisher):
             self.yr5 = msg.transforms[0].transform.rotation.y
             self.zr5 = msg.transforms[0].transform.rotation.z
             self.wr5 = msg.transforms[0].transform.rotation.w
-            self.Theta5 = euler_from_quaternion(self.xr5,self.yr5,self.zr5,self.wr5)               
-            self.state5 = (self.x5,self.y5,self.Theta5)
+            self.Theta5 = euler_from_quaternion(self.xr5,self.yr5,self.zr5,self.wr5)
             
         if  msg.transforms[0].child_frame_id == 'robot6' :
             
@@ -235,7 +230,6 @@ class MinimalPublisherGym(MinimalPublisher):
             self.zr6 = msg.transforms[0].transform.rotation.z
             self.wr6 = msg.transforms[0].transform.rotation.w
             self.Theta6 = euler_from_quaternion(self.xr6,self.yr6,self.zr6,self.wr6)
-            self.state6 = (self.x6,self.y6,self.Theta6)
 
     def timer_callback(self):
                        
@@ -543,7 +537,6 @@ class MobileRobotVrepEnv(gym.Env):
 
             OriRobo1[2] = scenes[self.scene][2]
             OriRobo2[2] = scenes[self.scene][5]
-
 
             # Set Robot Orientation
 
