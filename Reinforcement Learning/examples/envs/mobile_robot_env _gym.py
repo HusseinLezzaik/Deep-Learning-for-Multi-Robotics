@@ -16,6 +16,7 @@ from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
 from vrep_env import sim
+from data_collection_v3 import MinimalPublisher
 
 import math
 import gym
@@ -52,6 +53,7 @@ Description:
     
 Source:
     This environment corresponds to V-Rep simulator, integrated with ROS to publish actions & subscribe to observations.
+
 Observation:
     Type: Box(4) 
     Num     Observation               Min                     Max
@@ -70,7 +72,7 @@ Actions:
     
 """
 
-class MinimalPublisherGym(gym.Env):
+class MinimalPublisherGym(MinimalPublisher):
     def __init__(self):
         #vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
         super().__init__('minimal_publisher1')
@@ -236,6 +238,108 @@ class MinimalPublisherGym(gym.Env):
             self.state6 = (self.x6,self.y6,self.Theta6)
 
     def timer_callback(self):
+                       
+        " Publish Speed Commands to Robot 1 "
+    
+        msgl1 = Float32()    
+        msgr1 = Float32()
+        msgl1.data = self.VL1
+        msgr1.data = self.VR1
+        self.publisher_l1.publish(msgl1)
+        self.publisher_r1.publish(msgr1)
+
+        " Publish Speed Commands to Robot 2 "
+        
+        msgl2 = Float32()
+        msgr2 = Float32()
+        msgl2.data = self.VL2
+        msgr2.data = self.VR2
+        self.publisher_l2.publish(msgl2)
+        self.publisher_r2.publish(msgr2)
+
+        " Publish Speed Commands to Robot 3 "
+        
+        msgl3 = Float32()
+        msgr3 = Float32()
+        msgl3.data = self.VL3
+        msgr3.data = self.VR3
+        self.publisher_l3.publish(msgl3)
+        self.publisher_r3.publish(msgr3)
+        
+        " Publish Speed Commands to Robot 4 "
+    
+        msgl4 = Float32()
+        msgr4 = Float32()
+        msgl4.data = self.VL4
+        msgr4.data = self.VR4
+        self.publisher_l4.publish(msgl4)
+        self.publisher_r4.publish(msgr4)        
+        
+        " Publish Speed Commands to Robot 5 "
+        
+        msgl5 = Float32()
+        msgr5 = Float32()
+        msgl5.data = self.VL5
+        msgr5.data = self.VR5
+        self.publisher_l5.publish(msgl5)
+        self.publisher_r5.publish(msgr5)        
+
+
+        " Publish Speed Commands to Robot 6 "
+        
+        msgl6 = Float32()
+        msgr6 = Float32()
+        msgl6.data = self.VL6
+        msgr6.data = self.VR6
+        self.publisher_l6.publish(msgl6)
+        self.publisher_r6.publish(msgr6)        
+
+    def spin_once_gym():
+        rclpy.spin_once()
+
+
+class MobileRobotVrepEnv(gym.Env):
+    metadata = {
+        'render.modes': ['human', 'rgb_array'],
+        'video.frames_per_second' : 50
+        }
+    def __init__(self):
+        self.mpg = MinimalPublisherGym()
+        
+        " Distance at which to fail the episode "
+        self.distance_threshold = 2.2
+                
+        " Observation & Action Space "
+        # Define Action Space
+            
+        self.action_space = spaces.Discrete(4)               
+        
+        # Define Observation Space
+        high_observation = np.array([4.8,
+                                     4.8,
+                                     4.8,
+                                     4.8],
+                                    dtype=np.float32)
+        
+        self.observation_space = spaces.Box(-high_observation, -high_observation, dtype=np.float32)        
+        
+        self.seed()
+        self.viewer = None
+        self.state = None
+        self.steps_beyond_done = None        
+        
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+        
+    def step(self, action):
+        
+        assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
+        
+        " Distance Threshold "
+        self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)
+
+        " Use Adjacency Matrix to find Mxy and Phi's "                
         
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
 
@@ -252,12 +356,12 @@ class MinimalPublisherGym(gym.Env):
                 uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
     
         # Manage 4 directions (Up/Down/Left/Right)
-        if self.action_input1[0]==0:
+        if action[0]==0:
             self.v1 = -1.0
         else:
             self.v1 = +1.0
             
-        if self.action_input1[1]==0:
+        if action[1]==0:
             self.w1 = -1.0
         else:
             self.w1 = +1.0
@@ -329,126 +433,19 @@ class MinimalPublisherGym(gym.Env):
         Speed_L5 = np.dot(Di, M5) # 2x1 (VL5, VR5)
         Speed_L6 = np.dot(Di, M6) # 2x1 (VL6, VR6)
     
-        VL1 = float(Speed_L1[0])
-        VR1 = float(Speed_L1[1])
-        VL2 = float(Speed_L2[0])
-        VR2 = float(Speed_L2[1])
-        VL3 = float(Speed_L3[0])
-        VR3 = float(Speed_L3[1])
-        VL4 = float(Speed_L4[0])
-        VR4 = float(Speed_L4[1])
-        VL5 = float(Speed_L5[0])
-        VR5 = float(Speed_L5[1])        
-        VL6 = float(Speed_L6[0])
-        VR6 = float(Speed_L6[1])
-                
-        " Publish Speed Commands to Robot 1 "
-    
-        msgl1 = Float32()    
-        msgr1 = Float32()
-        msgl1.data = VL1
-        msgr1.data = VR1
-        self.publisher_l1.publish(msgl1)
-        self.publisher_r1.publish(msgr1)
-
-        " Publish Speed Commands to Robot 2 "
+        self.mpg.VL1 = float(Speed_L1[0])
+        self.mpg.VR1 = float(Speed_L1[1])
+        self.mpg.VL2 = float(Speed_L2[0])
+        self.mpg.VR2 = float(Speed_L2[1])
+        self.mpg.VL3 = float(Speed_L3[0])
+        self.mpg.VR3 = float(Speed_L3[1])
+        self.mpg.VL4 = float(Speed_L4[0])
+        self.mpg.VR4 = float(Speed_L4[1])
+        self.mpg.VL5 = float(Speed_L5[0])
+        self.mpg.VR5 = float(Speed_L5[1])        
+        self.mpg.VL6 = float(Speed_L6[0])
+        self.mpg.VR6 = float(Speed_L6[1])        
         
-        msgl2 = Float32()
-        msgr2 = Float32()
-        msgl2.data = VL2
-        msgr2.data = VR2
-        self.publisher_l2.publish(msgl2)
-        self.publisher_r2.publish(msgr2)
-
-        " Publish Speed Commands to Robot 3 "
-        
-        msgl3 = Float32()
-        msgr3 = Float32()
-        msgl3.data = VL3
-        msgr3.data = VR3
-        self.publisher_l3.publish(msgl3)
-        self.publisher_r3.publish(msgr3)
-        
-        " Publish Speed Commands to Robot 4 "
-    
-        msgl4 = Float32()
-        msgr4 = Float32()
-        msgl4.data = VL4
-        msgr4.data = VR4
-        self.publisher_l4.publish(msgl4)
-        self.publisher_r4.publish(msgr4)        
-        
-        
-        " Publish Speed Commands to Robot 5 "
-        
-        msgl5 = Float32()
-        msgr5 = Float32()
-        msgl5.data = VL5
-        msgr5.data = VR5
-        self.publisher_l5.publish(msgl5)
-        self.publisher_r5.publish(msgr5)        
-
-
-        " Publish Speed Commands to Robot 6 "
-        
-        msgl6 = Float32()
-        msgr6 = Float32()
-        msgl6.data = VL6
-        msgr6.data = VR6
-        self.publisher_l6.publish(msgl6)
-        self.publisher_r6.publish(msgr6)        
-
-    def spin_once_gym():
-        rclpy.spin_once()
-
-
-class MobileRobotVrepEnv(gym.Env):
-    metadata = {
-        'render.modes': ['human', 'rgb_array'],
-        'video.frames_per_second' : 50
-        }
-    def __init__(self):
-        mpg = MinimalPublisherGym()
-        
-        " Distance at which to fail the episode "
-        self.distance_threshold = 2.2
-                
-        " Observation & Action Space "
-        # Define Action Space
-            
-        self.action_space = spaces.Discrete(4)               
-        
-        # Define Observation Space
-        high_observation = np.array([4.8,
-                                     4.8,
-                                     4.8,
-                                     4.8],
-                                    dtype=np.float32)
-        
-        self.observation_space = spaces.Box(-high_observation, -high_observation, dtype=np.float32)        
-        
-        self.seed()
-        self.viewer = None
-        self.state = None
-        self.steps_beyond_done = None        
-        
-    def seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
-        return [seed]
-        
-    def step(self, action):
-        
-        assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
-        
-        " Distance Threshold "
-        self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)
-
-        " Use Adjacency Matrix to find Mxy and Phi's "                
-        
-        A = np.ones(6) - np.identity(6) # Adjancency Matrix
-    
-        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
-        self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
         
         Mx = np.zeros((6,1)) # 6x1
         My = np.zeros((6,1)) # 6x1
@@ -476,38 +473,37 @@ class MobileRobotVrepEnv(gym.Env):
         
         Mx6 = float(Mx[5]) / 5 # 1x1
         My6 = float(My[5]) / 5 # 1x1         
-        
-        
+                
         self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
+        # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+        # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
         
-        self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
-        self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+        # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+        # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
         
-        self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
-        self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1         
+        # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
+        # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1         
         
         observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
         
-        self.action_input1 = action
         done = self.distance < self.distance_threshold 
         done = bool(done)
-        reward = -self.distanced
+        reward = -self.distance
         
-        mpg.spin_once_gym()
+        self.mpg.spin_once_gym()
         
         return observation_DQN, reward, done, {}
     
     def reset(self):
+        observation_DQN = np.array([0, 0, 0, 0])
         if self.sim_running:
             self.stop_simulation()
             # Stop Simulation
@@ -569,7 +565,10 @@ class MobileRobotVrepEnv(gym.Env):
                     
             # Nb of Scene Counter
             self.scene += 1
-                        
+                
+            # Start Simulation
+            sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)            
+            
             " Use Adjacency Matrix to find Mxy and Phi's "                
             
             A = np.ones(6) - np.identity(6) # Adjancency Matrix
@@ -607,28 +606,23 @@ class MobileRobotVrepEnv(gym.Env):
             self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
             self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
             
-            self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-            self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+            # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+            # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
             
-            self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-            self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
+            # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+            # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
             
-            self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
-            self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+            # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+            # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
             
-            self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
-            self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+            # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+            # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
             
-            self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
-            self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
+            # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
+            # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
             
             observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
-            
-            # Start Simulation
-            sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
-            time.sleep(5)
-            
-            
+                                    
         return observation_DQN
     
     def render(self):
