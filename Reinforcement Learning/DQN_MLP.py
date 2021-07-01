@@ -24,7 +24,7 @@ from torch.nn import Linear
 from torch.nn.init import xavier_uniform_
 from torch.nn import ReLU
 
-env = gym.make('CartPole-v0').unwrapped
+env = gym.make('mobile_robot_env_gym').unwrapped
 
 # set up matplotlib
 is_ipython = 'inline' in matplotlib.get_backend()
