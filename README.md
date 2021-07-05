@@ -14,11 +14,11 @@ to build a multi-agent path planning algorithm that generalizes to different net
 The major content of our repo are:
 
 * `Two Robots Topology Graph`: contains the code for building our GNN model for 2 robots.
-* `Real Topology Graph`: contains the code for building our scalable graph neural network.
-* `Reinforcement Learning`: contains the code for building our custom envinronment and DQN model.
+* `Real Topology Graph`: contains the code for building our scalable GNN model.
+* `Reinforcement Learning`: contains the code for building our custom environment and DQN model.
 
 ## Getting Started
-* Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. *
+* Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. 
 
 1.  Clone our repo: `git clone https://github.com/HusseinLezzaik/Multi-agent-path-planning.git`
 
@@ -34,6 +34,8 @@ The major content of our repo are:
 4. Install [ROS2 Foxy](https://docs.ros.org/en/foxy/Installation.html) and make sure that the [ROS2 Interface](https://www.coppeliarobotics.com/helpFiles/en/ros2Interface.htm) works.
 
 5. Make sure the [Python Remote API](https://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm) works.
+
+6. Install [Gym environment](https://gym.openai.com/docs/) from OpenAI, and run our custom environment `mobile_robot_env _gym.py` to train RL agents.
 
 
 ## Simulation in CoppeliaSim 
