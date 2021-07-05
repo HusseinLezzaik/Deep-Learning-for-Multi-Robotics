@@ -35,7 +35,7 @@ The major content of our repo are:
 
 5. Make sure the [Python Remote API](https://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm) works.
 
-6. Install [Gym environment](https://gym.openai.com/docs/) from OpenAI, and run our custom environment `mobile_robot_env _gym.py` to train RL agents.
+6. Install [Gym Environment](https://gym.openai.com/docs/) from OpenAI, and run our custom environment `mobile_robot_env _gym.py` to train RL agents.
 
 
 ## Simulation in CoppeliaSim 
