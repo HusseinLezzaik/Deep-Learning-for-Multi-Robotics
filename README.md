@@ -6,7 +6,7 @@ This repository contains the code and models necessary to replicate the results 
 <img src="consensus_graph.PNG" width="1000" >
 </p>
 
-The main idea of our work is to develope a machine learning model powered by Graph Neural Networks and Reinforcement Learning to build a multi-agent path planning algorithm that generalizes to different network topologies, while mainting fast communication and efficient convergence.
+The main idea of our work is to develop a machine learning model powered by Graph Neural Networks and Reinforcement Learning to build a multi-agent path planning algorithm that generalizes to different network topologies, while mainting fast communication and efficient convergence.
 
 ## Overview of the Repository
 
@@ -15,6 +15,8 @@ The major content of our repo are:
 * `Two Robots Topology Graph`: contains the code for building our GNN model for 2 robots.
 * `Real Topology Graph`: contains the code for building our scalable GNN model.
 * `Reinforcement Learning`: contains the code for building our custom environment and DQN model.
+
+**Note: please check the `README.md` of each repository to dive deeper into the code and be able to replicate our results.
 
 ## Getting Started
 Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. 
@@ -37,7 +39,7 @@ Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for S
 6. Install [Gym Environment](https://gym.openai.com/docs/) from OpenAI in order to use our custom environment for RL training.
 
 
-## Simulation in CoppeliaSim 
+## Simulation in V-Rep 
 We test our algorithms on two bubblerob's from CoppeliaSim, however our work applies to all kinds of mobile robots that just need some initial parameter tuning.
 We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input for each robot.
 
