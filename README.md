@@ -1,4 +1,4 @@
-# Graph NNs and RL for Motion Planning
+# Graph NNs and RL for Multi-Robot Motion Planning
 
 This repository contains the code and models necessary to replicate the results of our work:
 
