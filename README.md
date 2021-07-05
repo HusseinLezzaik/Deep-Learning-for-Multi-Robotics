@@ -1,4 +1,4 @@
-# Multi Agent Path Planning using GNN & DRL
+# Graph NNs and RL for Motion Planning
 
 This repository contains the code and models necessary to replicate the results of our work:
 
@@ -6,8 +6,7 @@ This repository contains the code and models necessary to replicate the results 
 <img src="consensus_graph.PNG" width="1000" >
 </p>
 
-The main idea of our work is to develope a machine learning model powered by Graph Neural Networks and merged with Deep Reinforcement Learning algorithms 
-to build a multi-agent path planning algorithm that generalizes to different network topologies, while mainting fast communication and efficient convergence.
+The main idea of our work is to develope a machine learning model powered by Graph Neural Networks and Reinforcement Learning to build a multi-agent path planning algorithm that generalizes to different network topologies, while mainting fast communication and efficient convergence.
 
 ## Overview of the Repository
 
