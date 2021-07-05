@@ -40,16 +40,11 @@ Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for S
 
 
 ## Simulation in V-Rep 
-We test our algorithms on bubblerob scene from CoppeliaSim, however our model can be used with all kinds of robots. 
-
-## Training data
-For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
-which takes the relative position of each robot i w.r.t robot j in the local transformation frame and it's corresponding control input Uj as an output. Value's are saved within two seperate 
-CSV files for each robot. 
+We tested our algorithms on bubblerob scene from CoppeliaSim, however our model can be used with all kinds of robots.
 
 ### Data Collection 
-Using Python's remote API for CoppeliaSim, we initialized the positions randomly for each scene and ran the consensus algorithm to collect new data. Our dataset size is about 700 samples for each robot per scene,
-and we stop collecting data for d=0.2 ie when they meet.
+Using Python's remote API for CoppeliaSim, we initialized the positions randomly for each scene and ran the expert consensus algorithm to collect labelled data in a
+imitation learning framework (Behavioural Cloning). We tested on different architectures for the GNN, and in each scene we stopped collecting data for d=0.2 ie when they meet.
 
 ## Acknowledgement
 We would like to thank [Claudio Pacchierotti](https://team.inria.fr/rainbow/team/claudio-pacchierotti/) for his constructive comments and discussions.
