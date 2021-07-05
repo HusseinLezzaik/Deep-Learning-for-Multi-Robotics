@@ -18,7 +18,7 @@ The major content of our repo are:
 * `Reinforcement Learning`: contains the code for building our custom environment and DQN model.
 
 ## Getting Started
-* Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. 
+Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. 
 
 1.  Clone our repo: `git clone https://github.com/HusseinLezzaik/Multi-agent-path-planning.git`
 
@@ -35,7 +35,7 @@ The major content of our repo are:
 
 5. Make sure the [Python Remote API](https://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm) works.
 
-6. Install [Gym Environment](https://gym.openai.com/docs/) from OpenAI, and run our custom environment `mobile_robot_env _gym.py` to train RL agents.
+6. Install [Gym Environment](https://gym.openai.com/docs/) from OpenAI in order to use our custom environment for RL training.
 
 
 ## Simulation in CoppeliaSim 
