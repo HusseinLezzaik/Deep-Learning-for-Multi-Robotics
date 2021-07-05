@@ -12,9 +12,9 @@ The main idea of our work is to develop a machine learning model powered by Grap
 
 The major content of our repo are:
 
-* `Two Robots Topology Graph`: contains the code for building our GNN model for 2 robots.
-* `Real Topology Graph`: contains the code for building our scalable GNN model.
-* `Reinforcement Learning`: contains the code for building our custom environment and DQN model.
+* `Two Robots Topology Graph`: contains the code for building our GNN model for two robots.
+* `Real Topology Graph`: contains the code for building our scalable robust GNN model.
+* `Reinforcement Learning`: contains the code for building our custom gym environment, and DQN model powered by GNN.
 
 Note: please check the `README` of each repository to dive deeper into the code and be able to replicate our results
 
