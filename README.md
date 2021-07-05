@@ -3,7 +3,7 @@
 This repository contains the code and models necessary to replicate the results of our work:
 
 <p>
-<img src="main_tables.PNG" width="1000" >
+<img src="consensus_graph.PNG" width="1000" >
 </p>
 
 The main idea of our work is to develope a machine learning model powered by Graph Neural Networks and merged with Deep Reinforcement Learning algorithms 
