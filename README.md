@@ -40,8 +40,7 @@ Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for S
 
 
 ## Simulation in V-Rep 
-We test our algorithms on two bubblerob's from CoppeliaSim, however our work applies to all kinds of mobile robots that just need some initial parameter tuning.
-We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input for each robot.
+We test our algorithms on bubblerob scene from CoppeliaSim, however our model can be used with all kinds of robots. 
 
 ## Training data
 For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
