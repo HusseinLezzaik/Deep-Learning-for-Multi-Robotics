@@ -2,6 +2,10 @@
 
 This repository contains the code and models necessary to replicate the results of our work:
 
+<p>
+<img src="main_tables.PNG" width="1000" >
+</p>
+
 The main idea of our work is to develope a machine learning model powered by Graph Neural Networks and merged with Deep Reinforcement Learning algorithms 
 to build a multi-agent path planning algorithm that generalizes to different network topologies, while mainting fast communication and efficient convergence.
 
@@ -13,7 +17,7 @@ The major content of our repo are:
 * `Real Topology Graph`: contains the code for building our scalable graph neural network.
 * `Reinforcement Learning`: contains the code for building our custom envinronment and DQN model.
 
-## Getting started
+## Getting Started
 * Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. *
 
 1.  Clone our repo: `git clone https://github.com/HusseinLezzaik/Multi-agent-path-planning.git`
