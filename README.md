@@ -9,9 +9,9 @@ to build a multi-agent path planning algorithm that generalizes to different net
 
 The major content of our repo are:
 
-* [Two Robots Topology Graph/](Two Robots Topology Graph) contains the code for building our GNN model for 2 robots.
-* [Real Topology Graph/](Real Topology Graph) contains the code for building our scalable graph neural network
-* [Reinforcement Learning/](Reinforcement Learning) 
+* `Two Robots Topology Graph`: contains the code for building our GNN model for 2 robots.
+* Real Topology Graph contains the code for building our scalable graph neural network
+* Reinforcement Learning 
 
 ## Getting started
 * Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. *
