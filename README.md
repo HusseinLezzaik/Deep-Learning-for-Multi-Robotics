@@ -12,9 +12,9 @@ The main idea of our work is to develop a machine learning model powered by Grap
 
 The major content of our repo are:
 
-* `Two Robots Topology Graph`: contains the code for building our GNN model for two robots.
-* `Real Topology Graph`: contains the code for building our scalable robust GNN model.
-* `Reinforcement Learning`: contains the code for building our custom gym environment, and DQN model powered by GNN.
+* `Two Robots Topology Graph`: code for building our GNN model for two robots.
+* `Real Topology Graph`: code for building our scalable robust GNN model.
+* `Reinforcement Learning`: code for building our custom gym environment & DQN model powered by GNN.
 
 Note: please check the `README` of each repository to dive deeper into the code and be able to replicate our results
 
@@ -53,7 +53,7 @@ Using Python's remote API for CoppeliaSim, we initialized the positions randomly
 and we stop collecting data for d=0.2 ie when they meet.
 
 ## Acknowledgement
-We would like to thank [Claudio Pacchierotti](https://team.inria.fr/rainbow/team/claudio-pacchierotti/) for comments and discussions.
+We would like to thank [Claudio Pacchierotti](https://team.inria.fr/rainbow/team/claudio-pacchierotti/) for his constructive comments and discussions.
 
 ## Contact
 If you have any question, or if anything of the above is not working, don't hestitate to contact us! We are more than happy to help!
