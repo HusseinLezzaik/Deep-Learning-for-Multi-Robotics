@@ -24,7 +24,7 @@ Code for creating a ROS node to publish speeds to CoppeliaSim scene.
 
 ## Consensus Algorithm
 
-* `simConst.py`, `sim.py`, `simpleTest.py`, `remoteApi.so`: file dependency for Python remote API.
+* `simConst.py`, `sim.py`, `simpleTest.py`, `remoteApi.so`: file dependencies for Python remote API.
 * `robot1.csv`, `robot2.csv`: csv files for storing relative poses and control inputs.
 * `main_consensus_algorithm.py`: consensus algorithm and data saving.
 
