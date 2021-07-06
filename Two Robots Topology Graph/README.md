@@ -8,11 +8,12 @@ Graph Neural Net for two robots to perform consensus.
 
 ### Table of Content
 
+- [Pose Transformer](#Pose%20Transformer)
+- [ROS2 Speed Publisher](#ROS2%20Speed%20Publisher)
 - [Consensus Algorithm](#Consensus%20Algorithm)
 - [Data Collection](#Data%20Collection)
 - [GNN Model](#GNN%20Model)
-- [Pose Transformer](#Pose%20Transformer)
-- [ROS2 Speed Publisher](#ROS2%20Speed%20Publisher)
+
 
 For running our same robotic scene load `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
 
