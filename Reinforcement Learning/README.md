@@ -5,7 +5,7 @@ This is an implementation of the Vrep Simulator as a gym environment. It can be 
 <img src="consensus_graph1.PNG" width="1000" >
 </p>
 
-We built our gym environment from scratch by integrating it with V-Rep.
+We built our gym environment from scratch by integrating it with V-Rep. And we used it to train our RL agent.
 
 ### Table of Content
 
