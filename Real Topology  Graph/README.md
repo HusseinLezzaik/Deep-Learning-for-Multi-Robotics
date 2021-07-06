@@ -36,3 +36,5 @@ The major content of this repo is:
 * `data_collection_v2.py`: 
 * `data_collection_v3.py`: 
 * `data_collection_v4.py`: 
+
+All details of variables stored for each version are within each module.
