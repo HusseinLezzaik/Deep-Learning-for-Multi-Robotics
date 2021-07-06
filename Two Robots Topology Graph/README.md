@@ -46,5 +46,10 @@ Note: read comments within each module for more details.
 We developed two different GNN models for each case:
 1) UniCycle:
 
+* `dataset_robot1.csv`: cleaned labelled dataset for training GNN model.
+* `load_model.py`: code for loading trained model using PyTorch_state_dict.
+* `MLP_Model.py`: code for building and training GNN model in PyTorch.
+* `Main_MLP.py`: code for running trained model in real-time in simulator. 
+
 
 2) Differential Drive:
