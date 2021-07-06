@@ -32,8 +32,8 @@ We first run a vanilla consensus algorithm, and start collecting data of relativ
 
 ## Data Collection
 We collected labelled datasets for the following two models: 
-1) differential drive
-2) unicycle.
+1) Differential Drive
+2) UniCycle.
 
 * `initial_positions.py`: test code for changing initial positions in each scene.
 * `main_consensus.py`: consensus algorithm for two robots with data saving.
@@ -43,4 +43,8 @@ We collected labelled datasets for the following two models:
 Note: read comments within each module for more details.
 
 ## GNN Model
-At first we tested two different architectures for the GNN model, one for a differential drive model and the other for the unicycle.
+We developed two different GNN models for each case:
+1) UniCycle:
+
+
+2) Differential Drive:
