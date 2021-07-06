@@ -33,8 +33,8 @@ This repo contains all our code for data collection for the different versions o
 The major content of this repo is:
 
 * `data_collection_v1.py`: data collection for consensus algorithm of six robots using fully connected graph, and saving data for fully connected graph.
-* `data_collection_v2.py`: 
-* `data_collection_v3.py`: 
+* `data_collection_v2.py`: data collection for consensus algorithm of six robots using fully connected graph, and saving data for cyclic graph. 
+* `data_collection_v3.py`: data collection for consensus algorithm of six robots using fully connected graph, and saving data for fully connected graph.
 * `data_collection_v4.py`: data collection for consensus algorithm of six robots using fully connected graph, and saving data for cyclic graph. 
 
 All details of variables stored for each version are within each module.
