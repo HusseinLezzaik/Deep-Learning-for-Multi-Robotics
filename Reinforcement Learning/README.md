@@ -5,6 +5,8 @@ This is an implementation of the Vrep Simulator as a gym environment. It can be 
 <img src="consensus_graph1.PNG" width="1000" >
 </p>
 
+We built our gym environment from scratch by integrating it with V-Rep.
+
 ### Table of Content
 
 - [CoppeliaSim Scene](#CoppeliaSim%20Scene)
@@ -12,6 +14,7 @@ This is an implementation of the Vrep Simulator as a gym environment. It can be 
 - [Deep Q-Learning](#Deep%20Q-Learning)
 
 ## CoppeliaSim Scene
+In order to run our scene, please load `examples/scenes/Scene_of_Six_Robots.ttt`
 
 ## Gym Environment
 
