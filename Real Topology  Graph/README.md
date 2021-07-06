@@ -85,3 +85,12 @@ Trained GNN model on cyclic graph data.
 * `Main_MLP_Fully.py`: code for running consensus on a fully connected graph.
 * `Main_MLP_line.py`: code for running consensus on a line graph. 
 
+## GNN Model 3
+A four input two output GNN model, trained on cyclic fused data between an edge and middle robot:
+
+1) Cyclic Graph:
+
+Trained GNN model on fully connected graph data.
+
+* `MLP_Model.py`: code for building and training GNN model.
+* `Main_MLP.py `: code for running consensus on a cyclic graph. 
