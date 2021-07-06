@@ -1,2 +1,8 @@
-# Graph Neural Network for 2 Robots
+# Graph Neural Neta for Two Robots
 
+We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input for each robot.
+
+## Training data
+For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
+which takes the relative position of each robot i w.r.t robot j in the local transformation frame and it's corresponding control input Uj as an output. Value's are saved within two seperate 
+CSV files for each robot. 
