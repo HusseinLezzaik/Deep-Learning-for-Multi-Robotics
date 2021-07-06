@@ -10,10 +10,10 @@ Graph Neural Net for six robots to perform consensus.
 
 - [Consensus Algorithms](#Consensus%20Algorithms)
 - [Data Collection](#Data%20Collection)
-- [GNN Model1](#GNN%20Model1)
-- [GNN Model2](#GNN%20Model2)
-- [GNN Model3](#GNN%20Model3)
-- [GNN Model4](#GNN%20Model4)
+- [GNN Model 1](#GNN%20Model%201)
+- [GNN Model 2](#GNN%20Model%202)
+- [GNN Model 3](#GNN%20Model%203)
+- [GNN Model 4](#GNN%20Model%204)
 
 
 For running our same robotic scene load `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
