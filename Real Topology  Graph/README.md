@@ -38,3 +38,21 @@ The major content of this repo is:
 * `data_collection_v4.py`: consensus algorithm of six robots using fully connected graph, and saving data for cyclic graph. 
 
 All details of variables stored for each version are within each module.
+
+## GNN Model 1
+We developed two different GNN models for each case:
+
+1) Fully Connected Graph:
+
+Trained GNN model on fully connected graph data.
+
+* `MLP_Model.py`: code for building and training GNN model.
+* `Main_MLP_Cyclic.py `: code for running consensus on a cyclic graph. 
+* `Main_MLP_Fully.py`: code for running consensus on a fully connected graph.
+* `Main_MLP_line.py`: code for running consensus on a line graph. 
+
+
+
+2) Cyclic Graph:
+
+
