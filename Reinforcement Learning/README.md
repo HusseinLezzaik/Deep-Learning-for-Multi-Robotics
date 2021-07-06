@@ -20,7 +20,8 @@ In order to run our scene, please load `examples/scenes/Scene_of_Six_Robots.ttt`
 To use our custom environment, check `examples/scenes/mobile_robot_env _gym.py`
 
 ## Deep Q-Learning
-We used Deep Q-Learning algorithm to train the agent, and integrated the GNN model developed before as the deep neural network used in DQN. Run `DQN_MLP.py` for training the agent.
+We used Deep Q-Learning algorithm to train the agent, and integrated the GNN model developed before as the deep neural network used in the architecture of  DQN. 
+Run `DQN_MLP.py` for training the agent after installing the custom environment and all the dependencies.
 
 ## Acknowledgement
 
