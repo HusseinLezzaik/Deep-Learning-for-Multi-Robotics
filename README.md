@@ -11,7 +11,7 @@ The main idea of our work is to develop a machine learning model powered by Grap
 
 ## Overview of the Repository
 
-The major content of our repo are:
+The major content of our repo is:
 
 * `Two Robots Topology Graph`: code for building our GNN model for two robots.
 * `Real Topology Graph`: code for building our scalable robust GNN model.
