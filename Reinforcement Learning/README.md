@@ -17,6 +17,7 @@ We built our gym environment from scratch by integrating it with V-Rep.
 In order to run our scene, please load `examples/scenes/Scene_of_Six_Robots.ttt`
 
 ## Gym Environment
+To use our custom environment, check `examples/scenes/mobile_robot_env _gym.py`
 
 ## Deep Q-Learning
 
