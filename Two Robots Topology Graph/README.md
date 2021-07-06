@@ -14,7 +14,7 @@ Graph Neural Net for two robots to perform consensus.
 - [Pose Transformer](#Pose%20Transformer)
 - [ROS2 Speed Publisher](#ROS2%20Speed%20Publisher)
 
-For running our same robotic scene use `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
+For running our same robotic scene load `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
 
 ## Pose Transformer
 Code for transforming control inputs of a unicycle to a two wheeled differential drive.
@@ -44,6 +44,7 @@ Note: read comments within each module for more details.
 
 ## GNN Model
 We developed two different GNN models for each case:
+
 1) UniCycle:
 
 * `dataset_robot1.csv`: cleaned labelled dataset for training GNN model.
