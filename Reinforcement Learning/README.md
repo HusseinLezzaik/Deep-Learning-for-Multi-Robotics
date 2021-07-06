@@ -9,9 +9,14 @@ We built our gym environment from scratch by integrating it with V-Rep.
 
 ### Table of Content
 
+- [Reinforcement Learning Setup](#Reinforcement%20Learning%20Setup)
 - [CoppeliaSim Scene](#CoppeliaSim%20Scene)
 - [Gym Environment](#Gym%20Environment)
 - [Deep Q-Learning](#Deep%20Q-Learning)
+
+## Reinforcement Learning Setup
+Since our deep learning is decentralized, it's sufficient to build a model and train it for one robot and use it for the rest. We used Robot1 as our RL agent,
+and ran Deep Q-Learning to improve our GNN model. We controlled rest of robots using a vanilla consensus algorithm.
 
 ## CoppeliaSim Scene
 In order to run our scene, please load `examples/scenes/Scene_of_Six_Robots.ttt`
