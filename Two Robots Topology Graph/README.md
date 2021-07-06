@@ -14,10 +14,10 @@ Graph Neural Net for two robots to perform consensus.
 - [Pose Transformer](#Pose%20Transformer)
 - [ROS2 Speed Publisher](#ROS2%20Speed%20Publisher)
 
-For running our same robotic scene check `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
+For running our same robotic scene use `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
 
 ## Pose Transformer
-Code for transforming control inputs of a Uni-Cycle to a two wheeled differential drive.
+Code for transforming control inputs of a unicycle to a two wheeled differential drive.
 
 ## ROS Speed Publisher
 Code for creating a ROS node to publish speeds to CoppeliaSim scene.
@@ -28,8 +28,7 @@ Code for creating a ROS node to publish speeds to CoppeliaSim scene.
 * `robot1.csv`, `robot2.csv`: csv files for storing relative poses and control inputs.
 * `main_consensus_algorithm.py`: consensus algorithm and data saving.
 
-
-We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input for each robot or speed input.
+We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local control or speed input.
 
 ## Data Collection
 For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
