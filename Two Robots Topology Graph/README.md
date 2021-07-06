@@ -8,11 +8,11 @@ Graph Neural Net for two robots for consensus.
 
 ### Table of Content
 
-- [Consensus Algorithm](#Consensus Algorithm)
-- [Data Collection](#Data Collection)
-- [GNN Model](#GNN Model)
-- [Pose Transformer](#Pose Transformer)
-- [ROS2 Speed Publisher](#ROS2 Speed Publisher)
+- [Consensus Algorithm](#Consensus%20Algorithm)
+- [Data Collection](#Data%20Collection)
+- [GNN Model](#GNN%20Model)
+- [Pose Transformer](#Pose%20Transformer)
+- [ROS2 Speed Publisher](#ROS2%20Speed%20Publisher)
 
 ## Training data
 For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
