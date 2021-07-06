@@ -16,7 +16,8 @@ Graph Neural Net for six robots to perform consensus.
 - [GNN Model 4](#GNN%20Model%204)
 
 
-For running our same robotic scene load `Data Collection/Scene_of_Six_Robots.ttt`
+For running our same robotic scene load `Data Collection/Scene_of_Six_Robots.ttt`.
+Note: read comments within each module for more details about the code.
 
 ## Consensus Algorithms
 This repo contains code for implementing the consensus algorithm for Fully Connnected and Line Graph.
