@@ -15,7 +15,7 @@ Graph Neural Net for two robots to perform consensus.
 - [GNN Model](#GNN%20Model)
 
 
-For running our same robotic scene load `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
+For running our same robotic scene load `Consensus Algorithm/ros2_control_single_mobile_robot.ttt` into CoppeliaSim.
 
 ## Pose Transformer
 Code for transforming control inputs of a unicycle to a two wheeled differential drive.
