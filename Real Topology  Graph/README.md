@@ -26,3 +26,13 @@ This repo contains code for implementing the consensus algorithm for Fully Connn
 * `main_consensus_algorithm_line_graph.py`: code for consensus algorithm for six mobile robots Line Graph adjacency matrix.
 
 If you want to use a different graph like cyclic, just change the adjancency matrix at the beginning of the code.
+
+## Data Collection
+This repo contains all our code for data collection for the different versions of the GNN models we built.
+
+The major content of this repo is:
+
+* `data_collection_v1.py`: 
+* `data_collection_v2.py`: 
+* `data_collection_v3.py`: 
+* `data_collection_v4.py`: 
