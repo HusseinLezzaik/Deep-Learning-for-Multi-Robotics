@@ -31,6 +31,9 @@ Code for creating a ROS node to publish speeds to CoppeliaSim scene.
 We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local control or speed input.
 
 ## Data Collection
+We collected labelled datasets for the following two models: 
+1) differential drive
+2) unicycle.
 
 * `initial_positions.py`: test code for changing initial positions in each scene.
 * `main_consensus.py`: consensus algorithm for two robots with data saving.
