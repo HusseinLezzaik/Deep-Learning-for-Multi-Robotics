@@ -17,8 +17,8 @@ Graph Neural Net for two robots for consensus.
 ## Pose Transformer
 Code for transforming control inputs of a Uni-Cycle to a two wheeled differential drive.
 
-## ROS2 Speed Publisher
-
+## ROS Speed Publisher
+Code for creating a ROS node to publish speeds to CoppeliaSim scene.
 
 ## Consensus Algorithm
 For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
