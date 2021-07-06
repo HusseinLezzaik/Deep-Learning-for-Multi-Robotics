@@ -20,7 +20,7 @@ The major content of our repo is:
 Note: please check the `README` of each repository to dive deeper into the code and be able to replicate our results.
 
 ## Getting Started
-Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing commands to our robots. 
+Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for Simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing speed commands to our robots. 
 
 1.  Clone our repo: `git clone https://github.com/HusseinLezzaik/Multi-agent-path-planning.git`
 
