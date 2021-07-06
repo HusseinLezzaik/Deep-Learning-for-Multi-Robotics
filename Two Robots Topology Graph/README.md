@@ -38,10 +38,10 @@ directly from relative poses to speed inputs. Value's are saved within two seper
 
 * `initial_positions.py`: test code for changing initial positions in each scene.
 * `main_consensus.py`: consensus algorithm for two robots with data saving.
-* `main_differential_drive_api.py`: consensus algorithm API for saving relative poses and local speed inputs for Differential drive.
-* `main_unicycle_api.py`: consensus algorithm API for saving relative poses and local control inputs for Uni-Cycle.
+* `main_differential_drive_api.py`: consensus algorithm API for saving relative poses and local speed inputs for differential drive.
+* `main_unicycle_api.py`: consensus algorithm API for saving relative poses and local control inputs for unicycle.
 
 Note: read comments within each module for more details.
 
 ## GNN Model
-
+At first we tested two different architectures for the GNN model, one for a differential drive model and the other for the unicycle.
