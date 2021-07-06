@@ -20,3 +20,5 @@ which takes the relative position of each robot i w.r.t robot j in the local tra
 CSV files for each robot. 
 
 We first run a vanilla consensus algorithm, and start collecting data of relative poses for robot i w.r.t robot j and it's corresponding local input for each robot.
+
+## Data Collection
