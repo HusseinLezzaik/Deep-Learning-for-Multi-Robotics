@@ -16,4 +16,4 @@ Graph Neural Net for six robots to perform consensus.
 - [GNN Model 4](#GNN%20Model%204)
 
 
-For running our same robotic scene load `Consensus Algorithm/ros2_control_single_mobile_robot.ttt`
+For running our same robotic scene load `Data Collection/Scene_of_Six_Robots.ttt`
