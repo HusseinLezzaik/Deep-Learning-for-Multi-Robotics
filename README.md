@@ -43,7 +43,7 @@ Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for S
 ## Simulation in V-Rep 
 We tested our algorithms on bubblerob scene from CoppeliaSim, however our model can be used with all kinds of robots.
 
-### Data Collection 
+## Data Collection 
 Using Python's remote API for CoppeliaSim, we initialized the positions randomly for each scene and ran the expert consensus algorithm to collect labelled data in a
 imitation learning framework (Behavioural Cloning). We tested on different architectures for the GNN, and in each scene we stopped collecting data for d=0.2 ie when they meet.
 
