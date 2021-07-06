@@ -19,6 +19,9 @@ Graph Neural Net for six robots to perform consensus.
 For running our same robotic scene load `Data Collection/Scene_of_Six_Robots.ttt`
 
 ## Consensus Algorithms
+This repo contains code for implementing the consensus algorithm for Fully Connnected and Line Graph.
 
 * `main_consensus_algorithm_fully_connected.py`: code for consensus algorithm for six mobile robots Full Graph adjacency matrix.
 * `main_consensus_algorithm_line_graph.py`: code for consensus algorithm for six mobile robots Line Graph adjacency matrix.
+
+If you want to use a different graph like cyclic, just change the adjancency matrix at the beginning of the code.
