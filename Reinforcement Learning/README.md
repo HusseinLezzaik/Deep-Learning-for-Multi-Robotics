@@ -1,6 +1,10 @@
 # Custom Environment of gym for Vrep
 This is an implementation of the Vrep Simulator as a gym environment. It can be used to make robots learn interacting with the physical environment.
 
+<p>
+<img src="consensus_graph1.PNG" width="1000" >
+</p>
+
 ### Table of Content
 
 - [CoppeliaSim Scene](#CoppeliaSim%20Scene)
