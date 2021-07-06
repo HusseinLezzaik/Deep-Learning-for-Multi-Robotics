@@ -14,7 +14,7 @@ Graph Neural Net for two robots for consensus.
 - [Pose Transformer](#Pose%20Transformer)
 - [ROS2 Speed Publisher](#ROS2%20Speed%20Publisher)
 
-## Training data
+## Consensus Algorithm
 For our first experiment, we collected two dataset's for each corresponding robot. We later will use this data to train our first graph neural networks architecture on, 
 which takes the relative position of each robot i w.r.t robot j in the local transformation frame and it's corresponding control input Uj as an output. Value's are saved within two seperate 
 CSV files for each robot. 
