@@ -15,7 +15,7 @@ Graph Neural Net for two robots for consensus.
 - [ROS2 Speed Publisher](#ROS2%20Speed%20Publisher)
 
 ## Pose Transformer
-
+Code for transforming control inputs of a Uni-Cycle to a two wheeled differential drive.
 
 ## ROS2 Speed Publisher
 
