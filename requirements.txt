@@ -2,4 +2,4 @@ torch
 numpy 
 pandas
 gym
-
+cudatoolkit
