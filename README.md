@@ -40,7 +40,7 @@ Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for s
 6. Install [Gym Environment](https://gym.openai.com/docs/) from OpenAI in order to use our custom environment for RL training.
 
 ## Simulation in V-Rep 
-We tested our algorithms on [bubblerob scene](https://www.coppeliarobotics.com/helpFiles/en/externalControllerTutorial.htm) from CoppeliaSim, however our model can be used with all kinds of robots.
+We tested our algorithms on [BubbleRob Scene](https://www.coppeliarobotics.com/helpFiles/en/externalControllerTutorial.htm) from CoppeliaSim, however our model can be used with all kinds of robots.
 
 ## Data Collection 
 Using Python's remote API for CoppeliaSim, we initialized the positions randomly for each scene and ran the expert consensus algorithm to collect labelled data in a
