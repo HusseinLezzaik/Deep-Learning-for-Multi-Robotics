@@ -304,6 +304,8 @@ class MobileRobotVrepEnv(gym.Env):
     def __init__(self):
         self.mpg = MinimalPublisherGym()
         
+        self.scene = 0 # Nb of scene iteration
+        
         " Distance at which to fail the episode "
         self.distance_threshold = 2.2
                 
