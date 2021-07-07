@@ -5,6 +5,8 @@ Code for training DQN using MLP as the NN, integrated with ROS2 and V-Rep as env
 """
 
 import gym
+import examples
+from envs import mobile_robot_env_gym
 import math
 import random
 import numpy as np
@@ -24,7 +26,7 @@ from torch.nn import Linear
 from torch.nn.init import xavier_uniform_
 from torch.nn import ReLU
 
-env = gym.make('CartPole-v0').unwrapped
+#env = mobile_robot_env_gym()
 
 # set up matplotlib
 is_ipython = 'inline' in matplotlib.get_backend()
