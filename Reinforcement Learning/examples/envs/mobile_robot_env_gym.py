@@ -7,6 +7,10 @@ Defining Class of custom environment for V-Rep
 
 # import vrep_env
 # from vrep_env import vrep
+import sys 
+import os
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/vrep_env"))
 
 import os
 # vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/scenes']
@@ -75,7 +79,7 @@ Actions:
 class MinimalPublisherGym(MinimalPublisher):
     def __init__(self):
         #vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
-        super().__init__('minimal_publisher1')
+        super().__init__()
         self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
         self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',0) #Change according to topic in child script,String to Float32
         self.publisher_l2 = self.create_publisher(Float32, '/leftMotorSpeedrobot2', 0) #Change according to topic in child script,String to Float32
@@ -498,123 +502,122 @@ class MobileRobotVrepEnv(gym.Env):
     
     def reset(self):
         observation_DQN = np.array([0, 0, 0, 0])
-        if self.sim_running:
-            self.stop_simulation()
-            # Stop Simulation
-            sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
 
-            # Retrieve some handles:
+        # Stop Simulation
+        sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
+
+        # Retrieve some handles:
+            
+        ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'robot1', sim.simx_opmode_oneshot_wait)
+    
+        if (not ErrLocM1==sim.simx_return_ok):
+            pass
+        
+        ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'robot2#0', sim.simx_opmode_oneshot_wait)
+    
+        if (not ErrLocM2==sim.simx_return_ok):
+            pass           
+
+        ErrLoc1,Loc1 =sim.simxGetObjectPosition(clientID, LocM1, -1, sim.simx_opmode_oneshot_wait)
+    
+        if (not ErrLoc1==sim.simx_return_ok):
+            pass            
+    
+        ErrLoc2,Loc2 =sim.simxGetObjectPosition(clientID, LocM2, -1, sim.simx_opmode_oneshot_wait)
+
+        if (not ErrLoc2==sim.simx_return_ok):
+            pass     
+
+        ErrLocO1,OriRobo1 =sim.simxGetObjectOrientation(clientID,LocM1, -1, sim.simx_opmode_oneshot_wait)
+    
+        if (not ErrLocO1==sim.simx_return_ok):
+            pass             
+    
+        ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
+
+        if (not ErrLocO2==sim.simx_return_ok):
+            pass     
+
+        OriRobo1[2] = scenes[self.scene][2]
+        OriRobo2[2] = scenes[self.scene][5]
+
+        # Set Robot Orientation
+
+        sim.simxSetObjectOrientation(clientID, LocM1, -1, OriRobo1, sim.simx_opmode_oneshot_wait) 
+        sim.simxSetObjectOrientation(clientID, LocM2, -1, OriRobo2, sim.simx_opmode_oneshot_wait)
+
+
+        Loc1[0] = scenes[self.scene][0]
+        Loc2[0] = scenes[self.scene][3]
+
+
+        Loc1[1] = scenes[self.scene][1]
+        Loc2[1] = scenes[self.scene][4]
+
+        # Set Robot Position
+
+        sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
+        sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
                 
-            ErrLocM1,LocM1 =sim.simxGetObjectHandle(clientID, 'robot1', sim.simx_opmode_oneshot_wait)
-        
-            if (not ErrLocM1==sim.simx_return_ok):
-                pass
+        # Nb of Scene Counter
+        self.scene += 1
             
-            ErrLocM2,LocM2 =sim.simxGetObjectHandle(clientID, 'robot2#0', sim.simx_opmode_oneshot_wait)
+        # Start Simulation
+        sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)            
         
-            if (not ErrLocM2==sim.simx_return_ok):
-                pass           
-
-            ErrLoc1,Loc1 =sim.simxGetObjectPosition(clientID, LocM1, -1, sim.simx_opmode_oneshot_wait)
+        " Use Adjacency Matrix to find Mxy and Phi's "                
         
-            if (not ErrLoc1==sim.simx_return_ok):
-                pass            
+        A = np.ones(6) - np.identity(6) # Adjancency Matrix
+    
+        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
+        self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
         
-            ErrLoc2,Loc2 =sim.simxGetObjectPosition(clientID, LocM2, -1, sim.simx_opmode_oneshot_wait)
-
-            if (not ErrLoc2==sim.simx_return_ok):
-                pass     
-
-            ErrLocO1,OriRobo1 =sim.simxGetObjectOrientation(clientID,LocM1, -1, sim.simx_opmode_oneshot_wait)
-        
-            if (not ErrLocO1==sim.simx_return_ok):
-                pass             
-        
-            ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
-
-            if (not ErrLocO2==sim.simx_return_ok):
-                pass     
-
-            OriRobo1[2] = scenes[self.scene][2]
-            OriRobo2[2] = scenes[self.scene][5]
-
-            # Set Robot Orientation
-
-            sim.simxSetObjectOrientation(clientID, LocM1, -1, OriRobo1, sim.simx_opmode_oneshot_wait) 
-            sim.simxSetObjectOrientation(clientID, LocM2, -1, OriRobo2, sim.simx_opmode_oneshot_wait)
-
-
-            Loc1[0] = scenes[self.scene][0]
-            Loc2[0] = scenes[self.scene][3]
-
-
-            Loc1[1] = scenes[self.scene][1]
-            Loc2[1] = scenes[self.scene][4]
-
-            # Set Robot Position
-
-            sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
-            sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
-                    
-            # Nb of Scene Counter
-            self.scene += 1
+        Mx = np.zeros((6,1)) # 6x1
+        My = np.zeros((6,1)) # 6x1
                 
-            # Start Simulation
-            sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)            
-            
-            " Use Adjacency Matrix to find Mxy and Phi's "                
-            
-            A = np.ones(6) - np.identity(6) # Adjancency Matrix
+        for i in range(1,7):
+            for j in range(1,7):
+                Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
+                My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
+    
+        Mx1 = float(Mx[0]) / 5 # 1x1
+        My1 = float(My[0]) / 5 # 1x1
         
-            self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
-            self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
-            
-            Mx = np.zeros((6,1)) # 6x1
-            My = np.zeros((6,1)) # 6x1
-                    
-            for i in range(1,7):
-                for j in range(1,7):
-                    Mx[i-1] += (A[i-1][j-1])*(self.X[j-1] - self.X[i-1]) # 1x1 each
-                    My[i-1] += (A[i-1][j-1])*(self.Y[j-1] - self.Y[i-1]) # 1x1 each
+        Mx2 = float(Mx[1]) / 5 # 1x1
+        My2 = float(My[1]) / 5 # 1x1        
+    
+        Mx3 = float(Mx[2]) / 5 # 1x1
+        My3 = float(My[2]) / 5 # 1x1
         
-            Mx1 = float(Mx[0]) / 5 # 1x1
-            My1 = float(My[0]) / 5 # 1x1
-            
-            Mx2 = float(Mx[1]) / 5 # 1x1
-            My2 = float(My[1]) / 5 # 1x1        
+        Mx4 = float(Mx[3]) / 5 # 1x1
+        My4 = float(My[3]) / 5 # 1x1
         
-            Mx3 = float(Mx[2]) / 5 # 1x1
-            My3 = float(My[2]) / 5 # 1x1
-            
-            Mx4 = float(Mx[3]) / 5 # 1x1
-            My4 = float(My[3]) / 5 # 1x1
-            
-            Mx5 = float(Mx[4]) / 5 # 1x1
-            My5 = float(My[4]) / 5 # 1x1
-            
-            Mx6 = float(Mx[5]) / 5 # 1x1
-            My6 = float(My[5]) / 5 # 1x1         
-            
-            
-            self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-            self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
-            
-            # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-            # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
-            
-            # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-            # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
-            
-            # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
-            # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
-            
-            # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
-            # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
-            
-            # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
-            # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
-            
-            observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
+        Mx5 = float(Mx[4]) / 5 # 1x1
+        My5 = float(My[4]) / 5 # 1x1
+        
+        Mx6 = float(Mx[5]) / 5 # 1x1
+        My6 = float(My[5]) / 5 # 1x1         
+        
+        
+        self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        
+        # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        
+        # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
+        
+        # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+        # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+        
+        # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+        # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+        
+        # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
+        # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
+        
+        observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
                                     
         return observation_DQN
     

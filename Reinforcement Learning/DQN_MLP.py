@@ -3,10 +3,20 @@
 Code for training DQN using MLP as the NN, integrated with ROS2 and V-Rep as environment 
 
 """
+import sys 
+import os
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/vrep_env"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/envs"))
+
+import rclpy
+rclpy.init()
+#from rclpy.node import Node
 
 import gym
 import examples
-from envs import mobile_robot_env_gym
+from envs.mobile_robot_env_gym import MobileRobotVrepEnv
 import math
 import random
 import numpy as np
@@ -26,7 +36,7 @@ from torch.nn import Linear
 from torch.nn.init import xavier_uniform_
 from torch.nn import ReLU
 
-#env = mobile_robot_env_gym()
+env = MobileRobotVrepEnv()
 
 # set up matplotlib
 is_ipython = 'inline' in matplotlib.get_backend()
