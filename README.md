@@ -43,7 +43,7 @@ Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for s
 We tested our algorithms on [BubbleRob Scene](https://www.coppeliarobotics.com/helpFiles/en/externalControllerTutorial.htm) from CoppeliaSim, however our model can be used with all kinds of robots.
 
 ## Data Collection 
-Using Python's remote API for CoppeliaSim, we initialized the positions randomly for each scene and ran the expert consensus algorithm to collect labelled data in a
+Using  [Python's Remote API](https://www.coppeliarobotics.com/helpFiles/en/remoteApiFunctionsPython.htm) for CoppeliaSim, we initialized the positions randomly for each scene and ran the expert consensus algorithm to collect labelled data in a
 imitation learning framework (Behavioural Cloning). We tested on different architectures for the GNN, and in each scene we stopped collecting data for d=0.2 ie when they meet.
 
 ## Acknowledgement
