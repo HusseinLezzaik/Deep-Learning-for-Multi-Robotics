@@ -305,6 +305,7 @@ class MobileRobotVrepEnv(gym.Env):
         self.mpg = MinimalPublisherGym()
         
         self.scene = 0 # Nb of scene iteration
+
         
         " Distance at which to fail the episode "
         self.distance_threshold = 2.2
@@ -337,14 +338,14 @@ class MobileRobotVrepEnv(gym.Env):
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         
         " Distance Threshold "
-        self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)
+        self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
 
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
 
-        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
-        self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1
+        self.X = np.array([ [self.mpg.x1], [self.mpg.x2], [self.mpg.x3], [self.mpg.x4], [self.mpg.x5], [self.mpg.x6]  ]) #6x1
+        self.Y = np.array([ [self.mpg.y1], [self.mpg.y2], [self.mpg.y3], [self.mpg.y4], [self.mpg.y5], [self.mpg.y6]  ]) #6x1
 
         ux = np.zeros((6,1)) # 6x1
         uy = np.zeros((6,1)) # 6x1
@@ -357,14 +358,14 @@ class MobileRobotVrepEnv(gym.Env):
     
         # Manage 4 directions (Up/Down/Left/Right)
         if action[0]==0:
-            self.v1 = -1.0
+            self.mpg.v1 = -1.0
         else:
-            self.v1 = +1.0
+            self.mpg.v1 = +1.0
             
         if action[1]==0:
-            self.w1 = -1.0
+            self.mpg.w1 = -1.0
         else:
-            self.w1 = +1.0
+            self.mpg.w1 = +1.0
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
@@ -376,34 +377,34 @@ class MobileRobotVrepEnv(gym.Env):
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
         
-        S1 = np.array([[self.v1], [self.w1]]) #2x1
+        S1 = np.array([[self.mpg.v1], [self.mpg.w1]]) #2x1
         # G1 = np.array([[1,0], [0,1/L]]) #2x2
         # R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
         # S1 = np.dot(np.dot(G1, R1), u1) #2x1
 
-        S2 = np.array([[self.v2], [self.w2]]) #2x1
+        S2 = np.array([[self.mpg.v2], [self.mpg.w2]]) #2x1
         G2 = np.array([[1,0], [0,1/L]]) #2x2
-        R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
+        R2 = np.array([[math.cos(self.mpg.Theta2),math.sin(self.mpg.Theta2)],[-math.sin(self.mpg.Theta2),math.cos(self.mpg.Theta2)]]) #2x2
         S2 = np.dot(np.dot(G2, R2), u2) # 2x1
 
-        S3 = np.array([[self.v3], [self.w3]]) #2x1
+        S3 = np.array([[self.mpg.v3], [self.mpg.w3]]) #2x1
         G3 = np.array([[1,0], [0,1/L]]) #2x2
-        R3 = np.array([[math.cos(self.Theta3),math.sin(self.Theta3)],[-math.sin(self.Theta3),math.cos(self.Theta3)]]) #2x2
+        R3 = np.array([[math.cos(self.mpg.Theta3),math.sin(self.mpg.Theta3)],[-math.sin(self.mpg.Theta3),math.cos(self.mpg.Theta3)]]) #2x2
         S3 = np.dot(np.dot(G3, R3), u3) #2x1        
 
-        S4 = np.array([[self.v4], [self.w4]]) #2x1
+        S4 = np.array([[self.mpg.v4], [self.mpg.w4]]) #2x1
         G4 = np.array([[1,0], [0,1/L]]) #2x2
-        R4 = np.array([[math.cos(self.Theta4),math.sin(self.Theta4)],[-math.sin(self.Theta4),math.cos(self.Theta4)]]) #2x2
+        R4 = np.array([[math.cos(self.mpg.Theta4),math.sin(self.mpg.Theta4)],[-math.sin(self.mpg.Theta4),math.cos(self.mpg.Theta4)]]) #2x2
         S4 = np.dot(np.dot(G4, R4), u4) #2x1        
 
-        S5 = np.array([[self.v5], [self.w5]]) #2x1
+        S5 = np.array([[self.mpg.v5], [self.mpg.w5]]) #2x1
         G5 = np.array([[1,0], [0,1/L]]) #2x2
-        R5 = np.array([[math.cos(self.Theta5),math.sin(self.Theta5)],[-math.sin(self.Theta5),math.cos(self.Theta5)]]) #2x2
+        R5 = np.array([[math.cos(self.mpg.Theta5),math.sin(self.mpg.Theta5)],[-math.sin(self.mpg.Theta5),math.cos(self.mpg.Theta5)]]) #2x2
         S5 = np.dot(np.dot(G5, R5), u5) #2x1
 
-        S6 = np.array([[self.v6], [self.w6]]) #2x1
+        S6 = np.array([[self.mpg.v6], [self.mpg.w6]]) #2x1
         G6 = np.array([[1,0], [0,1/L]]) #2x2
-        R6 = np.array([[math.cos(self.Theta6),math.sin(self.Theta6)],[-math.sin(self.Theta6),math.cos(self.Theta6)]]) #2x2
+        R6 = np.array([[math.cos(self.mpg.Theta6),math.sin(self.mpg.Theta6)],[-math.sin(self.mpg.Theta6),math.cos(self.mpg.Theta6)]]) #2x2
         S6 = np.dot(np.dot(G6, R6), u6) #2x1        
                 
         
@@ -412,12 +413,12 @@ class MobileRobotVrepEnv(gym.Env):
         D = np.array([[1/2,1/2],[-1/(2*d),1/(2*d)]]) #2x2
         Di = np.linalg.inv(D) #2x2
 
-        Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
-        Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2 
-        Speed_L3 = np.array([[self.vL3], [self.vR3]]) # Vector 2x1 for Speed of Robot 3
-        Speed_L4 = np.array([[self.vL4], [self.vR4]]) # Vector 2x1 for Speed of Robot 4
-        Speed_L5 = np.array([[self.vL5], [self.vR5]]) # Vector 2x1 for Speed of Robot 5
-        Speed_L6 = np.array([[self.vL6], [self.vR6]]) # Vector 2x1 for Speed of Robot 6
+        Speed_L1 = np.array([[self.mpg.vL1], [self.mpg.vR1]]) # Vector 2x1 for Speed of Robot 1
+        Speed_L2 = np.array([[self.mpg.vL2], [self.mpg.vR2]]) # Vector 2x1 for Speed of Robot 2 
+        Speed_L3 = np.array([[self.mpg.vL3], [self.mpg.vR3]]) # Vector 2x1 for Speed of Robot 3
+        Speed_L4 = np.array([[self.mpg.vL4], [self.mpg.vR4]]) # Vector 2x1 for Speed of Robot 4
+        Speed_L5 = np.array([[self.mpg.vL5], [self.mpg.vR5]]) # Vector 2x1 for Speed of Robot 5
+        Speed_L6 = np.array([[self.mpg.vL6], [self.mpg.vR6]]) # Vector 2x1 for Speed of Robot 6
 
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
         M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
@@ -474,8 +475,8 @@ class MobileRobotVrepEnv(gym.Env):
         Mx6 = float(Mx[5]) / 5 # 1x1
         My6 = float(My[5]) / 5 # 1x1         
                 
-        self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        self.mpg.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
         # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
@@ -492,7 +493,7 @@ class MobileRobotVrepEnv(gym.Env):
         # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
         # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1         
         
-        observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
+        observation_DQN = np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1])
         
         done = self.distance < self.distance_threshold 
         done = bool(done)
@@ -571,8 +572,8 @@ class MobileRobotVrepEnv(gym.Env):
         
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
     
-        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
-        self.Y = np.array([ [self.y1], [self.y2], [self.y3], [self.y4], [self.y5], [self.y6]  ]) #6x1        
+        self.X = np.array([ [self.mpg.x1], [self.mpg.x2], [self.mpg.x3], [self.mpg.x4], [self.mpg.x5], [self.mpg.x6]  ]) #6x1
+        self.Y = np.array([ [self.mpg.y1], [self.mpg.y2], [self.mpg.y3], [self.mpg.y4], [self.mpg.y5], [self.mpg.y6]  ]) #6x1        
         
         Mx = np.zeros((6,1)) # 6x1
         My = np.zeros((6,1)) # 6x1
@@ -601,8 +602,8 @@ class MobileRobotVrepEnv(gym.Env):
         My6 = float(My[5]) / 5 # 1x1         
         
         
-        self.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        self.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        self.mpg.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
         # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
@@ -619,7 +620,7 @@ class MobileRobotVrepEnv(gym.Env):
         # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
         # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
         
-        observation_DQN = np.array([Mx1, My1, self.Phix1, self.Phiy1])
+        observation_DQN = np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1])
                                     
         return observation_DQN
     
