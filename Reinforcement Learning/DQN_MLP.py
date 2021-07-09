@@ -136,14 +136,26 @@ class DQN(Module):
         
         " Model E "
         # Combine Models
-        X = torch.cat((X1, X2), dim=1)
+        print(X1.shape)
+        print(X2.shape)
+        X = torch.cat((X1, X2))
         # Define Hidden Layer
         X = self.inputE(X)
         X = self.actE1(X)
         # Output Layer
         X = self.outputE(X)
+        
+        if X[0]<0:
+            X[0]=-1.0
+        else:
+            X[0]=+1.0
+            
+        if X[1]<0:
+            X[1]= -1.0
+        else:
+            X[1]= +1.0        
+            
         return X
-
 
 env.reset()
 
@@ -159,8 +171,8 @@ TARGET_UPDATE = 10
 # Get number of actions from gym action space
 n_actions = env.action_space.n
 
-policy_net = DQN().to(device)
-target_net = DQN().to(device)
+policy_net = DQN().to(device).double()
+target_net = DQN().to(device).double()
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
@@ -224,8 +236,11 @@ for i_episode in range(num_episodes):
     state = env.reset()
     for t in count():
         # Select and perform an action
-        action = policy_net(state)
-        next_state, reward, done, _ = env.step(action.item())
+        print(state)
+        action = policy_net(state.double())
+        print(action)
+        print(env.step(action.detach().numpy()[0]))
+        next_state, reward, done, _ = env.step(action)
         reward = torch.tensor([reward], device=device)
 
         # Store the transition in memory

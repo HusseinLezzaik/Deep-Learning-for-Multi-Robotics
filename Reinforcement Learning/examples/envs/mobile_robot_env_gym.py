@@ -15,6 +15,7 @@ sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning
 import os
 # vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/scenes']
 
+import torch
 import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
@@ -493,7 +494,7 @@ class MobileRobotVrepEnv(gym.Env):
         # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
         # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1         
         
-        observation_DQN = np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1])
+        observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
         
         done = self.distance < self.distance_threshold 
         done = bool(done)
@@ -620,7 +621,7 @@ class MobileRobotVrepEnv(gym.Env):
         # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
         # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
         
-        observation_DQN = np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1])
+        observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
                                     
         return observation_DQN
     
