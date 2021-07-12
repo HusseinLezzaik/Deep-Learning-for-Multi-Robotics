@@ -17,7 +17,7 @@ The major content of our repo is:
 * `Real Topology Graph`: code for building our scalable robust GNN model.
 * `Reinforcement Learning`: code for building our custom gym environment & DQN model powered by GNN.
 
-Note: please check the `README` of each repository to dive deeper into the code and be able to replicate our results.
+Note: please check the `README` of each repository to dive deeper into the code and be able to replicate our results. Also, for more architecture details and results please read here.
 
 ## Getting Started
 Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for simulating our experiments on robots, and [ROS2 Foxy](https://docs.ros.org/en/foxy/index.html) for publishing speed commands to our robots. 
