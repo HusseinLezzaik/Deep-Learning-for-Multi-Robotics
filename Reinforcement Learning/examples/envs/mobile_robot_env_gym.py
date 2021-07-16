@@ -293,8 +293,8 @@ class MinimalPublisherGym(MinimalPublisher):
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
 
-    def spin_once_gym():
-        rclpy.spin_once()
+    def spin_once_gym(self):
+        rclpy.spin_once(self)
 
 
 class MobileRobotVrepEnv(gym.Env):
@@ -358,14 +358,13 @@ class MobileRobotVrepEnv(gym.Env):
                 uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
     
         # Manage 4 directions (Up/Down/Left/Right)
-        if action[0]==0:
+        if action==0:
             self.mpg.v1 = -1.0
-        else:
+        elif action==1:
             self.mpg.v1 = +1.0
-            
-        if action[1]==0:
+        elif action==2:
             self.mpg.w1 = -1.0
-        else:
+        elif action==3:
             self.mpg.w1 = +1.0
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1

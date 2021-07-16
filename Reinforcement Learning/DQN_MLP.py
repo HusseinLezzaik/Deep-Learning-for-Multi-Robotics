@@ -46,8 +46,8 @@ if is_ipython:
 plt.ion()
 
 # if gpu is to be used
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
 
@@ -146,16 +146,16 @@ class DQN(Module):
         X = self.outputE(X)
         
         if X[0]<0:
-            X[0]=-1.0
+            Y=int(0)
         else:
-            X[0]=+1.0
+            Y=int(1)
             
         if X[1]<0:
-            X[1]= -1.0
+            Y=int(0)
         else:
-            X[1]= +1.0        
+            Y=int(1)    
             
-        return X
+        return Y
 
 env.reset()
 
@@ -239,7 +239,9 @@ for i_episode in range(num_episodes):
         print(state)
         action = policy_net(state.double())
         print(action)
-        print(env.step(action.detach().numpy()[0]))
+        print(env.step(action))
+        print(i_episode)
+        print(t)
         next_state, reward, done, _ = env.step(action)
         reward = torch.tensor([reward], device=device)
 
