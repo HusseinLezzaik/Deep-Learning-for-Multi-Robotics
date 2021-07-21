@@ -1,6 +1,6 @@
 """
 
-Code for training DQN using MLP as the NN, integrated with ROS2 and V-Rep as environment 
+Code for training DQN using MLP as the NN, integrated with ROS2 and V-Rep as environment. Custom environment for training is "mobile_robot_env_gym.py"
 
 """
 import sys 
