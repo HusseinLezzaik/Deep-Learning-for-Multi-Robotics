@@ -9,6 +9,9 @@ import rclpy
 from rclpy.node import Node
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
+# importing the required module
+import matplotlib.pyplot as plt
+
 
 k = 1 # Control Gain
 L = 1 # Parameter of robot
@@ -173,6 +176,11 @@ class MinimalPublisher(Node):
         " Calculate Control inputs u1, u2, u3, u4, u5, u6 "
         
         
+        self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
+        
+        print(self.distance)        
+    
+        
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
         
         self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6]  ]) #6x1
@@ -332,6 +340,26 @@ class MinimalPublisher(Node):
 def main(args=None):
     rclpy.init(args=args)
     minimal_publisher = MinimalPublisher()
+    # x axis values
+    x = [1,2,3]
+    # corresponding y axis values
+    y = [2,4,1]
+      
+    # plotting the points 
+    plt.plot(x, y)
+      
+    # naming the x axis
+    plt.xlabel('time - axis')
+    # naming the y axis
+    plt.ylabel('disk distance - axis')
+      
+    # giving a title to my graph
+    plt.title('Disk Distance vs Time')
+      
+    # function to show the plot
+    plt.show()       
+    
+    #print(minimal_publisher.distance) 
     rclpy.spin(minimal_publisher)
     minimal_publisher.destroy_node()
     rclpy.shutdown()
