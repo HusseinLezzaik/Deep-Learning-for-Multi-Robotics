@@ -12,7 +12,7 @@ from std_msgs.msg import Float32
 # importing the required module
 import matplotlib.pyplot as plt
 import time
-
+import csv
 
 k = 1 # Control Gain
 L = 1 # Parameter of robot
@@ -109,9 +109,15 @@ class MinimalPublisher(Node):
         self.vL6 = 0
         self.vR6 = 0            
                 
-        
         " Time Ellapsed Variable"
         self.counter = 0
+        
+        " Counter Variables "
+        self.i1 = 0
+        self.i2 = 0
+        self.count = 2
+        self.j1 = 0
+        self.j2 = 0
         
     def listener_callback(self, msg):
 
@@ -181,6 +187,19 @@ class MinimalPublisher(Node):
         
         
         self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
+
+
+        
+        if self.counter==0:
+            self.t0 = time.process_time()
+            #print(t0)
+            self.counter = 1
+        
+        #time.sleep(3)
+        
+        self.elapsed_time = time.process_time() - self.t0
+        print(self.elapsed_time)
+        #print(self.distance)        
     
         
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
@@ -337,7 +356,27 @@ class MinimalPublisher(Node):
         self.publisher_l6.publish(msgl6)
         self.publisher_r6.publish(msgr6)        
         
+   
+        " Write Values to CSV1 and CSV2 "
         
+        if self.count % 2 == 0:
+                                                    
+            with open('plot_data.csv', 'a', newline='') as f:
+                fieldnames = ['Delta_time', 'Distance']
+                thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+
+                if self.i2 == 0: # write header value once
+                    thewriter.writeheader()
+                    self.i2 = 1
+
+                if self.j2 != 0:
+                    thewriter.writerow({'Delta_time' : self.elapsed_time, 'Distance' : self.distance})
+
+                if self.j2 == 0: # skip first value because it's noisy
+                    self.j2 = 1                            
+                    
+        self.count += 1 # Counter to skip values while saving to csv file         
+   
 
 def main(args=None):
     rclpy.init(args=args)
