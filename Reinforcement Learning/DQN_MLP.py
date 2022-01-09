@@ -3,6 +3,7 @@
 Code for training DQN using MLP as the NN, integrated with ROS2 and V-Rep as environment. Custom environment for training is "mobile_robot_env_gym.py"
 
 """
+
 import sys 
 import os
 sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning"))
@@ -25,6 +26,7 @@ import matplotlib.pyplot as plt
 from collections import namedtuple, deque
 from itertools import count
 from PIL import Image
+from decimal import Decimal
 
 import torch
 import torch.nn as nn
@@ -145,17 +147,18 @@ class DQN(Module):
         # Output Layer
         X = self.outputE(X)
         
-        if X[0]<0:
-            Y=int(0)
-        else:
-            Y=int(1)
+        return X
+        # if X[0]<0:
+        #     Y=torch.tensor(0)
+        # else:
+        #     Y=torch.tensor(1)
             
-        if X[1]<0:
-            Y=int(0)
-        else:
-            Y=int(1)    
+        # if X[1]<0:
+        #     Y=torch.tensor(0)
+        # else:
+        #     Y=torch.tensor(1)    
             
-        return Y
+        # return Y
 
 env.reset()
 
@@ -170,6 +173,8 @@ TARGET_UPDATE = 10
 
 # Get number of actions from gym action space
 n_actions = env.action_space.n
+print("Here is N Actions")
+print(n_actions)
 
 policy_net = DQN().to(device).double()
 target_net = DQN().to(device).double()
@@ -200,13 +205,19 @@ def optimize_model():
                                           batch.next_state)), device=device, dtype=torch.bool)
     non_final_next_states = torch.cat([s for s in batch.next_state
                                                 if s is not None])
-    state_batch = torch.cat(batch.state)
+    state_batch = torch.cat(batch.state).double()
+    print("BATCH ACTION IS HERE:")
+    print(batch.action)
     action_batch = torch.cat(batch.action)
     reward_batch = torch.cat(batch.reward)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
+    print("Policy Net is here")
+    print(policy_net(state_batch))
+    print("State Batch is here:")
+    print(state_batch)
     state_action_values = policy_net(state_batch).gather(1, action_batch)
 
     # Compute V(s_{t+1}) for all next states.
@@ -238,14 +249,28 @@ for i_episode in range(num_episodes):
         # Select and perform an action
         print(state)
         action = policy_net(state.double())
+        print("Here is ACTION")
         print(action)
-        print(env.step(action))
         print(i_episode)
         print(t)
-        next_state, reward, done, _ = env.step(action)
+        
+        if action[0]<0:
+            discrete_action=int(0)
+        else:
+            discrete_action=int(1)
+            
+        if action[1]<0:
+            discrete_action=int(0)
+        else:
+            discrete_action=int(1)    
+        
+        next_state, reward, done, _ = env.step(discrete_action)
         reward = torch.tensor([reward], device=device)
 
         # Store the transition in memory
+        # action = torch.tensor([action], device=device)
+        
+        action = torch.tensor([discrete_action], device=device, dtype=torch.long)
         memory.push(state, action, next_state, reward)
 
         # Move to the next state
