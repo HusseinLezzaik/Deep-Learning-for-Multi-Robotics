@@ -314,7 +314,7 @@ class MobileRobotVrepEnv(gym.Env):
         " Observation & Action Space "
         # Define Action Space
             
-        self.action_space = spaces.Discrete(4)               
+        self.action_space = spaces.MultiDiscrete([2,2])               
         
         # Define Observation Space
         high_observation = np.array([4.8,
@@ -358,14 +358,25 @@ class MobileRobotVrepEnv(gym.Env):
                 uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
     
         # Manage 4 directions (Up/Down/Left/Right)
-        if action==0:
+        if action[0] == 0.0:
             self.mpg.v1 = -1.0
-        elif action==1:
-            self.mpg.v1 = +1.0
-        elif action==2:
+        elif action[0] == 1.0:
+            self.mpg.v1 = 1.0
+        elif action[1] == 0.0:
             self.mpg.w1 = -1.0
-        elif action==3:
-            self.mpg.w1 = +1.0
+        elif action[1] == 1.0:
+            self.mpg.w1 = 1.0
+
+        print(" ---- ACTION ZERO ---:")
+        print(action[0])
+        print(" -------- V1 VALUE ------")
+        print(self.mpg.v1)
+
+    
+        print(" ---- ACTION ONE ---:")
+        print(action[1])
+        print(" -------- W1 Value ------")
+        print(self.mpg.w1)
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1

@@ -146,19 +146,22 @@ class DQN(Module):
         X = self.actE1(X)
         # Output Layer
         X = self.outputE(X)
+        print(" -------- X BEFORE ------------")
+        print(X)
         
+        if X[0]<0:
+            X[0]=0.0
+        else:
+            X[0]=+1.0
+    
+        if X[1]<0:
+            X[1]=0.0
+        else:
+            X[1]=+1.0   
+            
+        print(" -------- X AFTER------------")
+        print(X)            
         return X
-        # if X[0]<0:
-        #     Y=torch.tensor(0)
-        # else:
-        #     Y=torch.tensor(1)
-            
-        # if X[1]<0:
-        #     Y=torch.tensor(0)
-        # else:
-        #     Y=torch.tensor(1)    
-            
-        # return Y
 
 env.reset()
 
@@ -172,9 +175,9 @@ TARGET_UPDATE = 10
 
 
 # Get number of actions from gym action space
-n_actions = env.action_space.n
-print("Here is N Actions")
-print(n_actions)
+#n_actions = env.action_space.n
+# print("Here is N Actions")
+# print(n_actions)
 
 policy_net = DQN().to(device).double()
 target_net = DQN().to(device).double()
@@ -205,30 +208,38 @@ def optimize_model():
                                           batch.next_state)), device=device, dtype=torch.bool)
     non_final_next_states = torch.cat([s for s in batch.next_state
                                                 if s is not None])
-    state_batch = torch.cat(batch.state).double()
-    print("BATCH ACTION IS HERE:")
-    print(batch.action)
+    state_batch = torch.cat(batch.state)
+    # print("BATCH ACTION IS HERE:")
+    # print(batch.action)
     action_batch = torch.cat(batch.action)
     reward_batch = torch.cat(batch.reward)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
-    print("Policy Net is here")
-    print(policy_net(state_batch))
-    print("State Batch is here:")
-    print(state_batch)
-    state_action_values = policy_net(state_batch).gather(1, action_batch)
+    # print("Policy Net is here")
+    # print(policy_net(state_batch))
+    # print("State Batch is here:")
+    # print(state_batch)
+    # print("Batch dot State is here:")
+    # print(batch.state)
+    state_action_values = policy_net(state_batch).gather(0, action_batch)
+    # print("State Action Value is here:")
+    # print(state_action_values)
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
     # on the "older" target_net; selecting their best reward with max(1)[0].
     # This is merged based on the mask, such that we'll have either the expected
     # state value or 0 in case the state was final.
-    next_state_values = torch.zeros(BATCH_SIZE, device=device)
-    next_state_values[non_final_mask] = target_net(non_final_next_states).max(1)[0].detach()
+    next_state_values = torch.zeros(BATCH_SIZE, device=device).double()
+    # print("Target Net is here:")
+    # print(target_net(non_final_next_states))
+    next_state_values[non_final_mask] = target_net(non_final_next_states).max(0)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
+    # print("Expected State Action Values is here:")
+    # print(expected_state_action_values)
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
@@ -249,28 +260,23 @@ for i_episode in range(num_episodes):
         # Select and perform an action
         print(state)
         action = policy_net(state.double())
-        print("Here is ACTION")
-        print(action)
+        # print("Here is ACTION")
+        # print(action)
         print(i_episode)
         print(t)
+        # print("Here is ACTION SAMPLE")
+        # action_sample = env.action_space.sample()
+        # print(action_sample)
+        # print(type(action_sample))
         
-        if action[0]<0:
-            discrete_action=int(0)
-        else:
-            discrete_action=int(1)
-            
-        if action[1]<0:
-            discrete_action=int(0)
-        else:
-            discrete_action=int(1)    
-        
-        next_state, reward, done, _ = env.step(discrete_action)
+        action_np = action.detach().numpy().astype(np.int64)
+        next_state, reward, done, _ = env.step(action_np)
         reward = torch.tensor([reward], device=device)
 
         # Store the transition in memory
         # action = torch.tensor([action], device=device)
         
-        action = torch.tensor([discrete_action], device=device, dtype=torch.long)
+        action = torch.tensor(action, device=device, dtype=torch.long)
         memory.push(state, action, next_state, reward)
 
         # Move to the next state
