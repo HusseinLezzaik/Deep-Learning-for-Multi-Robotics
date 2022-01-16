@@ -53,3 +53,4 @@ We would like to thank [Claudio Pacchierotti](https://team.inria.fr/rainbow/team
 If you have any question, or if anything of the above is not working, don't hestitate to contact us! We are more than happy to help!
 * [Hussein Lezzaik](https://www.husseinlezzaik.com/) (hussein dot lezzaik at gmail dot com)
 * [Gennaro Notomista](https://www.gnotomista.com/) (g dot notomista at gmail dot com)
+* [Marco Cognetti](https://www.maynoothuniversity.ie/faculty-science-engineering/our-people/marco-cognetti) (Marco dot Cognetti at mu.ie)

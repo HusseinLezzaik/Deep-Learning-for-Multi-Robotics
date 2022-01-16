@@ -12,8 +12,8 @@ from std_msgs.msg import Float32
 import csv
 
 k = 1 # Control Gain
-L = 0.0975
-d = 0.109561
+L = 0.0975 # Configured for Pioneer Robot
+d = 0.109561 # Configured for Pioneer Robot
 distance = 6
 
 def euler_from_quaternion(x, y, z, w):
