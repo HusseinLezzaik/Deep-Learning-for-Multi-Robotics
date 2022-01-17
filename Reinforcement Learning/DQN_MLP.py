@@ -255,6 +255,7 @@ def optimize_model():
 num_episodes = 50
 for i_episode in range(num_episodes):
     # Initialize the environment and state
+    env.initialize_timer()
     state = env.reset()
     for t in count():
         # Select and perform an action

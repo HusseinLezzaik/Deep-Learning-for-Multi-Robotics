@@ -103,6 +103,7 @@ class MinimalPublisherGym(MinimalPublisher):
         timer_period = 0.03  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
+        self.LAST_UPDATED_TIME = time.time()
         
         " Parameters "
         self.t = 0 # Just to intialized Phix's and Phiy's
@@ -307,6 +308,7 @@ class MobileRobotVrepEnv(gym.Env):
         
         self.scene = 0 # Nb of scene iteration
 
+        self.LAST_UPDATED_TIME = time.time()
         
         " Distance at which to fail the episode "
         self.distance_threshold = 2.2
@@ -506,7 +508,9 @@ class MobileRobotVrepEnv(gym.Env):
         
         observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
         
-        done = self.distance < self.distance_threshold 
+        CURRENT_TIME = time.time()
+        DIFFERENT_TIME = CURRENT_TIME - self.LAST_UPDATED_TIME
+        done = self.distance < self.distance_threshold or DIFFERENT_TIME>10
         done = bool(done)
         reward = -self.distance
         
@@ -514,6 +518,9 @@ class MobileRobotVrepEnv(gym.Env):
         
         return observation_DQN, reward, done, {}
     
+    def initialize_timer(self):
+       self.LAST_UPDATED_TIME = time.time()
+       
     def reset(self):
         observation_DQN = np.array([0, 0, 0, 0])
 
