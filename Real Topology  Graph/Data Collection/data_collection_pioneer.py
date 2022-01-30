@@ -204,7 +204,7 @@ class MinimalPublisher(Node):
         
         print(self.distance)
         
-        if self.distance > 4.6:
+        if self.distance > 7.0:
         
             " Calculate Control inputs u1, u2, u3, u4, u5, u6 "
         
@@ -493,7 +493,7 @@ class MinimalPublisher(Node):
             
             # Check if robot1 is close to any other robot (except robot2)
             #for i in range(1,4):
-            too_close_dist = 0.4
+            too_close_dist = 0.55
             ErrLoc3,Loc3 =sim.simxGetObjectPosition(clientID, LocM3, -1, sim.simx_opmode_oneshot_wait)  
             if (not ErrLocM3==sim.simx_return_ok):
                 pass 
@@ -519,7 +519,9 @@ class MinimalPublisher(Node):
                 distr16 = np.sqrt(pow(Loc1[0] - Loc6[0],2) + pow(Loc1[1] - Loc6[1],2))
                 if (distr13 < too_close_dist) or (distr14 < too_close_dist) or (distr15 < too_close_dist) or (distr16 <too_close_dist):
                     # TOO close. Select another starting point for robot 1
-                    Loc1 = np.random.uniform(-2,2,size=(1,2))[0]
+                    Loc1z = Loc1[2]
+                    Loc1 = np.random.uniform(-2,2,size=(1,3))[0]
+                    Loc1[2] = Loc1z
                     print(" Robot 1 is close!")
                 else:
                     exit_cond = 1
@@ -539,7 +541,9 @@ class MinimalPublisher(Node):
                 
                 if dist21 < too_close_dist or dist23 < too_close_dist or dist24 < too_close_dist or dist25 < too_close_dist or dist26 < too_close_dist:
                     # TOO close. Select another starting point for robot 2
-                    Loc2 = np.random.uniform(-2,2,size=(1,2))[0]
+                    Loc2z = Loc2[2]
+                    Loc2 = np.random.uniform(-2,2,size=(1,3))[0]
+                    Loc2[2] = Loc2z
                     print(" Robot 2 is close!")
                 else:
                     exit_cond = 1
