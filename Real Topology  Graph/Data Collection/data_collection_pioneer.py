@@ -204,7 +204,7 @@ class MinimalPublisher(Node):
         
         print(self.distance)
         
-        if self.distance > 2.2:
+        if self.distance > 4.6:
         
             " Calculate Control inputs u1, u2, u3, u4, u5, u6 "
         
