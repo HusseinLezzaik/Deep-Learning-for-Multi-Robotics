@@ -3,6 +3,7 @@
 Code for training DQN using MLP as the NN, integrated with ROS2 and V-Rep as environment. Custom environment for training is "mobile_robot_env_gym.py"
 
 """
+# Source code from the Q-Learning documentation page on PyTorch
 
 import sys 
 import os
@@ -138,16 +139,16 @@ class DQN(Module):
         
         " Model E "
         # Combine Models
-        print(X1.shape)
-        print(X2.shape)
+        #print(X1.shape)
+        #print(X2.shape)
         X = torch.cat((X1, X2))
         # Define Hidden Layer
         X = self.inputE(X)
         X = self.actE1(X)
         # Output Layer
         X = self.outputE(X)
-        print(" -------- X BEFORE ------------")
-        print(X)
+        #print(" -------- X BEFORE ------------")
+        #print(X)
         
         if X[0]<0:
             X[0]=0.0
@@ -159,8 +160,8 @@ class DQN(Module):
         else:
             X[1]=+1.0   
             
-        print(" -------- X AFTER------------")
-        print(X)            
+        #print(" -------- X AFTER------------")
+        #print(X)            
         return X
 
 env.reset()
@@ -259,12 +260,12 @@ for i_episode in range(num_episodes):
     state = env.reset()
     for t in count():
         # Select and perform an action
-        print(state)
+        #print(state)
         action = policy_net(state.double())
         # print("Here is ACTION")
         # print(action)
-        print(i_episode)
-        print(t)
+        # print(i_episode)
+        # print(t)
         # print("Here is ACTION SAMPLE")
         # action_sample = env.action_space.sample()
         # print(action_sample)
@@ -292,7 +293,7 @@ for i_episode in range(num_episodes):
     if i_episode % TARGET_UPDATE == 0:
         target_net.load_state_dict(policy_net.state_dict())
 
-print('Complete')
+print('Training is Complete')
 env.render()
 env.close()
 plt.ioff()

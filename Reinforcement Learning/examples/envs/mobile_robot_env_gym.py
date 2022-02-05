@@ -30,8 +30,11 @@ from gym.utils import seeding
 import numpy as np
 import time
 
-L = 1 # Parameter of robot
-d = 0.5 # Parameter of robot
+#L = 0.0975 # Pioneer Robot Parameter
+#d = 0.109561 # Pioneer Robot Parameter
+
+L = 1 # Parameter of BubbleRob
+d = 0.5 # Parameter of BubbleRob
 A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
 
 ux = np.zeros((6,1)) # 6x1
@@ -369,16 +372,16 @@ class MobileRobotVrepEnv(gym.Env):
         elif action[1] == 1.0:
             self.mpg.w1 = 1.0
 
-        print(" ---- ACTION ZERO ---:")
-        print(action[0])
-        print(" -------- V1 VALUE ------")
-        print(self.mpg.v1)
+        #print(" ---- ACTION ZERO ---:")
+        #print(action[0])
+        #print(" -------- V1 VALUE ------")
+        #print(self.mpg.v1)
 
     
-        print(" ---- ACTION ONE ---:")
-        print(action[1])
-        print(" -------- W1 Value ------")
-        print(self.mpg.w1)
+        #print(" ---- ACTION ONE ---:")
+        #print(action[1])
+        #print(" -------- W1 Value ------")
+        #print(self.mpg.w1)
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
@@ -525,6 +528,7 @@ class MobileRobotVrepEnv(gym.Env):
         observation_DQN = np.array([0, 0, 0, 0])
 
         # Stop Simulation
+        print("Stop Simulation")
         sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
 
         # Retrieve some handles:
@@ -557,10 +561,29 @@ class MobileRobotVrepEnv(gym.Env):
         ErrLocO2,OriRobo2 =sim.simxGetObjectOrientation(clientID,LocM2, -1, sim.simx_opmode_oneshot_wait)
 
         if (not ErrLocO2==sim.simx_return_ok):
-            pass     
-
+            pass 
+        
+        # Take handles of the other robotos
+        ErrLocM3,LocM3 =sim.simxGetObjectHandle(clientID, 'robot3#1', sim.simx_opmode_oneshot_wait)
+        if (not ErrLocM3==sim.simx_return_ok):
+            pass
+        
+        ErrLocM4,LocM4 =sim.simxGetObjectHandle(clientID, 'robot4#2', sim.simx_opmode_oneshot_wait)
+        if (not ErrLocM4==sim.simx_return_ok):
+            pass
+        
+        ErrLocM5,LocM5 = sim.simxGetObjectHandle(clientID, 'robot5#3', sim.simx_opmode_oneshot_wait)
+        if (not ErrLocM5==sim.simx_return_ok):
+            pass
+        
+        ErrLocM6,LocM6 = sim.simxGetObjectHandle(clientID, 'robot6#4', sim.simx_opmode_oneshot_wait)
+        if (not ErrLocM6==sim.simx_return_ok):
+            pass
+        
+        
         OriRobo1[2] = scenes[self.scene][2]
         OriRobo2[2] = scenes[self.scene][5]
+
 
         # Set Robot Orientation
 
@@ -574,16 +597,82 @@ class MobileRobotVrepEnv(gym.Env):
 
         Loc1[1] = scenes[self.scene][1]
         Loc2[1] = scenes[self.scene][4]
-
+        
+        # Check if robot1 is close to any other robot (except robot2)
+        #for i in range(1,4):
+        too_close_dist = 0.4
+        ErrLoc3,Loc3 =sim.simxGetObjectPosition(clientID, LocM3, -1, sim.simx_opmode_oneshot_wait)  
+        if (not ErrLocM3==sim.simx_return_ok):
+            pass 
+        ErrLoc4,Loc4 =sim.simxGetObjectPosition(clientID, LocM4, -1, sim.simx_opmode_oneshot_wait)  
+        if (not ErrLocM4==sim.simx_return_ok):
+            pass 
+        ErrLoc5,Loc5 =sim.simxGetObjectPosition(clientID, LocM5, -1, sim.simx_opmode_oneshot_wait)  
+        if (not ErrLocM5==sim.simx_return_ok):
+            pass 
+        ErrLoc6,Loc6 =sim.simxGetObjectPosition(clientID, LocM6, -1, sim.simx_opmode_oneshot_wait)  
+        if (not ErrLocM6==sim.simx_return_ok):
+            pass 
+        exit_cond = 0
+        #print(" -------- ELEMENT 1 ------------")
+        #print(Loc1)
+        #print(" --------- ELEMENT 2 -----------")
+        #print(Loc3)
+        while exit_cond == 0:
+            #print(Loc1)
+            distr13 = np.sqrt(pow(Loc1[0] - Loc3[0],2) + pow(Loc1[1] - Loc3[1],2))
+            distr14 = np.sqrt(pow(Loc1[0] - Loc4[0],2) + pow(Loc1[1] - Loc4[1],2))
+            distr15 = np.sqrt(pow(Loc1[0] - Loc5[0],2) + pow(Loc1[1] - Loc5[1],2))
+            distr16 = np.sqrt(pow(Loc1[0] - Loc6[0],2) + pow(Loc1[1] - Loc6[1],2))
+            if (distr13 < too_close_dist) or (distr14 < too_close_dist) or (distr15 < too_close_dist) or (distr16 <too_close_dist):
+                # TOO close. Select another starting point for robot 1
+                Loc1 = np.random.uniform(-2,2,size=(1,2))[0]
+                print(" Robot 1 is close!")
+            else:
+                exit_cond = 1
+                
+        # In Loc1 there is here a valid inizialization of robot1
+        scenes[self.scene][0] = Loc1[0]
+        scenes[self.scene][1] = Loc1[1]
+        
+        # Check if the robot2 is too close to other robots
+        exit_cond = 0
+        while exit_cond == 0:
+            dist21 = np.sqrt(pow(Loc2[0] - Loc1[0],2) + pow(Loc2[1] - Loc1[1],2))
+            dist23 = np.sqrt(pow(Loc2[0] - Loc3[0],2) + pow(Loc2[1] - Loc3[1],2))
+            dist24 = np.sqrt(pow(Loc2[0] - Loc4[0],2) + pow(Loc2[1] - Loc4[1],2))
+            dist25 = np.sqrt(pow(Loc2[0] - Loc5[0],2) + pow(Loc2[1] - Loc5[1],2))
+            dist26 = np.sqrt(pow(Loc2[0] - Loc6[0],2) + pow(Loc2[1] - Loc6[1],2))
+            
+            if dist21 < too_close_dist or dist23 < too_close_dist or dist24 < too_close_dist or dist25 < too_close_dist or dist26 < too_close_dist:
+                # TOO close. Select another starting point for robot 2
+                Loc2 = np.random.uniform(-2,2,size=(1,2))[0]
+                print(" Robot 2 is close!")
+            else:
+                exit_cond = 1
+                
+        # In Loc2 there is here a valid inizialization of robot2
+        scenes[self.scene][3] = Loc2[0]
+        scenes[self.scene][4] = Loc2[1]
+        
         # Set Robot Position
 
         sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
         sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
+
+        # Print Positions and Orientation
+        
+        #print("Robot1 Position:", Loc1)
+        #print("Robot2 Position:", Loc2)
+    
+        #print("Robot1 Orientation:", OriRobo1)
+        #print("Robot2 Orientation:", OriRobo2)
                 
         # Nb of Scene Counter
         self.scene += 1
             
         # Start Simulation
+        print("Start New Simulation:")
         sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)            
         
         " Use Adjacency Matrix to find Mxy and Phi's "                
