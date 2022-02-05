@@ -43,7 +43,7 @@ uy = np.zeros((6,1)) # 6x1
 " Connecting to V-Rep "
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
-N_SCENES = 80
+N_SCENES = 10000
 scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
 
 def euler_from_quaternion(x, y, z, w):
@@ -110,6 +110,7 @@ class MinimalPublisherGym(MinimalPublisher):
         
         " Parameters "
         self.t = 0 # Just to intialized Phix's and Phiy's
+        self.scene = 0 # Nb of scene iteration
         
         " Initialize Phi's "
         self.Phix1 = 0 # 1x1
@@ -527,6 +528,8 @@ class MobileRobotVrepEnv(gym.Env):
     def reset(self):
         observation_DQN = np.array([0, 0, 0, 0])
 
+        print(" ----------------- Episode ------------------------- ", self.scene)
+        
         # Stop Simulation
         print("Stop Simulation")
         sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
