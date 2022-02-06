@@ -53,6 +53,13 @@ def euler_from_quaternion(x, y, z, w):
      yaw_z = math.atan2(t3, t4)
      
      return yaw_z # in radians
+
+def state_dot_from_state(current_state, current_action):
+    state_dot = np.array([[0], [0], [0]])
+    state_dot[0] = current_action[0] * math.cos(current_state[2])
+    state_dot[1] = current_action[0] * math.sin(current_state[2])
+    state_dot[2] = current_action[1]
+    return state_dot
      
 """
 
@@ -339,7 +346,7 @@ class MobileRobotVrepEnv(gym.Env):
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
-        
+    
     def step(self, action):
         
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
@@ -348,6 +355,7 @@ class MobileRobotVrepEnv(gym.Env):
         self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
         print(self.distance)
         print(self.mpg.x1)
+        
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
@@ -373,6 +381,85 @@ class MobileRobotVrepEnv(gym.Env):
             self.mpg.w1 = -1.0
         elif action[1] == 1.0:
             self.mpg.w1 = 1.0
+
+        number_steps = 10
+        delta_time = 0.1
+        
+        robot1_current_state = np.array([ [self.mpg.x1], [self.mpg.y1], [self.mpg.Theta1] ])
+        robot2_current_state = np.array([ [self.mpg.x2], [self.mpg.y2], [self.mpg.Theta2] ])
+        robot3_current_state = np.array([ [self.mpg.x3], [self.mpg.y3], [self.mpg.Theta3] ])
+        robot4_current_state = np.array([ [self.mpg.x4], [self.mpg.y4], [self.mpg.Theta4] ])
+        robot5_current_state = np.array([ [self.mpg.x5], [self.mpg.y5], [self.mpg.Theta5] ])
+        robot6_current_state = np.array([ [self.mpg.x6], [self.mpg.y6], [self.mpg.Theta6] ])
+        
+        robot1_current_action = np.array([ [self.mpg.v1], [self.mpg.w1] ])
+        robot2_current_action = np.array([[self.mpg.v2], [self.mpg.w2]])
+        robot3_current_action = np.array([[self.mpg.v3], [self.mpg.w3]])
+        robot4_current_action = np.array([[self.mpg.v4], [self.mpg.w4]])
+        robot5_current_action = np.array([[self.mpg.v5], [self.mpg.w5]])
+        robot6_current_action = np.array([[self.mpg.v6], [self.mpg.w6]])
+        
+        multi_robot_sensitivity_matrix = np.identity(18) 
+        A_sensitibity_matrix = np.identity(18)
+        dphi = np.identity(18)
+        observability_gramian = np.zeros(18,18)
+        
+        for i in range(1, number_steps):
+            # best_action = something_computed_from Q-learning
+            
+            # Euler Integrator Implementation for Each Robot:
+                
+            robot1_new_state = robot1_current_state + delta_time*state_dot_from_state(robot1_current_state, robot1_current_action) 
+            robot2_new_state = robot2_current_state + delta_time*state_dot_from_state(robot2_current_state, robot2_current_action)
+            robot3_new_state = robot3_current_state + delta_time*state_dot_from_state(robot3_current_state, robot3_current_action)
+            robot4_new_state = robot4_current_state + delta_time*state_dot_from_state(robot4_current_state, robot4_current_action)
+            robot5_new_state = robot5_current_state + delta_time*state_dot_from_state(robot5_current_state, robot5_current_action)
+            robot6_new_state = robot6_current_state + delta_time*state_dot_from_state(robot6_current_state, robot6_current_action)
+            
+            # Create the Gramiam:
+            # A = [0 0 -us(1)*sin(qs(3)); 0 0 us(1)*cos(qs(3)); 0 0 0]
+            
+            A_robot1 = np.array([ [ 0, 0, -robot1_current_action[0]*math.sin(robot1_current_state[2]) ], [ 0, 0, robot1_current_action[0]*math.cos(robot1_current_state[2])], [ 0, 0, 0] ]) #3x3
+            # A_sensitibity_matrix[1:3 , 1:3] = A_robot1 
+            
+            A_robot2 = np.array([ [ 0, 0, -robot2_current_action[0]*math.sin(robot2_current_state[2]) ], [ 0, 0, robot2_current_action[0]*math.cos(robot2_current_state[2])], [ 0, 0, 0] ]) #3x3
+            # A_sensitibity_matrix[4:6 , 4:6] = A_robot2 
+
+            A_robot3 = np.array([ [ 0, 0, -robot3_current_action[0]*math.sin(robot3_current_state[2]) ], [ 0, 0, robot3_current_action[0]*math.cos(robot3_current_state[2])], [ 0, 0, 0] ]) #3x3
+            # A_sensitibity_matrix[7:9 , 7:9] = A_robot3 
+
+            A_robot4 = np.array([ [ 0, 0, -robot4_current_action[0]*math.sin(robot4_current_state[2]) ], [ 0, 0, robot4_current_action[0]*math.cos(robot4_current_state[2])], [ 0, 0, 0] ]) #3x3
+            # A_sensitibity_matrix[10:12 , 10:12] = A_robot4 
+
+            A_robot5 = np.array([ [ 0, 0, -robot5_current_action[0]*math.sin(robot5_current_state[2]) ], [ 0, 0, robot5_current_action[0]*math.cos(robot5_current_state[2])], [ 0, 0, 0] ]) #3x3
+            # A_sensitibity_matrix[13:15 , 13:15] = A_robot5 
+
+            A_robot6 = np.array([ [ 0, 0, -robot6_current_action[0]*math.sin(robot6_current_state[2]) ], [ 0, 0, robot6_current_action[0]*math.cos(robot6_current_state[2])], [ 0, 0, 0] ]) #3x3
+            # A_sensitibity_matrix[16:18 , 16:18] = A_robot6             
+            
+            dphi = A_sensitibity_matrix*multi_robot_sensitivity_matrix
+            
+            # Phi_new is the new sensitivity matrix
+            phi_new = multi_robot_sensitivity_matrix + delta_time*dphi
+            
+            # dGo = Phi'*H'*inv(R)*H*Phi;
+            # H = 1.0 # derivative of measurement model - to be assigned later row: nb of measuremants, column: 
+            # dGo = multi_robot_sensitivity_matrix.transpose()*H.transpose*H*multi_robot_sensitivity_matrix
+            # observability_gramian = observability_gramian + delta_time*dGo
+            
+            multi_robot_sensitivity_matrix = phi_new
+             
+            
+            
+            # Current state is assigned into new States:
+            robot1_current_state = robot1_new_state
+            robot2_current_state = robot2_new_state
+            robot3_current_state = robot3_new_state
+            robot4_current_state = robot4_new_state
+            robot5_current_state = robot5_new_state
+            robot6_current_state = robot6_new_state
+
+
 
         #print(" ---- ACTION ZERO ---:")
         #print(action[0])

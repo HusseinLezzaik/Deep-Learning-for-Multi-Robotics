@@ -253,7 +253,7 @@ def optimize_model():
         param.grad.data.clamp_(-1, 1)
     optimizer.step()
     
-num_episodes = 10000
+num_episodes = 1500
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     env.initialize_timer()
