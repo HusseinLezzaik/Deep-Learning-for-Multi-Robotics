@@ -353,8 +353,8 @@ class MobileRobotVrepEnv(gym.Env):
         
         " Distance Threshold "
         self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
-        print(self.distance)
-        print(self.mpg.x1)
+        #print(self.distance)
+        #print(self.mpg.x1)
         
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
@@ -382,6 +382,9 @@ class MobileRobotVrepEnv(gym.Env):
         elif action[1] == 1.0:
             self.mpg.w1 = 1.0
 
+
+        print("---------- Action of Robot 1 -------------------", action)
+
         number_steps = 10
         delta_time = 0.1
         
@@ -402,7 +405,7 @@ class MobileRobotVrepEnv(gym.Env):
         multi_robot_sensitivity_matrix = np.identity(18) 
         A_sensitibity_matrix = np.identity(18)
         dphi = np.identity(18)
-        observability_gramian = np.zeros(18,18)
+        observability_gramian = np.zeros([18,18]) # 18x18 of 0's
         
         for i in range(1, number_steps):
             # best_action = something_computed_from Q-learning
@@ -420,22 +423,22 @@ class MobileRobotVrepEnv(gym.Env):
             # A = [0 0 -us(1)*sin(qs(3)); 0 0 us(1)*cos(qs(3)); 0 0 0]
             
             A_robot1 = np.array([ [ 0, 0, -robot1_current_action[0]*math.sin(robot1_current_state[2]) ], [ 0, 0, robot1_current_action[0]*math.cos(robot1_current_state[2])], [ 0, 0, 0] ]) #3x3
-            # A_sensitibity_matrix[1:3 , 1:3] = A_robot1 
+            A_sensitibity_matrix[:3 , :3] = A_robot1 
             
             A_robot2 = np.array([ [ 0, 0, -robot2_current_action[0]*math.sin(robot2_current_state[2]) ], [ 0, 0, robot2_current_action[0]*math.cos(robot2_current_state[2])], [ 0, 0, 0] ]) #3x3
-            # A_sensitibity_matrix[4:6 , 4:6] = A_robot2 
+            A_sensitibity_matrix[3:6 , 3:6] = A_robot2 
 
             A_robot3 = np.array([ [ 0, 0, -robot3_current_action[0]*math.sin(robot3_current_state[2]) ], [ 0, 0, robot3_current_action[0]*math.cos(robot3_current_state[2])], [ 0, 0, 0] ]) #3x3
-            # A_sensitibity_matrix[7:9 , 7:9] = A_robot3 
+            A_sensitibity_matrix[6:9 , 6:9] = A_robot3 
 
             A_robot4 = np.array([ [ 0, 0, -robot4_current_action[0]*math.sin(robot4_current_state[2]) ], [ 0, 0, robot4_current_action[0]*math.cos(robot4_current_state[2])], [ 0, 0, 0] ]) #3x3
-            # A_sensitibity_matrix[10:12 , 10:12] = A_robot4 
+            A_sensitibity_matrix[9:12 , 9:12] = A_robot4 
 
             A_robot5 = np.array([ [ 0, 0, -robot5_current_action[0]*math.sin(robot5_current_state[2]) ], [ 0, 0, robot5_current_action[0]*math.cos(robot5_current_state[2])], [ 0, 0, 0] ]) #3x3
-            # A_sensitibity_matrix[13:15 , 13:15] = A_robot5 
+            A_sensitibity_matrix[12:15 , 12:15] = A_robot5 
 
             A_robot6 = np.array([ [ 0, 0, -robot6_current_action[0]*math.sin(robot6_current_state[2]) ], [ 0, 0, robot6_current_action[0]*math.cos(robot6_current_state[2])], [ 0, 0, 0] ]) #3x3
-            # A_sensitibity_matrix[16:18 , 16:18] = A_robot6             
+            A_sensitibity_matrix[15: , 15:] = A_robot6             
             
             dphi = A_sensitibity_matrix*multi_robot_sensitivity_matrix
             
@@ -444,12 +447,31 @@ class MobileRobotVrepEnv(gym.Env):
             
             # dGo = Phi'*H'*inv(R)*H*Phi;
             # H = 1.0 # derivative of measurement model - to be assigned later row: nb of measuremants, column: 
-            # dGo = multi_robot_sensitivity_matrix.transpose()*H.transpose*H*multi_robot_sensitivity_matrix
-            # observability_gramian = observability_gramian + delta_time*dGo
             
             multi_robot_sensitivity_matrix = phi_new
              
-            
+            # H Matrix 15x18:
+            H = np.array([ [(self.mpg.x1-self.mpg.x2), (self.mpg.y1-self.mpg.y2), 0, -(self.mpg.x1-self.mpg.x2), -(self.mpg.y1-self.mpg.y2), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], 
+                           [(self.mpg.x1-self.mpg.x3), (self.mpg.y1-self.mpg.y3), 0, 0, 0, 0, -(self.mpg.x1-self.mpg.x3), -(self.mpg.y1-self.mpg.y3), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                           [(self.mpg.x1-self.mpg.x4), (self.mpg.y1-self.mpg.y4), 0, 0, 0, 0, 0, 0, 0, -(self.mpg.x1-self.mpg.x4), -(self.mpg.y1-self.mpg.y4), 0, 0, 0, 0, 0, 0, 0 ], 
+                           [(self.mpg.x1-self.mpg.x5), (self.mpg.y1-self.mpg.y5), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -(self.mpg.x1-self.mpg.x5), -(self.mpg.y1-self.mpg.y5), 0, 0, 0, 0 ],
+                           [(self.mpg.x1-self.mpg.x6), (self.mpg.y1-self.mpg.y6), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                                                   ], 
+                           [0, 0, 0, (self.mpg.x2-self.mpg.x3), (self.mpg.y2-self.mpg.y3), 0, -(self.mpg.x2-self.mpg.x3), -(self.mpg.y2-self.mpg.y3), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                           [0, 0, 0, (self.mpg.x2-self.mpg.x4), (self.mpg.y2-self.mpg.y4), 0, 0, 0, 0, -(self.mpg.x2-self.mpg.x4), -(self.mpg.y2-self.mpg.y4), 0, 0, 0, 0, 0, 0, 0 ],                           
+                           [0, 0, 0, (self.mpg.x2-self.mpg.x5), (self.mpg.y2-self.mpg.y5), 0, 0, 0, 0, 0, 0, 0, -(self.mpg.x2-self.mpg.x5), -(self.mpg.y2-self.mpg.y5), 0, 0, 0, 0 ],                           
+                           [0, 0, 0, (self.mpg.x2-self.mpg.x6), (self.mpg.y2-self.mpg.y6), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -(self.mpg.x2-self.mpg.x6), -(self.mpg.y2-self.mpg.y6), 0 ],
+                           [0, 0, 0, 0, 0, 0, (self.mpg.x3-self.mpg.x4), (self.mpg.y3-self.mpg.y4), 0, -(self.mpg.x3-self.mpg.x4), -(self.mpg.y3-self.mpg.y4), 0, 0, 0, 0, 0, 0, 0 ],                           
+                           [0, 0, 0, 0, 0, 0, (self.mpg.x3-self.mpg.x5), (self.mpg.y3-self.mpg.y5), 0, 0, 0, 0, -(self.mpg.x3-self.mpg.x5), -(self.mpg.y3-self.mpg.y5), 0, 0, 0, 0 ],
+                           [0, 0, 0, 0, 0, 0, (self.mpg.x3-self.mpg.x6), (self.mpg.y3-self.mpg.y6), 0, 0, 0, 0, 0, 0, 0, -(self.mpg.x3-self.mpg.x6), -(self.mpg.y3-self.mpg.y6), 0 ],                           
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, (self.mpg.x4-self.mpg.x5), (self.mpg.y4-self.mpg.y5), 0, -(self.mpg.x4-self.mpg.x5), -(self.mpg.y4-self.mpg.y5), 0, 0, 0, 0 ],                           
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, (self.mpg.x4-self.mpg.x6), (self.mpg.y4-self.mpg.y6), 0, 0, 0, 0, -(self.mpg.x4-self.mpg.x6), -(self.mpg.y4-self.mpg.y6), 0 ],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (self.mpg.x5-self.mpg.x6), (self.mpg.y5-self.mpg.y6), 0, -(self.mpg.x5-self.mpg.x6), -(self.mpg.y5-self.mpg.y6), 0 ] ]) #18x18
+
+            dGi = np.dot(multi_robot_sensitivity_matrix.transpose(), H.transpose())
+            dGj = np.dot(H, multi_robot_sensitivity_matrix)
+
+            dGo = np.dot(dGi, dGj)
+            observability_gramian = observability_gramian + delta_time*dGo
             
             # Current state is assigned into new States:
             robot1_current_state = robot1_new_state
@@ -604,8 +626,8 @@ class MobileRobotVrepEnv(gym.Env):
         DIFFERENT_TIME = CURRENT_TIME - self.LAST_UPDATED_TIME
         done = self.distance < self.distance_threshold or DIFFERENT_TIME>20
         done = bool(done)
-        reward = -self.distance
-        
+        reward = np.trace(observability_gramian)
+        print("Reward Value:", reward)
         self.mpg.spin_once_gym()
         
         return observation_DQN, reward, done, {}

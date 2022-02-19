@@ -23,6 +23,7 @@ from std_msgs.msg import Float32
 from vrep_env import sim
 from data_collection_v3 import MinimalPublisher
 
+import csv
 import math
 import gym
 from gym import spaces
@@ -179,7 +180,8 @@ class MinimalPublisherGym(MinimalPublisher):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0
-                        
+        
+        
             
     def listener_callback(self, msg):
         
@@ -347,7 +349,7 @@ class MobileRobotVrepEnv(gym.Env):
         " Distance Threshold "
         self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
         print(self.distance)
-        print(self.mpg.x1)
+        #print(self.mpg.x1)
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
@@ -515,9 +517,24 @@ class MobileRobotVrepEnv(gym.Env):
         
         CURRENT_TIME = time.time()
         DIFFERENT_TIME = CURRENT_TIME - self.LAST_UPDATED_TIME
-        done = self.distance < self.distance_threshold or DIFFERENT_TIME>20
+        done = self.distance < self.distance_threshold or DIFFERENT_TIME>7
         done = bool(done)
         reward = -self.distance
+        print("Reward Function:", reward)
+        
+        with open('plot_reward.csv', 'a', newline='') as f:
+            fieldnames = ['Episode', 'Reward']
+            thewriter = csv.DictWriter(f, fieldnames=fieldnames)
+
+            if self.scene == 0: # write header value once
+                thewriter.writeheader()
+                #self.i2 = 1
+
+            #if self.j2 != 0:
+            thewriter.writerow({'Episode' : self.scene, 'Reward' : reward})
+                
+            # if self.j2 == 0: # skip first value because it's noisy
+            #     self.j2 = 1   
         
         self.mpg.spin_once_gym()
         
