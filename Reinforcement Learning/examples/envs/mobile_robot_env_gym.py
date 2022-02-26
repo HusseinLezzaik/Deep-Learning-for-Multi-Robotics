@@ -317,7 +317,7 @@ class MobileRobotVrepEnv(gym.Env):
         self.LAST_UPDATED_TIME = time.time()
         
         " Distance at which to fail the episode "
-        self.distance_threshold = 2.2
+        self.distance_threshold = 2.2 # d=2.2 for 
                 
         " Observation & Action Space "
         # Define Action Space
@@ -348,7 +348,7 @@ class MobileRobotVrepEnv(gym.Env):
         
         " Distance Threshold "
         self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
-        print(self.distance)
+        print(" Disk Distance ", self.distance)
         #print(self.mpg.x1)
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
@@ -519,7 +519,8 @@ class MobileRobotVrepEnv(gym.Env):
         DIFFERENT_TIME = CURRENT_TIME - self.LAST_UPDATED_TIME
         done = self.distance < self.distance_threshold or DIFFERENT_TIME>7
         done = bool(done)
-        reward = -self.distance
+        squared_distance = pow((self.mpg.x1 - self.mpg.x2), 2) + pow((self.mpg.y1 - self.mpg.y2), 2) + pow((self.mpg.x1 - self.mpg.x3), 2) + pow((self.mpg.y1 - self.mpg.y3), 2) + pow((self.mpg.x1 - self.mpg.x4), 2) + pow((self.mpg.y1 - self.mpg.y4), 2) + pow((self.mpg.x1 - self.mpg.x5), 2) + pow((self.mpg.y1 - self.mpg.y5), 2) + pow((self.mpg.x1 - self.mpg.x6), 2) + pow((self.mpg.y1 - self.mpg.y6), 2)
+        reward = -squared_distance
         print("Reward Function:", reward)
         
         with open('plot_reward.csv', 'a', newline='') as f:

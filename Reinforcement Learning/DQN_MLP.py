@@ -139,16 +139,12 @@ class DQN(Module):
         
         " Model E "
         # Combine Models
-        #print(X1.shape)
-        #print(X2.shape)
         X = torch.cat((X1, X2))
         # Define Hidden Layer
         X = self.inputE(X)
         X = self.actE1(X)
         # Output Layer
         X = self.outputE(X)
-        #print(" -------- X BEFORE ------------")
-        #print(X)
         
         if X[0]<0:
             X[0]=0.0
@@ -177,8 +173,6 @@ TARGET_UPDATE = 10
 
 # Get number of actions from gym action space
 #n_actions = env.action_space.n
-# print("Here is N Actions")
-# print(n_actions)
 
 policy_net = DQN().to(device).double()
 target_net = DQN().to(device).double()
@@ -210,23 +204,13 @@ def optimize_model():
     non_final_next_states = torch.cat([s for s in batch.next_state
                                                 if s is not None])
     state_batch = torch.cat(batch.state)
-    # print("BATCH ACTION IS HERE:")
-    # print(batch.action)
     action_batch = torch.cat(batch.action)
     reward_batch = torch.cat(batch.reward)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
-    # print("Policy Net is here")
-    # print(policy_net(state_batch))
-    # print("State Batch is here:")
-    # print(state_batch)
-    # print("Batch dot State is here:")
-    # print(batch.state)
     state_action_values = policy_net(state_batch).gather(0, action_batch)
-    # print("State Action Value is here:")
-    # print(state_action_values)
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
@@ -234,13 +218,9 @@ def optimize_model():
     # This is merged based on the mask, such that we'll have either the expected
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device).double()
-    # print("Target Net is here:")
-    # print(target_net(non_final_next_states))
     next_state_values[non_final_mask] = target_net(non_final_next_states).max(0)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
-    # print("Expected State Action Values is here:")
-    # print(expected_state_action_values)
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
@@ -250,26 +230,19 @@ def optimize_model():
     optimizer.zero_grad()
     loss.backward()
     for param in policy_net.parameters():
+        print(list(policy_net.parameters()))
         param.grad.data.clamp_(-1, 1)
     optimizer.step()
     
-num_episodes = 1500
+num_episodes = 3000
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     env.initialize_timer()
     state = env.reset()
     for t in count():
         # Select and perform an action
-        #print(state)
         action = policy_net(state.double())
-        # print("Here is ACTION")
-        # print(action)
-        # print(i_episode)
-        # print(t)
-        # print("Here is ACTION SAMPLE")
-        # action_sample = env.action_space.sample()
-        # print(action_sample)
-        # print(type(action_sample))
+
         
         action_np = action.detach().numpy().astype(np.int64)
         next_state, reward, done, _ = env.step(action_np)
