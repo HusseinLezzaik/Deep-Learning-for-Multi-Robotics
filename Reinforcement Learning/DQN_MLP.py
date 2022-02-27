@@ -14,7 +14,6 @@ sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning
 
 import rclpy
 rclpy.init()
-#from rclpy.node import Node
 
 import gym
 import examples
@@ -40,13 +39,6 @@ from torch.nn.init import xavier_uniform_
 from torch.nn import ReLU
 
 env = MobileRobotVrepEnv()
-
-# set up matplotlib
-is_ipython = 'inline' in matplotlib.get_backend()
-if is_ipython:
-    from IPython import display
-
-plt.ion()
 
 # if gpu is to be used
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -155,9 +147,7 @@ class DQN(Module):
             X[1]=0.0
         else:
             X[1]=+1.0   
-            
-        #print(" -------- X AFTER------------")
-        #print(X)            
+                        
         return X
 
 env.reset()
