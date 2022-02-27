@@ -7,8 +7,8 @@ Defining Class of custom environment for V-Rep
 
 import sys 
 import os
-sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning"))
-sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/vrep_env"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/vrep_env"))
 
 import os
 import torch

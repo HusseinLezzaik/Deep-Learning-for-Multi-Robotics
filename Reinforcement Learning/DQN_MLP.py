@@ -7,10 +7,10 @@ Code for training DQN using MLP as the NN, integrated with ROS2 and V-Rep as env
 
 import sys 
 import os
-sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning"))
-sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/vrep_env"))
-sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples"))
-sys.path.append(os.path.abspath("/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/envs"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/vrep_env"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/examples"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/examples/envs"))
 
 import rclpy
 rclpy.init()
@@ -34,6 +34,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
 from torch.nn import Module
+from torch.nn import ModuleList
 from torch.nn import Linear
 from torch.nn.init import xavier_uniform_
 from torch.nn import ReLU
@@ -75,6 +76,7 @@ class DQN(Module):
         self.actA1 = ReLU()
         # Define Hidden Layer
         self.hiddenA = Linear(12, 12)
+        #self.hiddenA = ModuleList(self.hiddenA)
         xavier_uniform_(self.hiddenA.weight)
         self.actA2 = ReLU() 
         # Output Layer 3 to 2 units
@@ -88,6 +90,7 @@ class DQN(Module):
         self.actB1 = ReLU()
         # Define Hidden Layer
         self.hiddenB = Linear(12, 12)
+        #self.hiddenB = ModuleList(self.hiddenB)
         xavier_uniform_(self.hiddenB.weight)
         self.actB2 = ReLU() 
         # Output layer 3 to 2 units
@@ -169,7 +172,7 @@ target_net = DQN().to(device).double()
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
-optimizer = optim.RMSprop(policy_net.parameters())
+optimizer = optim.RMSprop(policy_net.parameters(), lr=0.01)
 memory = ReplayMemory(10000)
 
 
@@ -220,7 +223,7 @@ def optimize_model():
     optimizer.zero_grad()
     loss.backward()
     for param in policy_net.parameters():
-        print(list(policy_net.parameters()))
+        #print(list(policy_net.parameters()))
         param.grad.data.clamp_(-1, 1)
     optimizer.step()
     
