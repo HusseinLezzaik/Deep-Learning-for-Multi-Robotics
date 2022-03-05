@@ -9,6 +9,9 @@ import sys
 import os
 sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning"))
 sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/vrep_env"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/examples"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/examples/envs"))
+
 
 import os
 import torch
@@ -372,6 +375,7 @@ class MobileRobotVrepEnv(gym.Env):
             self.mpg.w1 = 1.0
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
+        #print("Here is u2:" ,u2)
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
         u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
         u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
@@ -484,7 +488,7 @@ class MobileRobotVrepEnv(gym.Env):
         
         CURRENT_TIME = time.time()
         DIFFERENT_TIME = CURRENT_TIME - self.LAST_UPDATED_TIME
-        done = self.distance < self.distance_threshold or DIFFERENT_TIME>7
+        done = self.distance < self.distance_threshold or DIFFERENT_TIME>20
         done = bool(done)
         squared_distance = pow((self.mpg.x1 - self.mpg.x2), 2) + pow((self.mpg.y1 - self.mpg.y2), 2) + pow((self.mpg.x1 - self.mpg.x3), 2) + pow((self.mpg.y1 - self.mpg.y3), 2) + pow((self.mpg.x1 - self.mpg.x4), 2) + pow((self.mpg.y1 - self.mpg.y4), 2) + pow((self.mpg.x1 - self.mpg.x5), 2) + pow((self.mpg.y1 - self.mpg.y5), 2) + pow((self.mpg.x1 - self.mpg.x6), 2) + pow((self.mpg.y1 - self.mpg.y6), 2)
         reward = -squared_distance
