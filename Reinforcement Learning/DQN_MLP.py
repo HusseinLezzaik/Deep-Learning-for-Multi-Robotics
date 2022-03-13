@@ -41,9 +41,10 @@ from torch.nn import ReLU
 
 env = MobileRobotVrepEnv()
 
+torch.set_default_tensor_type('torch.cuda.FloatTensor')
 # if gpu is to be used
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device = torch.device("cuda")
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
 
@@ -161,7 +162,7 @@ GAMMA = 0.999
 EPS_START = 0.9
 EPS_END = 0.05
 EPS_DECAY = 200
-TARGET_UPDATE = 10
+TARGET_UPDATE = 1
 
 
 # Get number of actions from gym action space
@@ -227,7 +228,7 @@ def optimize_model():
         param.grad.data.clamp_(-1, 1)
     optimizer.step()
     
-num_episodes = 3000
+num_episodes = 5
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     env.initialize_timer()
@@ -237,7 +238,7 @@ for i_episode in range(num_episodes):
         action = policy_net(state.double())
 
         
-        action_np = action.detach().numpy().astype(np.int64)
+        action_np = action.cpu().detach().numpy().astype(np.int64)
         next_state, reward, done, _ = env.step(action_np)
         reward = torch.tensor([reward], device=device)
 
@@ -258,7 +259,12 @@ for i_episode in range(num_episodes):
     # Update the target network, copying all weights and biases in DQN
     if i_episode % TARGET_UPDATE == 0:
         target_net.load_state_dict(policy_net.state_dict())
+        print(list(target_net.parameters()))
+        # for param in target_net.parameters():
+        #     print(param)
 
+FILE = "model.pth"
+torch.save(target_net.state_dict(), FILE)
 print('Training is Complete')
 env.render()
 env.close()

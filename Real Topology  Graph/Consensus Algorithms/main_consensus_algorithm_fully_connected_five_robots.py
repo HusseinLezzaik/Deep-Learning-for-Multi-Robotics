@@ -64,7 +64,7 @@ class MinimalPublisher(Node):
         self.vL1 = 0
         self.vR1 = 0
         
-        " Mobile Robot 1 Parameters "
+        " Mobile Robot 2 Parameters "
         self.x2 = 0
         self.y2 = 0
         self.Theta2 = 0
@@ -108,10 +108,16 @@ class MinimalPublisher(Node):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0            
-                
         
-        " Time Ellapsed Variable"
+        " Time Ellapsed Variable "
         self.counter = 0
+        
+        " Speed Normalization Factors "
+        self.VMax = 3
+        self.alpha = 1
+        self.beta = 1
+        self.gamma = 1
+
         
     def listener_callback(self, msg):
 
@@ -183,27 +189,27 @@ class MinimalPublisher(Node):
         # self.distance = abs(self.x2 - self.x3) + abs(self.y2 - self.y3) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
     
         
-        A = np.ones(5) - np.identity(5) # Adjancency Matrix
+        A = np.ones(6) - np.identity(6) # Adjancency Matrix
         
-        self.X = np.array([ [self.x1], [self.x3], [self.x4], [self.x5], [self.x6] ]) #6x1
-        self.Y = np.array([ [self.y1], [self.y3], [self.y4], [self.y5], [self.y6] ]) #6x1
+        self.X = np.array([ [self.x1], [self.x2], [self.x3], [self.x4], [self.x5], [self.x6] ]) #6x1
+        self.Y = np.array([ [self.y1], [self.x2], [self.y3], [self.y4], [self.y5], [self.y6] ]) #6x1
         
-        ux = np.zeros((5,1)) # 6x1
-        uy = np.zeros((5,1)) # 6x1
+        ux = np.zeros((6,1)) # 6x1
+        uy = np.zeros((6,1)) # 6x1
         
                     
-        for i in range(1,6):
-            for j in range(1,6):
+        for i in range(1,7):
+            for j in range(1,7):
                 ux[i-1] += -(A[i-1][j-1])*(self.X[i-1]-self.X[j-1]) # 1x1 each
                 uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
             
         
         u1 = np.array([ [float(ux[0])], [float(uy[0])] ]) # 2x1
-        # u2 = np.array([ [float(ux[0])], [float(uy[0])] ]) # 2x1
-        u3 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
-        u4 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
-        u5 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
-        u6 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
+        u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
+        u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
+        u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
+        u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
+        u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1
         
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
             
@@ -212,10 +218,10 @@ class MinimalPublisher(Node):
         R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
         S1 = np.dot(np.dot(G1, R1), u1) #2x1
         
-        # S2 = np.array([[self.v2], [self.w2]]) #2x1
-        # G2 = np.array([[1,0], [0,1/L]]) #2x2
-        # R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
-        # S2 = np.dot(np.dot(G2, R2), u2) # 2x1
+        S2 = np.array([[self.v2], [self.w2]]) #2x1
+        G2 = np.array([[1,0], [0,1/L]]) #2x2
+        R2 = np.array([[math.cos(self.Theta2),math.sin(self.Theta2)],[-math.sin(self.Theta2),math.cos(self.Theta2)]]) #2x2
+        S2 = np.dot(np.dot(G2, R2), u2) # 2x1
         
         S3 = np.array([[self.v3], [self.w3]]) #2x1
         G3 = np.array([[1,0], [0,1/L]]) #2x2
@@ -244,7 +250,7 @@ class MinimalPublisher(Node):
         Di = np.linalg.inv(D) #2x2
         
         Speed_L1 = np.array([[self.vL1], [self.vR1]]) # Vector 2x1 for Speed of Robot 1
-        #Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2 
+        Speed_L2 = np.array([[self.vL2], [self.vR2]]) # Vector 2x1 for Speed of Robot 2 
         Speed_L3 = np.array([[self.vL3], [self.vR3]]) # Vector 2x1 for Speed of Robot 3
         Speed_L4 = np.array([[self.vL4], [self.vR4]]) # Vector 2x1 for Speed of Robot 4
         Speed_L5 = np.array([[self.vL5], [self.vR5]]) # Vector 2x1 for Speed of Robot 5
@@ -252,35 +258,136 @@ class MinimalPublisher(Node):
         
         
         M1 = np.array([[S1[0]],[S1[1]]]).reshape(2,1) #2x1
-        #M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
+        M2 = np.array([[S2[0]],[S2[1]]]).reshape(2,1) #2x1
         M3 = np.array([[S3[0]],[S3[1]]]).reshape(2,1) #2x1
         M4 = np.array([[S4[0]],[S4[1]]]).reshape(2,1) #2x1
         M5 = np.array([[S5[0]],[S5[1]]]).reshape(2,1) #2x1
         M6 = np.array([[S6[0]],[S6[1]]]).reshape(2,1) #2x1
         
         Speed_L1 = np.dot(Di, M1) # 2x1 (VL1, VR1)
-        #Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
+        Speed_L2 = np.dot(Di, M2) # 2x1 (VL2, VR2)
         Speed_L3 = np.dot(Di, M3) # 2x1 (VL3, VR3)
         Speed_L4 = np.dot(Di, M4) # 2x1 (VL4, VR4)
         Speed_L5 = np.dot(Di, M5) # 2x1 (VL5, VR5)
         Speed_L6 = np.dot(Di, M6) # 2x1 (VL6, VR6)
-        print(" Velocity of Robot 6", Speed_L6)
+        #print(" Velocity of Robot 6", Speed_L6)
         
         
         VL1 = float(Speed_L1[0])
         VR1 = float(Speed_L1[1])
-        #VL2 = float(Speed_L2[0])
-        #VR2 = float(Speed_L2[1])
+        VL2 = float(Speed_L2[0])
+        VR2 = float(Speed_L2[1])
         VL3 = float(Speed_L3[0])
         VR3 = float(Speed_L3[1])
         VL4 = float(Speed_L4[0])
         VR4 = float(Speed_L4[1])
         VL5 = float(Speed_L5[0])
         VR5 = float(Speed_L5[1])        
-        VL6 = 0.6*float(Speed_L6[0])
-        VR6 = 0.6*float(Speed_L6[1])
+        VL6 = float(Speed_L6[0])
+        VR6 = float(Speed_L6[1])
         
-        # " Publish Speed Commands to Robot 1 "
+        
+        print(" REAL VL2", VL2)
+        print("REAL VR2", VR2)        
+        
+        
+        " Normalizing Speed Values: "
+
+        # Robot 1:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(VL1) > self.VMax:
+            self.alpha = self.VMax / abs(VL1)
+            
+        if abs(VR6) > self.VMax:
+            self.beta = self.VMax / abs(VR1)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        VL1 = self.gamma * VL1
+        VR1 = self.gamma * VR1 
+        
+        # Robot 2:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(VL2) > self.VMax:
+            self.alpha = self.VMax / abs(VL2)
+            
+        if abs(VR2) > self.VMax:
+            self.beta = self.VMax / abs(VR2)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        VL2 = self.gamma * VL2
+        VR2 = self.gamma * VR2         
+        
+        print(" Normalized VL2", VL2)
+        print("Normalized VR2", VR2)
+        
+        # Robot 3:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(VL3) > self.VMax:
+            self.alpha = self.VMax / abs(VL3)
+            
+        if abs(VR3) > self.VMax:
+            self.beta = self.VMax / abs(VR3)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        VL3 = self.gamma * VL3
+        VR3 = self.gamma * VR3 
+        
+        # Robot 4:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(VL4) > self.VMax:
+            self.alpha = self.VMax / abs(VL4)
+            
+        if abs(VR4) > self.VMax:
+            self.beta = self.VMax / abs(VR4)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        VL4 = self.gamma * VL4
+        VR4 = self.gamma * VR4         
+        
+        # Robot 5:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(VL5) > self.VMax:
+            self.alpha = self.VMax / abs(VL5)
+            
+        if abs(VR5) > self.VMax:
+            self.beta = self.VMax / abs(VR5)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        VL5 = self.gamma * VL5
+        VR5 = self.gamma * VR5      
+        
+        # Robot 6:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(VL6) > self.VMax:
+            self.alpha = self.VMax / abs(VL6)
+            
+        if abs(VR6) > self.VMax:
+            self.beta = self.VMax / abs(VR6)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        VL6 = self.gamma * VL6
+        VR6 = self.gamma * VR6            
+    
+        
+        " Publish Speed Commands to Robot 1 "
         
         msgl1 = Float32()    
         msgr1 = Float32()
@@ -293,12 +400,12 @@ class MinimalPublisher(Node):
         
         " Publish Speed Commands to Robot 2 "
         
-        # msgl2 = Float32()
-        # msgr2 = Float32()
-        # msgl2.data = VL2
-        # msgr2.data = VR2
-        # self.publisher_l2.publish(msgl2)
-        # self.publisher_r2.publish(msgr2)
+        msgl2 = Float32()
+        msgr2 = Float32()
+        msgl2.data = VL2
+        msgr2.data = VR2
+        self.publisher_l2.publish(msgl2)
+        self.publisher_r2.publish(msgr2)
 
         " Publish Speed Commands to Robot 3 "
         
@@ -329,7 +436,7 @@ class MinimalPublisher(Node):
         self.publisher_r5.publish(msgr5)        
         
         
-        # " Publish Speed Commands to Robot 6 "
+        " Publish Speed Commands to Robot 6 "
         
         msgl6 = Float32()
         msgr6 = Float32()

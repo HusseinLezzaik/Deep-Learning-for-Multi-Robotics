@@ -179,8 +179,9 @@ class MinimalPublisherGym(MinimalPublisher):
         self.w6 = 0
         self.vL6 = 0
         self.vR6 = 0
+
         
-        
+    
             
     def listener_callback(self, msg):
         
@@ -313,6 +314,12 @@ class MobileRobotVrepEnv(gym.Env):
         
         self.scene = 0 # Nb of scene iteration
 
+        " Speed Normalization Factors "
+        self.VMax = 3
+        self.alpha = 1
+        self.beta = 1
+        self.gamma = 1
+
         self.LAST_UPDATED_TIME = time.time()
         
         " Distance at which to fail the episode "
@@ -375,7 +382,6 @@ class MobileRobotVrepEnv(gym.Env):
             self.mpg.w1 = 1.0
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
-        #print("Here is u2:" ,u2)
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
         u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
         u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
@@ -452,6 +458,98 @@ class MobileRobotVrepEnv(gym.Env):
         self.mpg.VL6 = float(Speed_L6[0])
         self.mpg.VR6 = float(Speed_L6[1])        
         
+        " Normalizing Speed Values: "
+
+        # Robot 1:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL1) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL1)
+            
+        if abs(self.mpg.VR6) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR1)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL1 = self.gamma * self.mpg.VL1
+        self.mpg.VR1 = self.gamma * self.mpg.VR1 
+        
+        # Robot 2:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL2) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL2)
+            
+        if abs(self.mpg.VR2) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR2)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL2 = self.gamma * self.mpg.VL2
+        self.mpg.VR2 = self.gamma * self.mpg.VR2         
+        
+        
+        # Robot 3:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL3) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL3)
+            
+        if abs(self.mpg.VR3) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR3)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL3 = self.gamma * self.mpg.VL3
+        self.mpg.VR3 = self.gamma * self.mpg.VR3 
+        
+        # Robot 4:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL4) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL4)
+            
+        if abs(self.mpg.VR4) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR4)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL4 = self.gamma * self.mpg.VL4
+        self.mpg.VR4 = self.gamma * self.mpg.VR4         
+        
+        # Robot 5:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL5) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL5)
+            
+        if abs(self.mpg.VR5) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR5)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL5 = self.gamma * self.mpg.VL5
+        self.mpg.VR5 = self.gamma * self.mpg.VR5      
+        
+        # Robot 6:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL6) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL6)
+            
+        if abs(self.mpg.VR6) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR6)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL6 = self.gamma * self.mpg.VL6
+        self.mpg.VR6 = self.gamma * self.mpg.VR6  
         
         Mx = np.zeros((6,1)) # 6x1
         My = np.zeros((6,1)) # 6x1
