@@ -42,8 +42,6 @@ from torch.nn import ReLU
 env = MobileRobotVrepEnv()
 
 torch.set_default_tensor_type('torch.cuda.FloatTensor')
-# if gpu is to be used
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 device = torch.device("cuda")
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
@@ -164,10 +162,6 @@ EPS_END = 0.05
 EPS_DECAY = 200
 TARGET_UPDATE = 1
 
-
-# Get number of actions from gym action space
-#n_actions = env.action_space.n
-
 policy_net = DQN().to(device).double()
 target_net = DQN().to(device).double()
 target_net.load_state_dict(policy_net.state_dict())
@@ -242,9 +236,7 @@ for i_episode in range(num_episodes):
         next_state, reward, done, _ = env.step(action_np)
         reward = torch.tensor([reward], device=device)
 
-        # Store the transition in memory
-        # action = torch.tensor([action], device=device)
-        
+        # Store the transition in memory        
         action = torch.tensor(action, device=device, dtype=torch.long)
         memory.push(state, action, next_state, reward)
 
@@ -265,7 +257,7 @@ for i_episode in range(num_episodes):
 
 FILE = "model.pth"
 torch.save(target_net.state_dict(), FILE)
-print('Training is Complete')
+print('Training the Q-Learning Model is Complete')
 env.render()
 env.close()
 plt.ioff()

@@ -5,16 +5,14 @@ Defining Class of custom environment for V-Rep
 @author: hussein
 """
 
-# import vrep_env
-# from vrep_env import vrep
 import sys 
 import os
 sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning"))
 sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/vrep_env"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/examples"))
+sys.path.append(os.path.abspath("/home/hussein/Desktop/Deep-Learning-for-Multi-Robotics/Reinforcement Learning/examples/envs"))
 
 import os
-# vrep_scenes_path = os.environ['/home/hussein/Desktop/Multi-agent-path-planning/Reinforcement Learning/examples/scenes']
-
 import torch
 import rclpy
 from rclpy.node import Node
@@ -33,8 +31,8 @@ import time
 L = 0.0975 # Pioneer Robot Parameter
 d = 0.109561 # Pioneer Robot Parameter
 
-#L = 1 # Parameter of BubbleRob
-#d = 0.5 # Parameter of BubbleRob
+# L = 1 # Parameter of BubbleRob
+# d = 0.5 # Parameter of BubbleRob
 A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
 
 ux = np.zeros((6,1)) # 6x1
@@ -89,7 +87,6 @@ Actions:
 
 class MinimalPublisherGym(MinimalPublisher):
     def __init__(self):
-        #vrep_env.VrepEnv.__init__(self, server_addr, server_port, scene_path)
         super().__init__()
         self.publisher_l1 = self.create_publisher(Float32, '/leftMotorSpeedrobot1', 0) #Change according to topic in child script,String to Float32
         self.publisher_r1 = self.create_publisher(Float32, '/rightMotorSpeedrobot1',0) #Change according to topic in child script,String to Float32
@@ -319,6 +316,12 @@ class MobileRobotVrepEnv(gym.Env):
         
         self.scene = 0 # Nb of scene iteration
 
+        " Speed Normalization Factors "
+        self.VMax = 3
+        self.alpha = 1
+        self.beta = 1
+        self.gamma = 1
+
         self.LAST_UPDATED_TIME = time.time()
         
         " Distance at which to fail the episode "
@@ -353,8 +356,6 @@ class MobileRobotVrepEnv(gym.Env):
         
         " Distance Threshold "
         self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
-        #print(self.distance)
-        #print(self.mpg.x1)
         
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
@@ -383,8 +384,6 @@ class MobileRobotVrepEnv(gym.Env):
             self.mpg.w1 = 1.0
 
 
-        print("---------- Action of Robot 1 -------------------", action)
-
         number_steps = 10
         delta_time = 0.1
         
@@ -395,7 +394,7 @@ class MobileRobotVrepEnv(gym.Env):
         robot5_current_state = np.array([ [self.mpg.x5], [self.mpg.y5], [self.mpg.Theta5] ])
         robot6_current_state = np.array([ [self.mpg.x6], [self.mpg.y6], [self.mpg.Theta6] ])
         
-        robot1_current_action = np.array([ [self.mpg.v1], [self.mpg.w1] ])
+        robot1_current_action = np.array([[self.mpg.v1], [self.mpg.w1]])
         robot2_current_action = np.array([[self.mpg.v2], [self.mpg.w2]])
         robot3_current_action = np.array([[self.mpg.v3], [self.mpg.w3]])
         robot4_current_action = np.array([[self.mpg.v4], [self.mpg.w4]])
@@ -408,7 +407,6 @@ class MobileRobotVrepEnv(gym.Env):
         observability_gramian = np.zeros([18,18]) # 18x18 of 0's
         
         for i in range(1, number_steps):
-            # best_action = something_computed_from Q-learning
             
             # Euler Integrator Implementation for Each Robot:
                 
@@ -480,19 +478,6 @@ class MobileRobotVrepEnv(gym.Env):
             robot4_current_state = robot4_new_state
             robot5_current_state = robot5_new_state
             robot6_current_state = robot6_new_state
-
-
-
-        #print(" ---- ACTION ZERO ---:")
-        #print(action[0])
-        #print(" -------- V1 VALUE ------")
-        #print(self.mpg.v1)
-
-    
-        #print(" ---- ACTION ONE ---:")
-        #print(action[1])
-        #print(" -------- W1 Value ------")
-        #print(self.mpg.w1)
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
@@ -505,9 +490,6 @@ class MobileRobotVrepEnv(gym.Env):
         
         
         S1 = np.array([[self.mpg.v1], [self.mpg.w1]]) #2x1
-        # G1 = np.array([[1,0], [0,1/L]]) #2x2
-        # R1 = np.array([[math.cos(self.Theta1),math.sin(self.Theta1)],[-math.sin(self.Theta1),math.cos(self.Theta1)]]) #2x2
-        # S1 = np.dot(np.dot(G1, R1), u1) #2x1
 
         S2 = np.array([[self.mpg.v2], [self.mpg.w2]]) #2x1
         G2 = np.array([[1,0], [0,1/L]]) #2x2
@@ -573,7 +555,99 @@ class MobileRobotVrepEnv(gym.Env):
         self.mpg.VR5 = float(Speed_L5[1])        
         self.mpg.VL6 = float(Speed_L6[0])
         self.mpg.VR6 = float(Speed_L6[1])        
+
+        " Normalizing Speed Values: "
+
+        # Robot 1:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL1) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL1)
+            
+        if abs(self.mpg.VR6) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR1)
+            
+        self.gamma = min(self.alpha, self.beta)
         
+        self.mpg.VL1 = self.gamma * self.mpg.VL1
+        self.mpg.VR1 = self.gamma * self.mpg.VR1 
+        
+        # Robot 2:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL2) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL2)
+            
+        if abs(self.mpg.VR2) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR2)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL2 = self.gamma * self.mpg.VL2
+        self.mpg.VR2 = self.gamma * self.mpg.VR2         
+        
+        
+        # Robot 3:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL3) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL3)
+            
+        if abs(self.mpg.VR3) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR3)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL3 = self.gamma * self.mpg.VL3
+        self.mpg.VR3 = self.gamma * self.mpg.VR3 
+        
+        # Robot 4:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL4) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL4)
+            
+        if abs(self.mpg.VR4) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR4)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL4 = self.gamma * self.mpg.VL4
+        self.mpg.VR4 = self.gamma * self.mpg.VR4         
+        
+        # Robot 5:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL5) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL5)
+            
+        if abs(self.mpg.VR5) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR5)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL5 = self.gamma * self.mpg.VL5
+        self.mpg.VR5 = self.gamma * self.mpg.VR5      
+        
+        # Robot 6:
+        self.alpha = 1
+        self.beta = 1            
+            
+        if abs(self.mpg.VL6) > self.VMax:
+            self.alpha = self.VMax / abs(self.mpg.VL6)
+            
+        if abs(self.mpg.VR6) > self.VMax:
+            self.beta = self.VMax / abs(self.mpg.VR6)
+            
+        self.gamma = min(self.alpha, self.beta)
+        
+        self.mpg.VL6 = self.gamma * self.mpg.VL6
+        self.mpg.VR6 = self.gamma * self.mpg.VR6      
         
         Mx = np.zeros((6,1)) # 6x1
         My = np.zeros((6,1)) # 6x1
@@ -604,21 +678,6 @@ class MobileRobotVrepEnv(gym.Env):
                 
         self.mpg.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         self.mpg.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
-        # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
-        
-        # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
-        # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1         
         
         observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
         
@@ -712,7 +771,6 @@ class MobileRobotVrepEnv(gym.Env):
         Loc2[1] = scenes[self.scene][4]
         
         # Check if robot1 is close to any other robot (except robot2)
-        #for i in range(1,4):
         too_close_dist = 0.55
         ErrLoc3,Loc3 =sim.simxGetObjectPosition(clientID, LocM3, -1, sim.simx_opmode_oneshot_wait)  
         if (not ErrLocM3==sim.simx_return_ok):
@@ -727,12 +785,7 @@ class MobileRobotVrepEnv(gym.Env):
         if (not ErrLocM6==sim.simx_return_ok):
             pass 
         exit_cond = 0
-        #print(" -------- ELEMENT 1 ------------")
-        #print(Loc1)
-        #print(" --------- ELEMENT 2 -----------")
-        #print(Loc3)
         while exit_cond == 0:
-            #print(Loc1)
             distr13 = np.sqrt(pow(Loc1[0] - Loc3[0],2) + pow(Loc1[1] - Loc3[1],2))
             distr14 = np.sqrt(pow(Loc1[0] - Loc4[0],2) + pow(Loc1[1] - Loc4[1],2))
             distr15 = np.sqrt(pow(Loc1[0] - Loc5[0],2) + pow(Loc1[1] - Loc5[1],2))
@@ -746,7 +799,7 @@ class MobileRobotVrepEnv(gym.Env):
             else:
                 exit_cond = 1
                 
-        # In Loc1 there is here a valid inizialization of robot1
+        # In Loc1 there is here a valid initialization of robot1
         scenes[self.scene][0] = Loc1[0]
         scenes[self.scene][1] = Loc1[1]
         
@@ -768,7 +821,7 @@ class MobileRobotVrepEnv(gym.Env):
             else:
                 exit_cond = 1
                 
-        # In Loc2 there is here a valid inizialization of robot2
+        # In Loc2 there is here a valid initialization of robot2
         scenes[self.scene][3] = Loc2[0]
         scenes[self.scene][4] = Loc2[1]
         
@@ -776,14 +829,6 @@ class MobileRobotVrepEnv(gym.Env):
 
         sim.simxSetObjectPosition(clientID, LocM1, -1, Loc1, sim.simx_opmode_oneshot)
         sim.simxSetObjectPosition(clientID, LocM2, -1, Loc2, sim.simx_opmode_oneshot)
-
-        # Print Positions and Orientation
-        
-        #print("Robot1 Position:", Loc1)
-        #print("Robot2 Position:", Loc2)
-    
-        #print("Robot1 Orientation:", OriRobo1)
-        #print("Robot2 Orientation:", OriRobo2)
                 
         # Nb of Scene Counter
         self.scene += 1
@@ -829,36 +874,9 @@ class MobileRobotVrepEnv(gym.Env):
         self.mpg.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         self.mpg.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        # self.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
-        # self.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
-        
-        # self.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
-        # self.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
-        
-        # self.Phix6 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx5 ) / 5 # 1x1
-        # self.Phiy6 = ( My1 + My2 + My3 + My4 + My5 ) / 5 # 1x1          
-        
         observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
                                     
         return observation_DQN
     
     def render(self):
         pass
-    
-    
-# def main(args=None):
-#     rclpy.init(args=args)
-#     minimal_publisher = MinimalPublisherGym()
-#     time.sleep(5)
-#     rclpy.spin(minimal_publisher)
-#     minimal_publisher.destroy_node()
-#     rclpy.shutdown()
-
-# if __name__ == '__main__':
-#     main()    

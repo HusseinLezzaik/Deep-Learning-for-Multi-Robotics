@@ -33,8 +33,8 @@ import time
 L = 0.0975 # Pioneer Robot Parameters
 d = 0.109561 # Pioneer Robot Parameters
 
-#L = 1 # Parameter of BubbleRob
-#d = 0.5 # Parameter of BubbleRob
+# L = 1 # Parameter of BubbleRob
+# d = 0.5 # Parameter of BubbleRob
 
 A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
 
@@ -178,9 +178,7 @@ class MinimalPublisherGym(MinimalPublisher):
         self.v6 = 0
         self.w6 = 0
         self.vL6 = 0
-        self.vR6 = 0
-
-        
+        self.vR6 = 0        
     
             
     def listener_callback(self, msg):
@@ -590,6 +588,7 @@ class MobileRobotVrepEnv(gym.Env):
         done = bool(done)
         squared_distance = pow((self.mpg.x1 - self.mpg.x2), 2) + pow((self.mpg.y1 - self.mpg.y2), 2) + pow((self.mpg.x1 - self.mpg.x3), 2) + pow((self.mpg.y1 - self.mpg.y3), 2) + pow((self.mpg.x1 - self.mpg.x4), 2) + pow((self.mpg.y1 - self.mpg.y4), 2) + pow((self.mpg.x1 - self.mpg.x5), 2) + pow((self.mpg.y1 - self.mpg.y5), 2) + pow((self.mpg.x1 - self.mpg.x6), 2) + pow((self.mpg.y1 - self.mpg.y6), 2)
         reward = -squared_distance
+        
         print("Reward Function:", reward)
         
         # with open('plot_reward.csv', 'a', newline='') as f:
@@ -616,10 +615,10 @@ class MobileRobotVrepEnv(gym.Env):
     def reset(self):
         observation_DQN = np.array([0, 0, 0, 0])
 
-        print(" ----------------- Episode ------------------------- ", self.scene)
+        print(" ----------------- Episode Number ------------------------- ", self.scene)
         
         # Stop Simulation
-        print("Stop Simulation")
+        print("Stop the Simulation")
         sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)  
 
         # Retrieve some handles:
@@ -715,7 +714,7 @@ class MobileRobotVrepEnv(gym.Env):
                 Loc1z = Loc1[2]
                 Loc1 = np.random.uniform(-2,2,size=(1,3))[0]
                 Loc1[2] = Loc1z
-                print(" Robot 1 is close!")
+                print(" Robot 1 is so close!")
             else:
                 exit_cond = 1
                 
@@ -737,7 +736,7 @@ class MobileRobotVrepEnv(gym.Env):
                 Loc2z = Loc2[2]
                 Loc2 = np.random.uniform(-2,2,size=(1,3))[0]
                 Loc2[2] = Loc2z
-                print(" Robot 2 is close!")
+                print(" Robot 2 is so close!")
             else:
                 exit_cond = 1
                 
