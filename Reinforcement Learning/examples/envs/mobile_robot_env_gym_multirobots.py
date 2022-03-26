@@ -329,14 +329,17 @@ class MobileRobotVrepEnv(gym.Env):
                 
         " Observation & Action Space "
         # Define Action Space
-            
-        self.action_space = spaces.MultiDiscrete([2,2])               
+        
+        # Double Check this:
+        self.action_space = spaces.MultiDiscrete([2 ,2, 2, 2, 2 ,2, 2, 2, 2 ,2, 2, 2])               
         
         # Define Observation Space
-        high_observation = np.array([4.8,
-                                     4.8,
-                                     4.8,
-                                     4.8],
+        high_observation = np.array([4.8, 4.8, 4.8, 4.8,
+                                     4.8, 4.8, 4.8, 4.8,
+                                     4.8, 4.8, 4.8, 4.8,
+                                     4.8, 4.8, 4.8, 4.8,
+                                     4.8, 4.8, 4.8, 4.8,
+                                     4.8, 4.8, 4.8, 4.8],
                                     dtype=np.float32)
         
         self.observation_space = spaces.Box(-high_observation, -high_observation, dtype=np.float32)        
@@ -353,27 +356,8 @@ class MobileRobotVrepEnv(gym.Env):
     def step(self, action):
         
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
-        
-        " Distance Threshold "
-        self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
-        
-        " Use Adjacency Matrix to find Mxy and Phi's "                
-        
-        A = np.ones(6) - np.identity(6) # Adjancency Matrix
-
-        self.X = np.array([ [self.mpg.x1], [self.mpg.x2], [self.mpg.x3], [self.mpg.x4], [self.mpg.x5], [self.mpg.x6]  ]) #6x1
-        self.Y = np.array([ [self.mpg.y1], [self.mpg.y2], [self.mpg.y3], [self.mpg.y4], [self.mpg.y5], [self.mpg.y6]  ]) #6x1
-
-        ux = np.zeros((6,1)) # 6x1
-        uy = np.zeros((6,1)) # 6x1
-
-            
-        for i in range(1,7):
-            for j in range(1,7):
-                ux[i-1] += -(A[i-1][j-1])*(self.X[i-1]-self.X[j-1]) # 1x1 each
-                uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
     
-        # Manage 4 directions (Up/Down/Left/Right)
+        # Robot 1 Manage 4 directions (Up/Down/Left/Right)
         if action[0] == 0.0:
             self.mpg.v1 = -1.0
         elif action[0] == 1.0:
@@ -382,6 +366,56 @@ class MobileRobotVrepEnv(gym.Env):
             self.mpg.w1 = -1.0
         elif action[1] == 1.0:
             self.mpg.w1 = 1.0
+
+        # Robot 2 Manage 4 directions (Up/Down/Left/Right)
+        if action[2] == 0.0:
+            self.mpg.v2 = -1.0
+        elif action[2] == 1.0:
+            self.mpg.v2 = 1.0
+        elif action[3] == 0.0:
+            self.mpg.w2 = -1.0
+        elif action[3] == 1.0:
+            self.mpg.w2 = 1.0
+
+        # Robot 3 Manage 4 directions (Up/Down/Left/Right)
+        if action[4] == 0.0:
+            self.mpg.v3 = -1.0
+        elif action[4] == 1.0:
+            self.mpg.v3 = 1.0
+        elif action[5] == 0.0:
+            self.mpg.w3 = -1.0
+        elif action[5] == 1.0:
+            self.mpg.w3 = 1.0
+
+        # Robot 4 Manage 4 directions (Up/Down/Left/Right)
+        if action[6] == 0.0:
+            self.mpg.v4 = -1.0
+        elif action[6] == 1.0:
+            self.mpg.v4 = 1.0
+        elif action[7] == 0.0:
+            self.mpg.w4 = -1.0
+        elif action[7] == 1.0:
+            self.mpg.w4 = 1.0
+
+        # Robot 5 Manage 4 directions (Up/Down/Left/Right)
+        if action[8] == 0.0:
+            self.mpg.v5 = -1.0
+        elif action[8] == 1.0:
+            self.mpg.v5 = 1.0
+        elif action[9] == 0.0:
+            self.mpg.w5 = -1.0
+        elif action[9] == 1.0:
+            self.mpg.w5 = 1.0
+
+        # Robot 6 Manage 4 directions (Up/Down/Left/Right)
+        if action[10] == 0.0:
+            self.mpg.v6 = -1.0
+        elif action[10] == 1.0:
+            self.mpg.v6 = 1.0
+        elif action[11] == 0.0:
+            self.mpg.w6 = -1.0
+        elif action[11] == 1.0:
+            self.mpg.w6 = 1.0
 
 
         number_steps = 10
@@ -478,13 +512,7 @@ class MobileRobotVrepEnv(gym.Env):
             robot4_current_state = robot4_new_state
             robot5_current_state = robot5_new_state
             robot6_current_state = robot6_new_state
-    
-        u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
-        u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
-        u4 = np.array([ [float(ux[3])], [float(uy[3])] ]) # 2x1
-        u5 = np.array([ [float(ux[4])], [float(uy[4])] ]) # 2x1
-        u6 = np.array([ [float(ux[5])], [float(uy[5])] ]) # 2x1        
-        
+
         
         " Calculate V1/W1, V2/W2, V3/W3, V4/W4, V5/W5, V6/W6 "
         
@@ -492,29 +520,14 @@ class MobileRobotVrepEnv(gym.Env):
         S1 = np.array([[self.mpg.v1], [self.mpg.w1]]) #2x1
 
         S2 = np.array([[self.mpg.v2], [self.mpg.w2]]) #2x1
-        G2 = np.array([[1,0], [0,1/L]]) #2x2
-        R2 = np.array([[math.cos(self.mpg.Theta2),math.sin(self.mpg.Theta2)],[-math.sin(self.mpg.Theta2),math.cos(self.mpg.Theta2)]]) #2x2
-        S2 = np.dot(np.dot(G2, R2), u2) # 2x1
 
         S3 = np.array([[self.mpg.v3], [self.mpg.w3]]) #2x1
-        G3 = np.array([[1,0], [0,1/L]]) #2x2
-        R3 = np.array([[math.cos(self.mpg.Theta3),math.sin(self.mpg.Theta3)],[-math.sin(self.mpg.Theta3),math.cos(self.mpg.Theta3)]]) #2x2
-        S3 = np.dot(np.dot(G3, R3), u3) #2x1        
-
+      
         S4 = np.array([[self.mpg.v4], [self.mpg.w4]]) #2x1
-        G4 = np.array([[1,0], [0,1/L]]) #2x2
-        R4 = np.array([[math.cos(self.mpg.Theta4),math.sin(self.mpg.Theta4)],[-math.sin(self.mpg.Theta4),math.cos(self.mpg.Theta4)]]) #2x2
-        S4 = np.dot(np.dot(G4, R4), u4) #2x1        
-
+       
         S5 = np.array([[self.mpg.v5], [self.mpg.w5]]) #2x1
-        G5 = np.array([[1,0], [0,1/L]]) #2x2
-        R5 = np.array([[math.cos(self.mpg.Theta5),math.sin(self.mpg.Theta5)],[-math.sin(self.mpg.Theta5),math.cos(self.mpg.Theta5)]]) #2x2
-        S5 = np.dot(np.dot(G5, R5), u5) #2x1
 
-        S6 = np.array([[self.mpg.v6], [self.mpg.w6]]) #2x1
-        G6 = np.array([[1,0], [0,1/L]]) #2x2
-        R6 = np.array([[math.cos(self.mpg.Theta6),math.sin(self.mpg.Theta6)],[-math.sin(self.mpg.Theta6),math.cos(self.mpg.Theta6)]]) #2x2
-        S6 = np.dot(np.dot(G6, R6), u6) #2x1        
+        S6 = np.array([[self.mpg.v6], [self.mpg.w6]]) #2x1    
                 
         
         " Calculate VL1/VR1, VL2/VR2, VL3/VR3, VL4/VR4, VL5/VR5, VL6/VR6 "
@@ -651,6 +664,11 @@ class MobileRobotVrepEnv(gym.Env):
         
         Mx = np.zeros((6,1)) # 6x1
         My = np.zeros((6,1)) # 6x1
+
+        A = np.ones(6) - np.identity(6) # Adjancency Matrix
+
+        self.X = np.array([ [self.mpg.x1], [self.mpg.x2], [self.mpg.x3], [self.mpg.x4], [self.mpg.x5], [self.mpg.x6]  ]) #6x1
+        self.Y = np.array([ [self.mpg.y1], [self.mpg.y2], [self.mpg.y3], [self.mpg.y4], [self.mpg.y5], [self.mpg.y6]  ]) #6x1
                 
         for i in range(1,7):
             for j in range(1,7):
@@ -678,8 +696,24 @@ class MobileRobotVrepEnv(gym.Env):
                 
         self.mpg.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         self.mpg.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+
+        self.mpg.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
+        self.mpg.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1        
+
+        self.mpg.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+
+        self.mpg.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+        
+        self.mpg.Phix6 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx1 ) / 5 # 1x1
+        self.mpg.Phiy6 = ( My2 + My3 + My4 + My5 + My1 ) / 5 # 1x1   
+
+        
+        observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1, Mx2, My2, self.mpg.Phix2, self.mpg.Phiy2, Mx3, My3, self.mpg.Phix3, self.mpg.Phiy3, Mx4, My4, self.mpg.Phix4, self.mpg.Phiy4, Mx5, My5, self.mpg.Phix5, self.mpg.Phiy5, Mx6, My6, self.mpg.Phix6, self.mpg.Phiy6], dtype=np.double))
         
         CURRENT_TIME = time.time()
         DIFFERENT_TIME = CURRENT_TIME - self.LAST_UPDATED_TIME
@@ -695,7 +729,7 @@ class MobileRobotVrepEnv(gym.Env):
        self.LAST_UPDATED_TIME = time.time()
        
     def reset(self):
-        observation_DQN = np.array([0, 0, 0, 0])
+        observation_DQN = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
         print(" ----------------- Episode ------------------------- ", self.scene)
         
@@ -874,7 +908,22 @@ class MobileRobotVrepEnv(gym.Env):
         self.mpg.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         self.mpg.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
+        self.mpg.Phix2 = ( Mx1 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy2 = ( My1 + My3 + My4 + My5 + My6 ) / 5 # 1x1
+        
+        self.mpg.Phix3 = ( Mx1 + Mx2 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy3 = ( My1 + My2 + My4 + My5 + My6 ) / 5 # 1x1        
+
+        self.mpg.Phix4 = ( Mx1 + Mx2 + Mx3 + Mx5 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy4 = ( My1 + My2 + My3 + My5 + My6 ) / 5 # 1x1
+
+        self.mpg.Phix5 = ( Mx1 + Mx2 + Mx3 + Mx4 + Mx6 ) / 5 # 1x1
+        self.mpg.Phiy5 = ( My1 + My2 + My3 + My4 + My6 ) / 5 # 1x1
+        
+        self.mpg.Phix6 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx1 ) / 5 # 1x1
+        self.mpg.Phiy6 = ( My2 + My3 + My4 + My5 + My1 ) / 5 # 1x1   
+
+        observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1, Mx2, My2, self.mpg.Phix2, self.mpg.Phiy2, Mx3, My3, self.mpg.Phix3, self.mpg.Phiy3, Mx4, My4, self.mpg.Phix4, self.mpg.Phiy4, Mx5, My5, self.mpg.Phix5, self.mpg.Phiy5, Mx6, My6, self.mpg.Phix6, self.mpg.Phiy6], dtype=np.double))
                                     
         return observation_DQN
     

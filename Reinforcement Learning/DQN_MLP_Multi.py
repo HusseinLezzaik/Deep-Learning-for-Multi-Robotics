@@ -66,41 +66,41 @@ class DQN(Module):
     # define model elements
     def __init__(self):
         super(DQN, self).__init__()
-        
-        " Model A of Mxy "
+                
+        " Model A_1 of Mxy "
         # Inputs to hidden layer linear transformation
-        self.inputA = Linear(2, 12) # 2 inputs, 3 hidden units
-        xavier_uniform_(self.inputA.weight)
-        self.actA1 = ReLU()
+        self.inputA_1 = Linear(2, 12) # 24 inputs, 3 hidden units
+        xavier_uniform_(self.inputA_1.weight)
+        self.actA1_1 = ReLU()
         # Define Hidden Layer
-        self.hiddenA = Linear(12, 12)
-        xavier_uniform_(self.hiddenA.weight)
-        self.actA2 = ReLU() 
+        self.hiddenA_1 = Linear(12, 12)
+        xavier_uniform_(self.hiddenA_1.weight)
+        self.actA2_1 = ReLU() 
         # Output Layer 3 to 2 units
-        self.outputA = Linear(12, 2)
-        xavier_uniform_(self.outputA.weight)        
+        self.outputA_1 = Linear(12, 2)
+        xavier_uniform_(self.outputA_1.weight)        
         
-        " Model B " 
+        " Model B_1 " 
         # Inputs to hidden layer linear transformation
-        self.inputB = Linear(2, 12) # 2 inputs, 3 hidden units
-        xavier_uniform_(self.inputB.weight)
-        self.actB1 = ReLU()
+        self.inputB_1 = Linear(2, 12) # 2 inputs, 3 hidden units
+        xavier_uniform_(self.inputB_1.weight)
+        self.actB1_1 = ReLU()
         # Define Hidden Layer
-        self.hiddenB = Linear(12, 12)
-        xavier_uniform_(self.hiddenB.weight)
-        self.actB2 = ReLU() 
+        self.hiddenB_1 = Linear(12, 12)
+        xavier_uniform_(self.hiddenB_1.weight)
+        self.actB2_1 = ReLU() 
         # Output layer 3 to 2 units
-        self.outputB = Linear(12, 2)
-        xavier_uniform_(self.outputB.weight)        
+        self.outputB_1 = Linear(12, 2)
+        xavier_uniform_(self.outputB_1.weight)        
         
-        " Model E Merged "        
+        " Model E_1 Merged "        
         # Define 4x3 hidden unit
-        self.inputE = Linear(4,3)
-        xavier_uniform_(self.inputE.weight)
-        self.actE1 = ReLU()
-        # Define Output 3x2 unit        
-        self.outputE = Linear(3,2)
-        xavier_uniform_(self.outputE.weight)
+        self.inputE_1 = Linear(4,3)
+        xavier_uniform_(self.inputE_1.weight)
+        self.actE1_1 = ReLU()
+        # Define Output 3x12 unit        
+        self.outputE_1 = Linear(3,2)
+        xavier_uniform_(self.outputE_1.weight)
 
     # forward propagate input
     def forward(self, inputs):
@@ -110,32 +110,32 @@ class DQN(Module):
         
         " Model A "
         # Input to first hidden layer
-        X1 = self.inputA(M)
-        X1 = self.actA1(X1)
+        X1_1 = self.inputA_1(M)
+        X1_1 = self.actA1_1(X1_1)
         # Second hidden layer
-        X1 = self.hiddenA(X1)
-        X1 = self.actA2(X1)
+        X1_1 = self.hiddenA_1(X1_1)
+        X1_1 = self.actA2_1(X1_1)
         # Final hidden layer and Output
-        X1 = self.outputA(X1)        
+        X1_1 = self.outputA_1(X1_1)        
 
         " Model B "
         # Input to first hidden layer
-        X2 = self.inputB(Phi)
-        X2 = self.actB1(X2)
+        X2_1 = self.inputB_1(Phi)
+        X2_1 = self.actB1_1(X2_1)
         # Second hidden layer
-        X2 = self.hiddenB(X2)
-        X2 = self.actB2(X2)
+        X2_1 = self.hiddenB_1(X2_1)
+        X2_1 = self.actB2_1(X2_1)
         # Final hidden layer and Output
-        X2 = self.outputB(X2)        
+        X2_1 = self.outputB_1(X2_1)        
         
         " Model E "
         # Combine Models
-        X = torch.cat((X1, X2))
+        X = torch.cat((X1_1, X2_1))
         # Define Hidden Layer
-        X = self.inputE(X)
-        X = self.actE1(X)
+        X = self.inputE_1(X)
+        X = self.actE1_1(X)
         # Output Layer
-        X = self.outputE(X)
+        X = self.outputE_1(X)
         
         if X[0]<0:
             X[0]=0.0
