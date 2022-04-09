@@ -43,6 +43,7 @@ env = MobileRobotVrepEnv()
 
 torch.set_default_tensor_type('torch.cuda.FloatTensor')
 device = torch.device("cuda")
+CUDA_LAUNCH_BLOCKING=1
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
 
@@ -140,15 +141,15 @@ class DQN(Module):
         # Output Layer
         X = self.outputE(X)
         
-        if X[0]<0:
-            X[0]=0.0
-        else:
-            X[0]=+1.0
+        # if X[0]<0:
+        #     X[0]=0.0
+        # else:
+        #     X[0]=+1.0
     
-        if X[1]<0:
-            X[1]=0.0
-        else:
-            X[1]=+1.0   
+        # if X[1]<0:
+        #     X[1]=0.0
+        # else:
+        #     X[1]=+1.0   
                         
         return X
 
@@ -167,7 +168,7 @@ target_net = DQN().to(device).double()
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
-optimizer = optim.RMSprop(policy_net.parameters(), lr=0.01)
+optimizer = optim.RMSprop(policy_net.parameters(), lr=0.01, momentum=0.9)
 memory = ReplayMemory(10000)
 
 
@@ -192,6 +193,9 @@ def optimize_model():
     non_final_next_states = torch.cat([s for s in batch.next_state
                                                 if s is not None])
     state_batch = torch.cat(batch.state)
+    # print("-------- State Batch -----------")
+    # print(state_batch[0])    
+    
     action_batch = torch.cat(batch.action)
     reward_batch = torch.cat(batch.reward)
 
@@ -199,6 +203,9 @@ def optimize_model():
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
     state_action_values = policy_net(state_batch).gather(0, action_batch)
+    policy_net_pred = policy_net(state_batch)
+    print("-------- Policy Net -----------")
+    print(policy_net_pred)
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
@@ -212,14 +219,23 @@ def optimize_model():
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
+    #  criterion = nn.MSELoss()
     loss = criterion(state_action_values, expected_state_action_values.unsqueeze(1))
+    # print("-------------- Loss Function ---------")    
+    # print(loss)
 
     # Optimize the model
     optimizer.zero_grad()
+    # print("-------------- Before ---------")    
+    # print(loss.grad)    
     loss.backward()
     for param in policy_net.parameters():
-        #print(list(policy_net.parameters()))
+        # print(list(policy_net.parameters())[0])
         param.grad.data.clamp_(-1, 1)
+        # print(" ------- CLAMp --------------")
+        # print(param.grad)
+    # print("-------------- After ---------")    
+    # print(loss.grad)        
     optimizer.step()
     
 num_episodes = 5
@@ -230,10 +246,16 @@ for i_episode in range(num_episodes):
     for t in count():
         # Select and perform an action
         action = policy_net(state.double())
-
+        # print("-------------- Current State ---------")
+        # print(state)    
+        # print(" --------------- Action from Policy Net -----------------")
+        # print(action)
         
         action_np = action.cpu().detach().numpy().astype(np.int64)
         next_state, reward, done, _ = env.step(action_np)
+        # print("-------------- Next State ---------")
+        # print(next_state)
+        
         reward = torch.tensor([reward], device=device)
 
         # Store the transition in memory        
@@ -251,7 +273,7 @@ for i_episode in range(num_episodes):
     # Update the target network, copying all weights and biases in DQN
     if i_episode % TARGET_UPDATE == 0:
         target_net.load_state_dict(policy_net.state_dict())
-        print(list(target_net.parameters()))
+        # print(list(target_net.parameters()))
         # for param in target_net.parameters():
         #     print(param)
 

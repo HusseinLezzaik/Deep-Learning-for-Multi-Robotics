@@ -46,6 +46,7 @@ sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
 N_SCENES = 1500
 scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
+CUDA_LAUNCH_BLOCKING=1
 
 def euler_from_quaternion(x, y, z, w):
         
@@ -348,11 +349,21 @@ class MobileRobotVrepEnv(gym.Env):
         
     def step(self, action):
         
+        if action[0]<0:
+            action[0]=0.0
+        else:
+            action[0]=+1.0
+    
+        if action[1]<0:
+            action[1]=0.0
+        else:
+            action[1]=+1.0          
+        
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         
         " Distance Threshold "
         self.distance = abs(self.mpg.x1 - self.mpg.x2) + abs(self.mpg.y1 - self.mpg.y2) + abs(self.mpg.x1 - self.mpg.x3) + abs(self.mpg.y1 - self.mpg.y3) + abs(self.mpg.x1 - self.mpg.x4) + abs(self.mpg.y1 - self.mpg.y4) + abs(self.mpg.x1 - self.mpg.x5) + abs(self.mpg.y1 - self.mpg.y5) + abs(self.mpg.x1 - self.mpg.x6) + abs(self.mpg.y1 - self.mpg.y6)
-        print(" Disk Distance ", self.distance)
+        # print(" Disk Distance ", self.distance)
         " Use Adjacency Matrix to find Mxy and Phi's "                
         
         A = np.ones(6) - np.identity(6) # Adjancency Matrix
@@ -362,7 +373,6 @@ class MobileRobotVrepEnv(gym.Env):
 
         ux = np.zeros((6,1)) # 6x1
         uy = np.zeros((6,1)) # 6x1
-
             
         for i in range(1,7):
             for j in range(1,7):
@@ -378,6 +388,9 @@ class MobileRobotVrepEnv(gym.Env):
             self.mpg.w1 = -1.0
         elif action[1] == 1.0:
             self.mpg.w1 = 1.0
+ 
+        # print("---------------------------Action Selected by Robot 1-------------------")   
+        # print(action)
     
         u2 = np.array([ [float(ux[1])], [float(uy[1])] ]) # 2x1
         u3 = np.array([ [float(ux[2])], [float(uy[2])] ]) # 2x1
@@ -589,7 +602,7 @@ class MobileRobotVrepEnv(gym.Env):
         squared_distance = pow((self.mpg.x1 - self.mpg.x2), 2) + pow((self.mpg.y1 - self.mpg.y2), 2) + pow((self.mpg.x1 - self.mpg.x3), 2) + pow((self.mpg.y1 - self.mpg.y3), 2) + pow((self.mpg.x1 - self.mpg.x4), 2) + pow((self.mpg.y1 - self.mpg.y4), 2) + pow((self.mpg.x1 - self.mpg.x5), 2) + pow((self.mpg.y1 - self.mpg.y5), 2) + pow((self.mpg.x1 - self.mpg.x6), 2) + pow((self.mpg.y1 - self.mpg.y6), 2)
         reward = -squared_distance
         
-        print("Reward Function:", reward)
+        # print("Reward Function:", reward)
         
         # with open('plot_reward.csv', 'a', newline='') as f:
         #     fieldnames = ['Episode', 'Reward']
