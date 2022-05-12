@@ -40,9 +40,9 @@ from torch.nn.init import xavier_uniform_
 from torch.nn import ReLU
 
 env = MobileRobotVrepEnv()
-
-torch.set_default_tensor_type('torch.cuda.FloatTensor')
-device = torch.device("cuda")
+#torch.set_default_tensor_type('torch.cuda.FloatTensor')
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 CUDA_LAUNCH_BLOCKING=1
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
@@ -251,7 +251,7 @@ for i_episode in range(num_episodes):
         # print(" --------------- Action from Policy Net -----------------")
         # print(action)
         
-        action_np = action.cpu().detach().numpy().astype(np.int64)
+        action_np = action.cpu().detach.numpy().astype(np.int64)
         next_state, reward, done, _ = env.step(action_np)
         # print("-------------- Next State ---------")
         # print(next_state)
