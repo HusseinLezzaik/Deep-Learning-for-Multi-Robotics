@@ -26,8 +26,6 @@ Our code relies on using [CoppeliaSim](https://www.coppeliarobotics.com/)  for s
 
 2.  Install dependencies:
     ```
-    conda create -n multi-agent python=3.8
-    conda activate multi-agent
     pip install -r requirements.txt
     ```
     
