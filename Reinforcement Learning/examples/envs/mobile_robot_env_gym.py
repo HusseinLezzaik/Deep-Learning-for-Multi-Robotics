@@ -807,8 +807,8 @@ class MobileRobotVrepEnv(gym.Env):
         self.mpg.Phix1 = ( Mx2 + Mx3 + Mx4 + Mx5 + Mx6 ) / 5 # 1x1
         self.mpg.Phiy1 = ( My2 + My3 + My4 + My5 + My6 ) / 5 # 1x1
         
-        #observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))        
-        observation_DQN = np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double)
+        observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))        
+        #observation_DQN = np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double)
         print("Did you Reach this Stage?")                           
         return observation_DQN
     

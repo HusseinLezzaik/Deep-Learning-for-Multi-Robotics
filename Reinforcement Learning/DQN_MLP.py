@@ -197,15 +197,18 @@ def optimize_model():
     # print(state_batch[0])    
     
     action_batch = torch.cat(batch.action)
+    # action_batch = torch.zeros(256).to(torch.int64)
+    print("Action Batch", action_batch.size())
     reward_batch = torch.cat(batch.reward)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
+    # print(policy_net(state_batch))
     state_action_values = policy_net(state_batch).gather(0, action_batch)
     policy_net_pred = policy_net(state_batch)
-    print("-------- Policy Net -----------")
-    print(policy_net_pred)
+    # print("-------- Policy Net -----------")
+    # print(policy_net_pred)
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
@@ -232,7 +235,7 @@ def optimize_model():
     for param in policy_net.parameters():
         # print(list(policy_net.parameters())[0])
         param.grad.data.clamp_(-1, 1)
-        # print(" ------- CLAMp --------------")
+        # print(" ------- CLAMP --------------")
         # print(param.grad)
     # print("-------------- After ---------")    
     # print(loss.grad)        
@@ -243,15 +246,18 @@ for i_episode in range(num_episodes):
     # Initialize the environment and state
     env.initialize_timer()
     state = env.reset()
+    print("Initial State", type(state))
     for t in count():
         # Select and perform an action
-        action = policy_net(state.double())
+        action = policy_net(state) #state.double()
+        #print(type(action))
         # print("-------------- Current State ---------")
         # print(state)    
         # print(" --------------- Action from Policy Net -----------------")
         # print(action)
-        
-        action_np = action.cpu().detach.numpy().astype(np.int64)
+        # print(type(action.cpu().detach))
+        action_np = action.cpu().detach().numpy().astype(np.int32)
+        #action_np = action.cpu().detach.numpy().astype(np.int64)
         next_state, reward, done, _ = env.step(action_np)
         # print("-------------- Next State ---------")
         # print(next_state)
@@ -260,10 +266,12 @@ for i_episode in range(num_episodes):
 
         # Store the transition in memory        
         action = torch.tensor(action, device=device, dtype=torch.long)
+        print("Action", action)
         memory.push(state, action, next_state, reward)
 
         # Move to the next state
         state = next_state
+        print("State Afterwards", type(state))
 
         # Perform one step of the optimization (on the policy network)
         optimize_model()

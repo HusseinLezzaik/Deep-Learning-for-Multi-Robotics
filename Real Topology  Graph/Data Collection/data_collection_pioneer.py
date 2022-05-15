@@ -22,8 +22,8 @@ import csv
 import sim
 import time 
 
-L = 1 # Parameter of robot
-d = 0.5 # Parameter of robot
+L = 1 # Distance between wheels
+d = 0.5 # Radius of wheels
 A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
 
 ux = np.zeros((6,1)) # 6x1
@@ -33,7 +33,7 @@ uy = np.zeros((6,1)) # 6x1
 
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
-N_SCENES = 50
+N_SCENES = 100
 scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
 
 
