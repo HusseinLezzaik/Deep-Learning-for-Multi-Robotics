@@ -15,14 +15,14 @@ from tf2_msgs.msg import TFMessage
 from std_msgs.msg import Float32
 import time
 
-L = 1
-d = 0.5
-A = np.ones(6) - np.identity(6) # Adjancency Matrix fully connected case 6x6
-#A = np.array([ [0,1,0,0,0,0], [1,0,1,0,0,0], [0,1,0,1,0,0], [0,0,1,0,1,0], [0,0,0,1,0,1], [0,0,0,0,1,0] ]) # Line Graph 6x6 for communication
-#A = np.array([ [0,1,1,0,0,0], [1,0,1,0,0,0], [1,1,0,0,0,0], [0,0,0,0,1,1], [0,0,0,1,0,1], [0,0,0,1,1,0] ]) 
-#A = np.array([ [0,1,1,0,0,0], [1,0,1,0,0,0], [1,1,0,1,0,0], [0,0,1,0,1,1], [0,0,0,1,0,1], [0,0,0,1,1,0] ]) 
+L = 1 # distance between wheels
+d = 0.5 # radius of wheels
+A = np.ones(6) - np.identity(6) # Fully Connected Graph
+#A = np.array([ [0,1,0,0,0,0], [1,0,1,0,0,0], [0,1,0,1,0,0], [0,0,1,0,1,0], [0,0,0,1,0,1], [0,0,0,0,1,0] ]) # Line Graph 
+#A = np.array([ [0,1,1,0,0,0], [1,0,1,0,0,0], [1,1,0,0,0,0], [0,0,0,0,1,1], [0,0,0,1,0,1], [0,0,0,1,1,0] ]) # Weak Graph v1
+#A = np.array([ [0,1,1,0,0,0], [1,0,1,0,0,0], [1,1,0,1,0,0], [0,0,1,0,1,1], [0,0,0,1,0,1], [0,0,0,1,1,0] ]) # Weak Graph v2
 
-# load model using dict
+# Load model using dict
 FILE = "model.pth"
 loaded_model = MLP_Model.ModelE()
 loaded_model.load_state_dict(torch.load(FILE))

@@ -33,7 +33,7 @@ uy = np.zeros((6,1)) # 6x1
 
 sim.simxFinish(-1) # just in case, close all opened connections
 clientID=sim.simxStart('127.0.0.1',19997,True,True,-500000,5) # Connect to CoppeliaSim
-N_SCENES = 100
+N_SCENES = 500 # nb of episodes to collect data from
 scenes = np.hstack(( np.random.uniform(-2,2,size=(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)), np.random.uniform(-2,2,(N_SCENES,2)), np.random.uniform(0,np.pi,size=(N_SCENES,1)) ))
 
 
@@ -202,7 +202,7 @@ class MinimalPublisher(Node):
             
         self.distance = abs(self.x1 - self.x2) + abs(self.y1 - self.y2) + abs(self.x1 - self.x3) + abs(self.y1 - self.y3) + abs(self.x1 - self.x4) + abs(self.y1 - self.y4) + abs(self.x1 - self.x5) + abs(self.y1 - self.y5) + abs(self.x1 - self.x6) + abs(self.y1 - self.y6)     
         
-        print(self.distance)
+        #print(self.distance)
         
         if self.distance > 7.0:
         
@@ -417,7 +417,7 @@ class MinimalPublisher(Node):
         
         else:
 
-            print(" Simulation ", self.scene)
+            print(" Episode # ", self.scene)
         
         
         
@@ -507,12 +507,12 @@ class MinimalPublisher(Node):
             if (not ErrLocM6==sim.simx_return_ok):
                 pass 
             exit_cond = 0
-            print(" -------- ELEMENT 1 ------------")
-            print(Loc1)
-            print(" --------- ELEMENT 2 -----------")
-            print(Loc3)
+            #print(" -------- ELEMENT 1 ------------")
+            #print(Loc1)
+            #print(" --------- ELEMENT 2 -----------")
+            #print(Loc3)
             while exit_cond == 0:
-                print(Loc1)
+                #print(Loc1)
                 distr13 = np.sqrt(pow(Loc1[0] - Loc3[0],2) + pow(Loc1[1] - Loc3[1],2))
                 distr14 = np.sqrt(pow(Loc1[0] - Loc4[0],2) + pow(Loc1[1] - Loc4[1],2))
                 distr15 = np.sqrt(pow(Loc1[0] - Loc5[0],2) + pow(Loc1[1] - Loc5[1],2))
@@ -522,7 +522,7 @@ class MinimalPublisher(Node):
                     Loc1z = Loc1[2]
                     Loc1 = np.random.uniform(-2,2,size=(1,3))[0]
                     Loc1[2] = Loc1z
-                    print(" Robot 1 is close!")
+                    #print(" Robot 1 is close!")
                 else:
                     exit_cond = 1
                     
@@ -544,7 +544,7 @@ class MinimalPublisher(Node):
                     Loc2z = Loc2[2]
                     Loc2 = np.random.uniform(-2,2,size=(1,3))[0]
                     Loc2[2] = Loc2z
-                    print(" Robot 2 is close!")
+                    #print(" Robot 2 is close!")
                 else:
                     exit_cond = 1
                     

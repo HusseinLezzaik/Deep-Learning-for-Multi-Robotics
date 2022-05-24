@@ -8,7 +8,7 @@ Deeper GNN Network
 
 """
 
-# PyTorch MLP for Regression
+# PyTorch MLP Model for Regression
 from numpy import vstack
 from numpy import sqrt
 from pandas import read_csv
