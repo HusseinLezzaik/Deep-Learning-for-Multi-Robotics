@@ -17,7 +17,7 @@ rclpy.init()
 
 import gym
 import examples
-from envs.mobile_robot_env_gym import MobileRobotVrepEnv
+from envs.mobile_robot_env_gym import MobileRobotVrepEnv, cont_action_to_index_of_action
 import math
 import random
 import numpy as np
@@ -241,7 +241,7 @@ def optimize_model():
     # print(loss.grad)        
     optimizer.step()
     
-num_episodes = 5
+num_episodes = 100
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     env.initialize_timer()
@@ -266,8 +266,12 @@ for i_episode in range(num_episodes):
 
         # Store the transition in memory        
         action = torch.tensor(action, device=device, dtype=torch.long)
-        print("Action", action)
-        memory.push(state, action, next_state, reward)
+        print("--- Action ----", action)
+        print("-- Type of Action --", action)
+        
+        # Convert Action into Index of the Action
+        index_action = cont_action_to_index_of_action(action)
+        memory.push(state, index_action, next_state, reward)
 
         # Move to the next state
         state = next_state

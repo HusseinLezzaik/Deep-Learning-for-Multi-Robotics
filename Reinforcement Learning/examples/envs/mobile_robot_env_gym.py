@@ -55,7 +55,50 @@ def euler_from_quaternion(x, y, z, w):
      yaw_z = math.atan2(t3, t4)
      
      return yaw_z # in radians
-     
+      
+def cont_action_to_index_of_action(action):
+
+        index_action = action    
+
+        linear_threshold = 0.05
+        angular_threshold = 0.05
+    
+        if abs(action[0])<= linear_threshold:
+            index_action[0]= 0.0
+        elif action[0]<0:
+            index_action[0]= 1.0
+        else:
+            index_action[0] = 2.0
+    
+        if abs(action[1])<= angular_threshold:
+            index_action[1]= 0.0
+        elif action[1]<0:
+            index_action[1]= 1.0
+        else:
+            index_action[1] = 2.0
+            
+        return index_action
+    
+def index_action_to_cont_action(index_action):
+
+        action = index_action        
+
+        if index_action[0] == 0.0:
+            action[0] = 0.0
+        elif index_action[0] == 1.0:
+            action[0] = -1.0
+        else:
+            action[0] = 1.0
+            
+        if index_action[1] == 0.0:
+            action[1] = 0.0
+        elif index_action[1] == 1.0:
+            action[1] = -1.0
+        else:
+            action[1] = 1.0
+            
+        return action
+    
 """
 
 Description:
@@ -349,15 +392,7 @@ class MobileRobotVrepEnv(gym.Env):
         
     def step(self, action):
         
-        if action[0]<0:
-            action[0]=0.0
-        else:
-            action[0]=+1.0
-    
-        if action[1]<0:
-            action[1]=0.0
-        else:
-            action[1]=+1.0          
+        index_action = cont_action_to_index_of_action(action)      
         
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         
@@ -379,15 +414,10 @@ class MobileRobotVrepEnv(gym.Env):
                 ux[i-1] += -(A[i-1][j-1])*(self.X[i-1]-self.X[j-1]) # 1x1 each
                 uy[i-1] += -(A[i-1][j-1])*(self.Y[i-1]-self.Y[j-1]) # 1x1 each
     
-        # Manage 4 directions (Up/Down/Left/Right)
-        if action[0] == 0.0:
-            self.mpg.v1 = -1.0
-        elif action[0] == 1.0:
-            self.mpg.v1 = 1.0
-        elif action[1] == 0.0:
-            self.mpg.w1 = -1.0
-        elif action[1] == 1.0:
-            self.mpg.w1 = 1.0
+        # Manage 4 directions (Up/Down/Left/Right)            
+        action = index_action_to_cont_action(index_action)     
+        self.mpg.v1 = action[0]
+        self.mpg.w1 = action[1]
  
         # print("---------------------------Action Selected by Robot 1-------------------")   
         # print(action)
@@ -478,7 +508,7 @@ class MobileRobotVrepEnv(gym.Env):
         if abs(self.mpg.VL1) > self.VMax:
             self.alpha = self.VMax / abs(self.mpg.VL1)
             
-        if abs(self.mpg.VR6) > self.VMax:
+        if abs(self.mpg.VR1) > self.VMax:
             self.beta = self.VMax / abs(self.mpg.VR1)
             
         self.gamma = min(self.alpha, self.beta)
