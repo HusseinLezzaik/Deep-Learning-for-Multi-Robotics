@@ -393,7 +393,9 @@ class MobileRobotVrepEnv(gym.Env):
     def step(self, action):
         
         index_action = cont_action_to_index_of_action(action)      
-        
+        print("ACTION TYPE",type(action))
+        print("--ACTION VALUE--", action)
+        # print("THIS IS ACTION SPACE", self.action_space)
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         
         " Distance Threshold "
@@ -624,7 +626,7 @@ class MobileRobotVrepEnv(gym.Env):
                
         
         observation_DQN = torch.tensor(np.array([Mx1, My1, self.mpg.Phix1, self.mpg.Phiy1], dtype=np.double))
-        print("Test 2")
+        # print("Test 2")
         
         CURRENT_TIME = time.time()
         DIFFERENT_TIME = CURRENT_TIME - self.LAST_UPDATED_TIME

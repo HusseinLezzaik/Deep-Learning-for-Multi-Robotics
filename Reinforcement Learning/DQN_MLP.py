@@ -198,7 +198,7 @@ def optimize_model():
     
     action_batch = torch.cat(batch.action)
     # action_batch = torch.zeros(256).to(torch.int64)
-    print("Action Batch", action_batch.size())
+    # print("Action Batch", action_batch.size())
     reward_batch = torch.cat(batch.reward)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
@@ -241,22 +241,24 @@ def optimize_model():
     # print(loss.grad)        
     optimizer.step()
     
-num_episodes = 100
+num_episodes = 1500
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     env.initialize_timer()
     state = env.reset()
-    print("Initial State", type(state))
+    # print("Initial State", type(state))
     for t in count():
         # Select and perform an action
         action = policy_net(state) #state.double()
+        #action = torch.tensor([2,3])
         #print(type(action))
         # print("-------------- Current State ---------")
         # print(state)    
-        # print(" --------------- Action from Policy Net -----------------")
-        # print(action)
+        print(" --------------- Action from Policy Net -----------------")
+        print(action)
         # print(type(action.cpu().detach))
         action_np = action.cpu().detach().numpy().astype(np.int32)
+        # action_np = np.array([2,3])
         #action_np = action.cpu().detach.numpy().astype(np.int64)
         next_state, reward, done, _ = env.step(action_np)
         # print("-------------- Next State ---------")
@@ -266,8 +268,8 @@ for i_episode in range(num_episodes):
 
         # Store the transition in memory        
         action = torch.tensor(action, device=device, dtype=torch.long)
-        print("--- Action ----", action)
-        print("-- Type of Action --", action)
+        # print("--- Action ----", action)
+        # print("-- Type of Action --", action)
         
         # Convert Action into Index of the Action
         index_action = cont_action_to_index_of_action(action)
@@ -275,7 +277,7 @@ for i_episode in range(num_episodes):
 
         # Move to the next state
         state = next_state
-        print("State Afterwards", type(state))
+        # print("State Afterwards", type(state))
 
         # Perform one step of the optimization (on the policy network)
         optimize_model()
