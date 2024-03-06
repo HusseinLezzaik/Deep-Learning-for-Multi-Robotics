@@ -6,7 +6,7 @@ This repository contains the code and models necessary to replicate the results 
 
 The main idea of our work is to develop a deep learning model powered by Graph Neural Networks and Reinforcement Learning to build a multi-agent path planning algorithm that generalizes to different network topologies, while mainting fast communication and efficient convergence.
 
-I wrote a blog about all our work [here](https://husseinlezzaik.substack.com/p/deep-learning-for-multi-robot-motion).
+I wrote a blog about all our work [here](https://husseinlezzaik.github.io/2022/12/02/MultiRobotics/).
 
 ## Overview of the Repository
 
